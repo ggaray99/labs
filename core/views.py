@@ -190,6 +190,7 @@ def dashboard(request):
         'public_url': public_url,
         'qr_data': qr_data,
         'today': today,
+        'status_choices': Appointment.STATUS_CHOICES,
     })
 
 

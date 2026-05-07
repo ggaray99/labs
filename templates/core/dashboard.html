@@ -2,14 +2,20 @@
 {% block title %}Dashboard — Labs{% endblock %}
 
 {% block navbar %}
-<nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-    <a href="{% url 'dashboard' %}" class="text-xl font-semibold text-primary-700 tracking-tight">Labs</a>
-    <div class="flex items-center gap-4 text-sm">
-        <span class="text-gray-500">{{ professional.professional_name }}</span>
+<nav class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3">
+    <div class="flex items-center justify-between gap-2">
+        <a href="{% url 'dashboard' %}" class="text-xl font-semibold text-primary-700 tracking-tight">Labs</a>
+        <div class="flex items-center gap-2 sm:gap-4 text-sm">
+            <span class="hidden md:inline text-gray-500 truncate max-w-[200px]">{{ professional.professional_name }}</span>
+            <a href="{% url 'patient_list' %}" class="hidden sm:inline text-primary-600 hover:text-primary-800">Pacientes</a>
+            <a href="{% url 'landing_admin' %}" class="hidden sm:inline text-primary-600 hover:text-primary-800">Mi landing</a>
+            <a href="{% url 'appointment_new' %}" class="bg-primary-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-primary-700 whitespace-nowrap text-xs sm:text-sm">+ Nuevo turno</a>
+            <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600 text-xs sm:text-sm">Salir</a>
+        </div>
+    </div>
+    <div class="flex sm:hidden items-center gap-3 mt-2 text-sm pt-2 border-t border-gray-100">
         <a href="{% url 'patient_list' %}" class="text-primary-600 hover:text-primary-800">Pacientes</a>
         <a href="{% url 'landing_admin' %}" class="text-primary-600 hover:text-primary-800">Mi landing</a>
-        <a href="{% url 'appointment_new' %}" class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700">+ Nuevo turno</a>
-        <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">Salir</a>
     </div>
 </nav>
 {% endblock %}
@@ -40,33 +46,29 @@
                 {% if appointments_today %}
                 <div class="space-y-3">
                     {% for apt in appointments_today %}
-                    <div class="flex items-center justify-between border border-gray-100 rounded-lg p-4 hover:bg-gray-50">
-                        <div class="flex items-center gap-4">
-                            <span class="text-lg font-mono font-semibold text-primary-700">{{ apt.appointment_time|time:"H:i" }}</span>
-                            <div>
-                                <p class="font-medium">{{ apt.patient.first_name }} {{ apt.patient.last_name }}</p>
-                                <p class="text-sm text-gray-500">{{ apt.reason|default:"Sin motivo" }}</p>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border border-gray-100 rounded-lg p-4 hover:bg-gray-50 gap-3">
+                        <div class="flex items-center gap-4 min-w-0">
+                            <span class="text-lg font-mono font-semibold text-primary-700 shrink-0">{{ apt.appointment_time|time:"H:i" }}</span>
+                            <div class="min-w-0">
+                                <p class="font-medium truncate">{{ apt.patient.first_name }} {{ apt.patient.last_name }}</p>
+                                <p class="text-sm text-gray-500 truncate">{{ apt.reason|default:"Sin motivo" }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="px-2.5 py-1 text-xs rounded-full font-medium
-                                {% if apt.status == 'scheduled' %}bg-blue-100 text-blue-700
-                                {% elif apt.status == 'confirmed' %}bg-green-100 text-green-700
-                                {% elif apt.status == 'cancelled' %}bg-red-100 text-red-700
-                                {% elif apt.status == 'completed' %}bg-gray-100 text-gray-600{% endif %}">
-                                {{ apt.get_status_display }}
-                            </span>
-                            <form method="post" action="{% url 'appointment_status' apt.id %}" class="inline">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <form method="post" action="{% url 'appointment_status' apt.id %}" class="inline-flex items-center">
                                 {% csrf_token %}
-                                {% if apt.status == 'scheduled' %}
-                                <button name="status" value="confirmed" class="text-xs text-green-600 hover:underline">Confirmar</button>
-                                {% endif %}
-                                {% if apt.status != 'completed' and apt.status != 'cancelled' %}
-                                <button name="status" value="completed" class="text-xs text-gray-500 hover:underline ml-1">Completar</button>
-                                <button name="status" value="cancelled" class="text-xs text-red-500 hover:underline ml-1">Cancelar</button>
-                                {% endif %}
+                                <select name="status" onchange="this.form.submit()"
+                                    class="text-xs font-medium rounded-full border-0 pl-2.5 pr-7 py-1 focus:ring-2 focus:ring-primary-500 cursor-pointer
+                                    {% if apt.status == 'scheduled' %}bg-blue-100 text-blue-700
+                                    {% elif apt.status == 'confirmed' %}bg-green-100 text-green-700
+                                    {% elif apt.status == 'cancelled' %}bg-red-100 text-red-700
+                                    {% elif apt.status == 'completed' %}bg-gray-100 text-gray-600{% endif %}">
+                                    {% for value, label in status_choices %}
+                                    <option value="{{ value }}" {% if apt.status == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
                             </form>
-                            <a href="{% url 'patient_detail' apt.patient.id %}" class="text-xs text-primary-600 hover:underline ml-1">Ver paciente</a>
+                            <a href="{% url 'patient_detail' apt.patient.id %}" class="text-xs text-primary-600 hover:underline">Ver paciente</a>
                         </div>
                     </div>
                     {% endfor %}
@@ -79,17 +81,25 @@
                 <h3 class="text-sm font-semibold text-gray-500 mt-6 mb-3">Próximos turnos</h3>
                 <div class="space-y-2">
                     {% for apt in upcoming %}
-                    <div class="flex items-center justify-between text-sm border border-gray-50 rounded-lg p-3">
-                        <div class="flex items-center gap-3">
-                            <span class="text-gray-500">{{ apt.appointment_date|date:"d/m" }}</span>
-                            <span class="font-mono">{{ apt.appointment_time|time:"H:i" }}</span>
-                            <span>{{ apt.patient.first_name }} {{ apt.patient.last_name }}</span>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm border border-gray-50 rounded-lg p-3 gap-2">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <span class="text-gray-500 shrink-0">{{ apt.appointment_date|date:"d/m" }}</span>
+                            <span class="font-mono shrink-0">{{ apt.appointment_time|time:"H:i" }}</span>
+                            <span class="truncate">{{ apt.patient.first_name }} {{ apt.patient.last_name }}</span>
                         </div>
-                        <span class="px-2 py-0.5 text-xs rounded-full
-                            {% if apt.status == 'scheduled' %}bg-blue-100 text-blue-700
-                            {% elif apt.status == 'confirmed' %}bg-green-100 text-green-700{% endif %}">
-                            {{ apt.get_status_display }}
-                        </span>
+                        <form method="post" action="{% url 'appointment_status' apt.id %}" class="inline-flex shrink-0">
+                            {% csrf_token %}
+                            <select name="status" onchange="this.form.submit()"
+                                class="text-xs font-medium rounded-full border-0 pl-2.5 pr-7 py-0.5 focus:ring-2 focus:ring-primary-500 cursor-pointer
+                                {% if apt.status == 'scheduled' %}bg-blue-100 text-blue-700
+                                {% elif apt.status == 'confirmed' %}bg-green-100 text-green-700
+                                {% elif apt.status == 'cancelled' %}bg-red-100 text-red-700
+                                {% elif apt.status == 'completed' %}bg-gray-100 text-gray-600{% endif %}">
+                                {% for value, label in status_choices %}
+                                <option value="{{ value }}" {% if apt.status == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
                     </div>
                     {% endfor %}
                 </div>
