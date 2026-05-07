@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Labs — Tu consultorio online listo en minutos{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center">
+    <div class="text-center max-w-2xl px-6">
+        <h1 class="text-5xl font-medium text-primary-700 mb-6 tracking-tight">Labs</h1>
+        <p class="text-2xl font-light text-gray-700 mb-3">Tu consultorio online listo en minutos.</p>
+        <p class="text-lg font-light text-gray-500 mb-10">Creá tu página profesional, compartí tu link y empezá a recibir turnos.</p>
+        <a href="{% url 'setup' %}" class="inline-block bg-primary-500 text-white text-base font-medium px-6 py-3 rounded-lg hover:bg-primary-600 transition-colors">
+            Crear mi consultorio
+        </a>
+        <p class="mt-6 text-sm text-gray-500">¿Ya tenés cuenta? <a href="{% url 'login' %}" class="text-primary-600 hover:underline font-medium">Iniciar sesión</a></p>
+    </div>
+</div>
+{% endblock %}

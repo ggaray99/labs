@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block title %}Crear consultorio — Labs{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 w-full max-w-lg mx-4">
+        <h1 class="text-2xl font-semibold tracking-tight text-gray-900 mb-2">Creá tu consultorio</h1>
+        <p class="text-gray-500 font-light mb-8">Completá tus datos y tu página estará online en segundos.</p>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-5">
+            {% csrf_token %}
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+                <input type="text" name="professional_name" required value="{{ form.professional_name.value|default:'' }}"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Dr. Juan Pérez">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Especialidad</label>
+                <input type="text" name="specialty" required value="{{ form.specialty.value|default:'' }}"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Cardiología">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" name="email" required value="{{ form.email.value|default:'' }}"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                    <input type="password" name="password" required minlength="6"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Repetir contraseña</label>
+                    <input type="password" name="password_confirm" required minlength="6"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono / WhatsApp</label>
+                <input type="text" name="phone" value="{{ form.phone.value|default:'' }}"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                <input type="text" name="address" value="{{ form.address.value|default:'' }}"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Av. Corrientes 1234, CABA">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Frase de valor</label>
+                <input type="text" name="tagline" value="{{ form.tagline.value|default:'' }}"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Atención personalizada para ansiedad, estrés y bienestar emocional.">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Descripción profesional</label>
+                <textarea name="bio" rows="3"
+                          class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Breve descripción de tu perfil profesional">{{ form.bio.value|default:'' }}</textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Foto de perfil</label>
+                <input type="file" name="profile_image" accept="image/*"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Modalidad de atención</label>
+                    <select name="attention_mode" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                        <option value="">— Seleccionar —</option>
+                        <option value="Presencial" {% if form.attention_mode.value == 'Presencial' %}selected{% endif %}>Presencial</option>
+                        <option value="Online" {% if form.attention_mode.value == 'Online' %}selected{% endif %}>Online</option>
+                        <option value="Presencial y online" {% if form.attention_mode.value == 'Presencial y online' %}selected{% endif %}>Presencial y online</option>
+                    </select>
+                </div>
+                <div class="flex flex-col justify-end gap-2 pb-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="accepts_insurance" value="true" class="accent-primary-600" {% if form.accepts_insurance.value %}checked{% endif %}>
+                        <span class="text-sm text-gray-700">Acepta obra social</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="accepts_private" value="true" class="accent-primary-600" checked {% if form.accepts_private.value == False %}{% endif %}>
+                        <span class="text-sm text-gray-700">Acepta particular</span>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Motivos frecuentes de consulta</label>
+                <input type="text" name="common_reasons" value="{{ form.common_reasons.value|default:'' }}"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none" placeholder="Ansiedad, Estrés, Autoestima, Terapia individual">
+                <p class="text-xs text-gray-400 mt-1">Separados por coma. Se muestran en tu landing pública.</p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Días de atención</label>
+                <div class="flex flex-wrap gap-2">
+                    {% for day in days %}
+                    <label class="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 cursor-pointer hover:bg-primary-50 has-[:checked]:bg-primary-100 has-[:checked]:border-primary-400">
+                        <input type="checkbox" name="working_days" value="{{ day }}" class="accent-primary-600">
+                        <span class="text-sm capitalize">{{ day }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Hora inicio</label>
+                    <input type="time" name="start_time" required value="{{ form.start_time.value|default:'09:00' }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Hora fin</label>
+                    <input type="time" name="end_time" required value="{{ form.end_time.value|default:'18:00' }}"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Duración turno</label>
+                    <select name="appointment_duration_minutes"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                        <option value="15">15 min</option>
+                        <option value="20">20 min</option>
+                        <option value="30" selected>30 min</option>
+                        <option value="45">45 min</option>
+                        <option value="60">60 min</option>
+                    </select>
+                </div>
+            </div>
+
+            {% if errors %}
+            <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 text-sm">
+                {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="w-full bg-primary-500 text-white font-medium py-3 rounded-lg hover:bg-primary-600 transition-colors text-base">
+                Crear mi consultorio
+            </button>
+        </form>
+
+        <p class="text-center text-sm text-gray-500 mt-6">
+            ¿Ya tenés cuenta? <a href="{% url 'login' %}" class="text-primary-600 hover:underline font-medium">Iniciar sesión</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

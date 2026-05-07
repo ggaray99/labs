@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+{% block title %}Editar landing — Labs{% endblock %}
+
+{% block navbar %}
+<nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+    <a href="{% url 'dashboard' %}" class="text-xl font-semibold text-primary-700 tracking-tight">Labs</a>
+    <div class="flex items-center gap-4 text-sm">
+        <a href="{% url 'dashboard' %}" class="text-gray-500 hover:text-gray-700">Dashboard</a>
+        <a href="{% url 'patient_list' %}" class="text-gray-500 hover:text-gray-700">Pacientes</a>
+        <a href="{{ public_url }}" target="_blank" class="text-primary-600 hover:underline">Ver landing pública ↗</a>
+        <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">Salir</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<style>
+  .builder details { transition: background 0.15s; }
+  .builder details[open] > summary { border-bottom: 1px solid #f3f4f6; }
+  .builder summary { list-style: none; cursor: pointer; user-select: none; }
+  .builder summary::-webkit-details-marker { display: none; }
+  .builder summary::before { content: "▸"; display: inline-block; width: 1rem; color: #9ca3af; transition: transform 0.15s; }
+  .builder details[open] > summary::before { transform: rotate(90deg); }
+  .builder .pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 500; }
+</style>
+
+<div class="builder max-w-4xl mx-auto px-6 py-8">
+
+    <div class="mb-6">
+        <h1 class="text-2xl font-semibold tracking-tight mb-2">Editar mi landing</h1>
+        <p class="text-gray-500 text-sm">Configurá la apariencia, ocultá secciones y editá el contenido por bloques.</p>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="mb-4 p-3 rounded-lg text-sm {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% else %}bg-red-50 text-red-700 border border-red-200{% endif %}">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+
+    {# === APARIENCIA Y VISIBILIDAD === #}
+    <details id="settings" open class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+        <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+            <div class="flex items-center gap-3">
+                <span class="font-semibold">Apariencia y visibilidad</span>
+                <span class="pill" style="background:{{ professional.theme_primary }}20; color:{{ professional.theme_primary }};">{{ professional.theme_primary }}</span>
+            </div>
+            <span class="text-xs text-gray-400">Color de marca + qué secciones mostrar</span>
+        </summary>
+        <form method="post" class="px-6 py-5 space-y-5">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="settings_save">
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Color principal</label>
+                <div class="flex items-center gap-3">
+                    <input type="color" name="theme_primary" value="{{ professional.theme_primary }}"
+                           class="h-10 w-16 border border-gray-300 rounded cursor-pointer">
+                    <input type="text" value="{{ professional.theme_primary }}" readonly
+                           class="border border-gray-200 rounded px-3 py-2 text-sm font-mono bg-gray-50 w-28"
+                           id="hexPreview">
+                    <span class="text-xs text-gray-400">Afecta CTAs, links y la tarjeta de misión.</span>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-sm font-medium text-gray-700 mb-2">Mostrar / ocultar secciones</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" name="show_stats" {% if professional.show_stats %}checked{% endif %} class="accent-primary-500">
+                        <span>Estadísticas</span><span class="text-xs text-gray-400 ml-auto">{{ stats|length }} items</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" name="show_credentials" {% if professional.show_credentials %}checked{% endif %} class="accent-primary-500">
+                        <span>Credenciales</span><span class="text-xs text-gray-400 ml-auto">{{ credentials|length }} items</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" name="show_mission" {% if professional.show_mission %}checked{% endif %} class="accent-primary-500">
+                        <span>Misión</span><span class="text-xs text-gray-400 ml-auto">{% if professional.mission %}cargada{% else %}vacía{% endif %}</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" name="show_services" {% if professional.show_services %}checked{% endif %} class="accent-primary-500">
+                        <span>Servicios</span><span class="text-xs text-gray-400 ml-auto">{{ services|length }} items</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" name="show_testimonials" {% if professional.show_testimonials %}checked{% endif %} class="accent-primary-500">
+                        <span>Testimonios</span><span class="text-xs text-gray-400 ml-auto">{{ testimonials|length }} items</span>
+                    </label>
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" name="show_contact" {% if professional.show_contact %}checked{% endif %} class="accent-primary-500">
+                        <span>Contacto</span><span class="text-xs text-gray-400 ml-auto">tel/email/dir.</span>
+                    </label>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">El hero y la sección de reservas siempre se muestran.</p>
+            </div>
+
+            <button type="submit" class="bg-primary-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-primary-600">Guardar ajustes</button>
+        </form>
+    </details>
+
+    {# === DATOS BÁSICOS === #}
+    <details id="basics" class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+        <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+            <div class="flex items-center gap-3">
+                <span class="font-semibold">Datos básicos</span>
+            </div>
+            <span class="text-xs text-gray-400">Foto, nombre, especialidad, tagline, bio</span>
+        </summary>
+        <form method="post" enctype="multipart/form-data" class="px-6 py-5 space-y-5">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="basics_save">
+
+            <div class="flex items-start gap-5">
+                <div class="flex-shrink-0">
+                    {% if professional.profile_image %}
+                    <img src="{{ professional.profile_image.url }}" alt="Foto actual" class="w-24 h-24 rounded-full object-cover border-2 border-gray-100">
+                    {% else %}
+                    <div class="w-24 h-24 rounded-full bg-primary-50 text-primary-700 flex items-center justify-center text-3xl font-medium border-2 border-gray-100">
+                        {{ professional.professional_name|first }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Foto de perfil</label>
+                    <input type="file" name="profile_image" accept="image/*"
+                           class="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+                    <p class="text-xs text-gray-400 mt-1">Recomendado cuadrada, mínimo 400×400px. Dejá vacío para mantener la actual.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+                    <input type="text" name="professional_name" value="{{ professional.professional_name }}" required maxlength="255"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Especialidad</label>
+                    <input type="text" name="specialty" value="{{ professional.specialty }}" required maxlength="255"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Frase de valor (tagline)</label>
+                <input type="text" name="tagline" value="{{ professional.tagline }}" maxlength="255" placeholder="Aparece como título principal del hero"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                <textarea name="bio" rows="4" placeholder="Descripción que aparece debajo del hero"
+                          class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none">{{ professional.bio }}</textarea>
+            </div>
+
+            <button type="submit" class="bg-primary-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-primary-600">Guardar datos básicos</button>
+        </form>
+    </details>
+
+    {# === MISIÓN === #}
+    <details id="mission" class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+        <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+            <div class="flex items-center gap-3">
+                <span class="font-semibold">Misión</span>
+                {% if not professional.show_mission %}<span class="pill bg-gray-100 text-gray-500">oculta</span>{% endif %}
+            </div>
+            <span class="text-xs text-gray-400">{% if professional.mission %}{{ professional.mission|length }} caracteres{% else %}sin contenido{% endif %}</span>
+        </summary>
+        <form method="post" class="px-6 py-5">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="mission_save">
+            <textarea name="mission" rows="3" placeholder="Ej: Acompañar a cada paciente con escucha activa y rigor profesional."
+                      class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm outline-none mb-3">{{ professional.mission }}</textarea>
+            <button type="submit" class="bg-primary-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-primary-600">Guardar misión</button>
+        </form>
+    </details>
+
+    {# === ESTADÍSTICAS === #}
+    <details id="stats" class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+        <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+            <div class="flex items-center gap-3">
+                <span class="font-semibold">Estadísticas</span>
+                {% if not professional.show_stats %}<span class="pill bg-gray-100 text-gray-500">oculta</span>{% endif %}
+            </div>
+            <span class="text-xs text-gray-400">{{ stats|length }} item{{ stats|length|pluralize }} · hasta 4 cards</span>
+        </summary>
+        <div class="px-6 py-5">
+            <div class="space-y-2 mb-4">
+                {% for s in stats %}
+                <form method="post" class="grid grid-cols-12 gap-2 items-center bg-gray-50 rounded-lg p-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ s.id }}">
+                    <input name="value" value="{{ s.value }}" required maxlength="50" placeholder="Valor"
+                           class="col-span-3 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                    <input name="label" value="{{ s.label }}" required maxlength="100" placeholder="Etiqueta"
+                           class="col-span-6 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                    <input type="number" name="order" value="{{ s.order }}" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Orden">
+                    <button type="submit" name="action" value="stat_save" class="col-span-1 text-xs text-primary-600 hover:underline">Guardar</button>
+                    <button type="submit" name="action" value="stat_delete" onclick="return confirm('¿Eliminar este item?')" class="col-span-1 text-xs text-red-500 hover:underline">Eliminar</button>
+                </form>
+                {% empty %}
+                <p class="text-sm text-gray-400 italic">Sin estadísticas todavía.</p>
+                {% endfor %}
+            </div>
+
+            <details>
+                <summary class="text-sm text-primary-600 cursor-pointer hover:underline">+ Agregar estadística</summary>
+                <form method="post" class="grid grid-cols-12 gap-2 items-end mt-3 p-3 border border-dashed border-gray-200 rounded-lg">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="stat_add">
+                    <input name="value" required maxlength="50" placeholder="15+" class="col-span-3 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                    <input name="label" required maxlength="100" placeholder="Años de experiencia" class="col-span-6 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                    <input type="number" name="order" value="0" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Orden">
+                    <button type="submit" class="col-span-2 bg-primary-500 text-white py-2 rounded text-sm font-medium hover:bg-primary-600">Agregar</button>
+                </form>
+            </details>
+        </div>
+    </details>
+
+    {# === CREDENCIALES === #}
+    <details id="credentials" class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+        <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+            <div class="flex items-center gap-3">
+                <span class="font-semibold">Credenciales y formación</span>
+                {% if not professional.show_credentials %}<span class="pill bg-gray-100 text-gray-500">oculta</span>{% endif %}
+            </div>
+            <span class="text-xs text-gray-400">{{ credentials|length }} item{{ credentials|length|pluralize }}</span>
+        </summary>
+        <div class="px-6 py-5">
+            <p class="text-xs text-gray-400 mb-3">Iconos de <a href="https://fonts.google.com/icons" target="_blank" class="text-primary-600 hover:underline">Material Symbols</a>. Sugeridos: <code>school</code>, <code>workspace_premium</code>, <code>clinical_notes</code>, <code>verified</code>.</p>
+
+            <div class="space-y-2 mb-4">
+                {% for c in credentials %}
+                <form method="post" class="grid grid-cols-12 gap-2 items-center bg-gray-50 rounded-lg p-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ c.id }}">
+                    <input name="icon" value="{{ c.icon }}" required maxlength="50" placeholder="icon" class="col-span-2 border border-gray-300 rounded px-2 py-2 text-xs font-mono outline-none">
+                    <input name="title" value="{{ c.title }}" required maxlength="200" placeholder="Título" class="col-span-4 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                    <input name="subtitle" value="{{ c.subtitle }}" maxlength="255" placeholder="Institución" class="col-span-3 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                    <input type="number" name="order" value="{{ c.order }}" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Orden">
+                    <button type="submit" name="action" value="credential_save" class="col-span-1 text-xs text-primary-600 hover:underline">Guardar</button>
+                    <button type="submit" name="action" value="credential_delete" onclick="return confirm('¿Eliminar?')" class="col-span-1 text-xs text-red-500 hover:underline">Eliminar</button>
+                </form>
+                {% empty %}
+                <p class="text-sm text-gray-400 italic">Sin credenciales todavía.</p>
+                {% endfor %}
+            </div>
+
+            <details>
+                <summary class="text-sm text-primary-600 cursor-pointer hover:underline">+ Agregar credencial</summary>
+                <form method="post" class="grid grid-cols-12 gap-2 items-end mt-3 p-3 border border-dashed border-gray-200 rounded-lg">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="credential_add">
+                    <input name="icon" value="workspace_premium" maxlength="50" class="col-span-2 border border-gray-300 rounded px-2 py-2 text-xs font-mono outline-none">
+                    <input name="title" required maxlength="200" placeholder="Médico — UBA" class="col-span-4 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                    <input name="subtitle" maxlength="255" placeholder="Institución (opcional)" class="col-span-3 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                    <input type="number" name="order" value="0" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Orden">
+                    <button type="submit" class="col-span-2 bg-primary-500 text-white py-2 rounded text-sm font-medium hover:bg-primary-600">Agregar</button>
+                </form>
+            </details>
+        </div>
+    </details>
+
+    {# === SERVICIOS === #}
+    <details id="services" class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+        <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+            <div class="flex items-center gap-3">
+                <span class="font-semibold">Servicios</span>
+                {% if not professional.show_services %}<span class="pill bg-gray-100 text-gray-500">oculta</span>{% endif %}
+            </div>
+            <span class="text-xs text-gray-400">{{ services|length }} item{{ services|length|pluralize }}</span>
+        </summary>
+        <div class="px-6 py-5">
+            <p class="text-xs text-gray-400 mb-3">Iconos sugeridos: <code>monitor_heart</code>, <code>medical_services</code>, <code>video_chat</code>, <code>psychology</code>, <code>health_and_safety</code>.</p>
+
+            <div class="space-y-3 mb-4">
+                {% for sv in services %}
+                <form method="post" class="bg-gray-50 rounded-lg p-3 space-y-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ sv.id }}">
+                    <div class="grid grid-cols-12 gap-2 items-center">
+                        <input name="icon" value="{{ sv.icon }}" required maxlength="50" class="col-span-2 border border-gray-300 rounded px-2 py-2 text-xs font-mono outline-none">
+                        <input name="title" value="{{ sv.title }}" required maxlength="100" placeholder="Título del servicio" class="col-span-7 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                        <input type="number" name="order" value="{{ sv.order }}" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Orden">
+                        <button type="submit" name="action" value="service_save" class="col-span-1 text-xs text-primary-600 hover:underline">Guardar</button>
+                        <button type="submit" name="action" value="service_delete" onclick="return confirm('¿Eliminar?')" class="col-span-1 text-xs text-red-500 hover:underline">Eliminar</button>
+                    </div>
+                    <textarea name="description" required rows="2" placeholder="Descripción"
+                              class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none">{{ sv.description }}</textarea>
+                </form>
+                {% empty %}
+                <p class="text-sm text-gray-400 italic">Sin servicios todavía.</p>
+                {% endfor %}
+            </div>
+
+            <details>
+                <summary class="text-sm text-primary-600 cursor-pointer hover:underline">+ Agregar servicio</summary>
+                <form method="post" class="mt-3 p-3 border border-dashed border-gray-200 rounded-lg space-y-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="service_add">
+                    <div class="grid grid-cols-12 gap-2">
+                        <input name="icon" value="medical_services" maxlength="50" class="col-span-2 border border-gray-300 rounded px-2 py-2 text-xs font-mono outline-none">
+                        <input name="title" required maxlength="100" placeholder="Título" class="col-span-7 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                        <input type="number" name="order" value="0" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none">
+                        <button type="submit" class="col-span-2 bg-primary-500 text-white py-2 rounded text-sm font-medium hover:bg-primary-600">Agregar</button>
+                    </div>
+                    <textarea name="description" required rows="2" placeholder="Descripción del servicio"
+                              class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none"></textarea>
+                </form>
+            </details>
+        </div>
+    </details>
+
+    {# === TESTIMONIOS === #}
+    <details id="testimonials" class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+        <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+            <div class="flex items-center gap-3">
+                <span class="font-semibold">Testimonios</span>
+                {% if not professional.show_testimonials %}<span class="pill bg-gray-100 text-gray-500">oculta</span>{% endif %}
+            </div>
+            <span class="text-xs text-gray-400">{{ testimonials|length }} item{{ testimonials|length|pluralize }}</span>
+        </summary>
+        <div class="px-6 py-5">
+            <div class="space-y-3 mb-4">
+                {% for t in testimonials %}
+                <form method="post" class="bg-gray-50 rounded-lg p-3 space-y-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ t.id }}">
+                    <textarea name="quote" required rows="2" placeholder="Texto del testimonio"
+                              class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none">{{ t.quote }}</textarea>
+                    <div class="grid grid-cols-12 gap-2 items-center">
+                        <input name="author_name" value="{{ t.author_name }}" required maxlength="100" placeholder="Nombre" class="col-span-3 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                        <input name="author_meta" value="{{ t.author_meta }}" maxlength="100" placeholder="Detalle (Ej: Paciente desde 2021)" class="col-span-4 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                        <input type="number" name="rating" value="{{ t.rating }}" min="0" max="5" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Estrellas">
+                        <input type="number" name="order" value="{{ t.order }}" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Orden">
+                        <button type="submit" name="action" value="testimonial_save" class="col-span-2 text-xs text-primary-600 hover:underline">Guardar</button>
+                        <button type="submit" name="action" value="testimonial_delete" onclick="return confirm('¿Eliminar?')" class="col-span-1 text-xs text-red-500 hover:underline">Eliminar</button>
+                    </div>
+                </form>
+                {% empty %}
+                <p class="text-sm text-gray-400 italic">Sin testimonios todavía.</p>
+                {% endfor %}
+            </div>
+
+            <details>
+                <summary class="text-sm text-primary-600 cursor-pointer hover:underline">+ Agregar testimonio</summary>
+                <form method="post" class="mt-3 p-3 border border-dashed border-gray-200 rounded-lg space-y-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="testimonial_add">
+                    <textarea name="quote" required rows="2" placeholder="Texto del testimonio"
+                              class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none"></textarea>
+                    <div class="grid grid-cols-12 gap-2">
+                        <input name="author_name" required maxlength="100" placeholder="Nombre" class="col-span-4 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                        <input name="author_meta" maxlength="100" placeholder="Detalle" class="col-span-3 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
+                        <input type="number" name="rating" value="5" min="0" max="5" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Estrellas">
+                        <input type="number" name="order" value="0" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none">
+                        <button type="submit" class="col-span-3 bg-primary-500 text-white py-2 rounded text-sm font-medium hover:bg-primary-600">Agregar</button>
+                    </div>
+                </form>
+            </details>
+        </div>
+    </details>
+
+</div>
+
+<script>
+// Color picker live hex preview + reopen anchored details after save
+document.querySelector('input[name=theme_primary]')?.addEventListener('input', e => {
+  document.getElementById('hexPreview').value = e.target.value;
+});
+const hash = location.hash.slice(1);
+if (hash) {
+  const el = document.getElementById(hash);
+  if (el?.tagName === 'DETAILS') { el.open = true; el.scrollIntoView({block: 'start'}); }
+}
+</script>
+{% endblock %}

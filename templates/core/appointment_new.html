@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Nuevo turno — Labs{% endblock %}
+
+{% block navbar %}
+<nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+    <a href="{% url 'dashboard' %}" class="text-xl font-semibold text-primary-700 tracking-tight">Labs</a>
+    <a href="{% url 'dashboard' %}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Volver al dashboard</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto px-6 py-8">
+    <h1 class="text-2xl font-semibold tracking-tight mb-6">Nuevo turno manual</h1>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% else %}bg-green-50 text-green-700 border border-green-200{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- Patient search -->
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <h2 class="font-semibold mb-4">Paciente</h2>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Buscar paciente existente</label>
+                <input type="text" id="patientSearch" placeholder="Nombre, teléfono o email..."
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none">
+                <div id="searchResults" class="mt-1 border border-gray-200 rounded-lg divide-y hidden"></div>
+            </div>
+
+            <input type="hidden" name="patient_id" id="patientId" value="">
+
+            <div id="selectedPatient" class="hidden mb-4 bg-primary-50 border border-primary-200 rounded-lg p-3 flex items-center justify-between">
+                <span id="selectedPatientName" class="font-medium text-primary-700"></span>
+                <button type="button" onclick="clearPatient()" class="text-sm text-red-500 hover:underline">Cambiar</button>
+            </div>
+
+            <div id="newPatientFields">
+                <p class="text-sm text-gray-500 mb-3">O creá uno nuevo:</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                        <input type="text" name="first_name" id="newFirstName" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                        <input type="text" name="last_name" id="newLastName" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                        <input type="text" name="phone" id="newPhone" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" name="email" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointment details -->
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+            <h2 class="font-semibold mb-4">Turno</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+                    <input type="date" name="appointment_date" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Hora</label>
+                    <input type="time" name="appointment_time" required class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none">
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Motivo</label>
+                <textarea name="reason" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none"></textarea>
+            </div>
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                <select name="status" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 outline-none">
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="w-full bg-primary-500 text-white font-medium py-3 rounded-lg hover:bg-primary-600 transition-colors">
+            Crear turno
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let searchTimeout;
+const searchInput = document.getElementById('patientSearch');
+const resultsDiv = document.getElementById('searchResults');
+
+searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    const q = this.value.trim();
+    if (q.length < 2) { resultsDiv.classList.add('hidden'); return; }
+    searchTimeout = setTimeout(() => {
+        fetch(`/api/patients/search/?q=${encodeURIComponent(q)}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.length === 0) { resultsDiv.classList.add('hidden'); return; }
+                resultsDiv.innerHTML = data.map(p =>
+                    `<button type="button" onclick="selectPatient('${p.id}', '${p.name}')" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-50">${p.name} <span class="text-gray-400">${p.phone}</span></button>`
+                ).join('');
+                resultsDiv.classList.remove('hidden');
+            });
+    }, 300);
+});
+
+function selectPatient(id, name) {
+    document.getElementById('patientId').value = id;
+    document.getElementById('selectedPatientName').textContent = name;
+    document.getElementById('selectedPatient').classList.remove('hidden');
+    document.getElementById('newPatientFields').classList.add('hidden');
+    resultsDiv.classList.add('hidden');
+    searchInput.value = '';
+}
+
+function clearPatient() {
+    document.getElementById('patientId').value = '';
+    document.getElementById('selectedPatient').classList.add('hidden');
+    document.getElementById('newPatientFields').classList.remove('hidden');
+}
+</script>
+{% endblock %}

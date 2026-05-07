@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Labs{% endblock %}
+
+{% block navbar %}
+<nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
+    <a href="{% url 'dashboard' %}" class="text-xl font-semibold text-primary-700 tracking-tight">Labs</a>
+    <div class="flex items-center gap-4 text-sm">
+        <span class="text-gray-500">{{ professional.professional_name }}</span>
+        <a href="{% url 'patient_list' %}" class="text-primary-600 hover:text-primary-800">Pacientes</a>
+        <a href="{% url 'landing_admin' %}" class="text-primary-600 hover:text-primary-800">Mi landing</a>
+        <a href="{% url 'appointment_new' %}" class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700">+ Nuevo turno</a>
+        <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">Salir</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-6 py-8">
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="mb-4 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% else %}bg-red-50 text-red-700 border border-red-200{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <h1 class="text-2xl font-semibold tracking-tight mb-6">Buen día, {{ professional.professional_name }}</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Agenda del día -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-semibold">Agenda de hoy — {{ today|date:"l d/m" }}</h2>
+                    <a href="{% url 'appointment_new' %}" class="text-primary-600 text-sm hover:underline">+ Agregar turno</a>
+                </div>
+
+                {% if appointments_today %}
+                <div class="space-y-3">
+                    {% for apt in appointments_today %}
+                    <div class="flex items-center justify-between border border-gray-100 rounded-lg p-4 hover:bg-gray-50">
+                        <div class="flex items-center gap-4">
+                            <span class="text-lg font-mono font-semibold text-primary-700">{{ apt.appointment_time|time:"H:i" }}</span>
+                            <div>
+                                <p class="font-medium">{{ apt.patient.first_name }} {{ apt.patient.last_name }}</p>
+                                <p class="text-sm text-gray-500">{{ apt.reason|default:"Sin motivo" }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-1 text-xs rounded-full font-medium
+                                {% if apt.status == 'scheduled' %}bg-blue-100 text-blue-700
+                                {% elif apt.status == 'confirmed' %}bg-green-100 text-green-700
+                                {% elif apt.status == 'cancelled' %}bg-red-100 text-red-700
+                                {% elif apt.status == 'completed' %}bg-gray-100 text-gray-600{% endif %}">
+                                {{ apt.get_status_display }}
+                            </span>
+                            <form method="post" action="{% url 'appointment_status' apt.id %}" class="inline">
+                                {% csrf_token %}
+                                {% if apt.status == 'scheduled' %}
+                                <button name="status" value="confirmed" class="text-xs text-green-600 hover:underline">Confirmar</button>
+                                {% endif %}
+                                {% if apt.status != 'completed' and apt.status != 'cancelled' %}
+                                <button name="status" value="completed" class="text-xs text-gray-500 hover:underline ml-1">Completar</button>
+                                <button name="status" value="cancelled" class="text-xs text-red-500 hover:underline ml-1">Cancelar</button>
+                                {% endif %}
+                            </form>
+                            <a href="{% url 'patient_detail' apt.patient.id %}" class="text-xs text-primary-600 hover:underline ml-1">Ver paciente</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-400 text-center py-8">No hay turnos para hoy.</p>
+                {% endif %}
+
+                {% if upcoming %}
+                <h3 class="text-sm font-semibold text-gray-500 mt-6 mb-3">Próximos turnos</h3>
+                <div class="space-y-2">
+                    {% for apt in upcoming %}
+                    <div class="flex items-center justify-between text-sm border border-gray-50 rounded-lg p-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-gray-500">{{ apt.appointment_date|date:"d/m" }}</span>
+                            <span class="font-mono">{{ apt.appointment_time|time:"H:i" }}</span>
+                            <span>{{ apt.patient.first_name }} {{ apt.patient.last_name }}</span>
+                        </div>
+                        <span class="px-2 py-0.5 text-xs rounded-full
+                            {% if apt.status == 'scheduled' %}bg-blue-100 text-blue-700
+                            {% elif apt.status == 'confirmed' %}bg-green-100 text-green-700{% endif %}">
+                            {{ apt.get_status_display }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+            <!-- Link público -->
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                <h2 class="text-lg font-semibold mb-3">Tu link público</h2>
+                <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                    <code class="text-sm text-primary-700 break-all" id="publicUrl">{{ public_url }}</code>
+                </div>
+                <button onclick="navigator.clipboard.writeText(document.getElementById('publicUrl').textContent); this.textContent='Copiado!'; setTimeout(()=>this.textContent='Copiar link', 2000)"
+                        class="w-full bg-primary-50 text-primary-700 py-2 rounded-lg text-sm font-medium hover:bg-primary-100 transition mb-3">
+                    Copiar link
+                </button>
+                <div class="text-center">
+                    <img src="data:image/png;base64,{{ qr_data }}" alt="QR" class="inline-block rounded">
+                </div>
+            </div>
+
+            <!-- Pacientes -->
+            <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-lg font-semibold">Pacientes</h2>
+                    <a href="{% url 'patient_list' %}" class="text-primary-600 text-sm hover:underline">Ver todos</a>
+                </div>
+                {% if recent_patients %}
+                <ul class="space-y-2">
+                    {% for p in recent_patients %}
+                    <li>
+                        <a href="{% url 'patient_detail' p.id %}" class="flex items-center justify-between text-sm hover:bg-gray-50 rounded p-2 -mx-2">
+                            <span>{{ p.first_name }} {{ p.last_name }}</span>
+                            <span class="text-gray-400">{{ p.phone }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-gray-400 text-sm">Aún no hay pacientes.</p>
+                {% endif %}
+                <a href="{% url 'patient_new' %}" class="block mt-3 text-center bg-gray-50 text-gray-600 py-2 rounded-lg text-sm hover:bg-gray-100">+ Nuevo paciente</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
