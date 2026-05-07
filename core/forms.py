@@ -58,7 +58,7 @@ class LandingSettingsForm(forms.ModelForm):
     class Meta:
         model = Professional
         fields = ['theme_primary', 'show_stats', 'show_credentials', 'show_mission',
-                  'show_services', 'show_testimonials', 'show_contact']
+                  'show_services', 'show_testimonials', 'show_contact', 'show_map']
 
 
 class BasicsForm(forms.ModelForm):
@@ -89,3 +89,9 @@ class LandingTestimonialForm(forms.ModelForm):
     class Meta:
         model = LandingTestimonial
         fields = ['quote', 'author_name', 'author_meta', 'rating', 'order']
+
+
+class PublicReviewForm(forms.Form):
+    rating = forms.IntegerField(min_value=1, max_value=5, label='Puntaje')
+    quote = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'maxlength': 600}),
+                            label='¿Cómo fue tu experiencia?', max_length=600)

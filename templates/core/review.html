@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Reseña — {{ professional.professional_name }}{% endblock %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  .rev { background: #f7f9fb; min-height: 100vh; font-family: 'Inter', system-ui, sans-serif; }
+  .rev h1 { font-family: 'Manrope', system-ui, sans-serif; font-size: 28px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
+  .star-input input { display: none; }
+  .star-input label { cursor: pointer; font-size: 36px; color: #d1d5db; transition: color .15s; padding: 0 2px; }
+  .star-input label:hover, .star-input label:hover ~ label,
+  .star-input input:checked ~ label { color: #f59e0b; }
+  .star-input { display: inline-flex; flex-direction: row-reverse; }
+</style>
+
+<div class="rev py-8 sm:py-16 px-4">
+  <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10">
+
+    {% if invalid %}
+      <div class="text-center">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-2xl">!</div>
+        <h1 class="text-gray-900 mb-2">Link inválido o vencido</h1>
+        <p class="text-gray-500 text-sm">Pedile a {{ professional.professional_name }} un link nuevo.</p>
+      </div>
+
+    {% elif already_submitted %}
+      <div class="text-center">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-2xl">✓</div>
+        <h1 class="text-gray-900 mb-2">Ya dejaste tu reseña</h1>
+        <p class="text-gray-500 text-sm">¡Gracias! Tu opinión ya fue registrada para este turno.</p>
+      </div>
+
+    {% elif success %}
+      <div class="text-center">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-2xl">✓</div>
+        <h1 class="text-gray-900 mb-2">¡Gracias por tu reseña!</h1>
+        <p class="text-gray-500 text-sm">{{ professional.professional_name }} la va a revisar antes de publicarla.</p>
+      </div>
+
+    {% else %}
+      <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-2">Reseña</p>
+      <h1 class="text-gray-900 mb-2">¿Cómo fue tu experiencia con {{ professional.professional_name }}?</h1>
+      <p class="text-gray-500 text-sm mb-6">Turno del {{ appointment.appointment_date|date:'d/m/Y' }}. Tu reseña va a ayudar a otros pacientes.</p>
+
+      <form method="post" class="space-y-5">
+        {% csrf_token %}
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Puntaje</label>
+          <div class="star-input">
+            <input type="radio" id="star5" name="rating" value="5" required><label for="star5">★</label>
+            <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+            <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+            <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+            <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Tu reseña</label>
+          <textarea name="quote" rows="5" maxlength="600" required
+                    placeholder="¿Qué te pareció la atención? ¿Qué destacarías?"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100"></textarea>
+          <p class="text-xs text-gray-400 mt-1">Hasta 600 caracteres.</p>
+        </div>
+
+        <button type="submit" class="w-full bg-primary-600 text-white py-3 rounded-lg font-medium hover:bg-primary-700 transition">
+          Enviar reseña
+        </button>
+        <p class="text-xs text-gray-400 text-center">Tu reseña se publica recién después de que {{ professional.professional_name }} la revise.</p>
+      </form>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

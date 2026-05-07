@@ -15,5 +15,6 @@ urlpatterns = [
     path('dashboard/landing/', views.landing_admin, name='landing_admin'),
     path('p/<slug:slug>/', views.public_landing, name='public_landing'),
     path('p/<slug:slug>/booking/', views.booking, name='booking'),
+    path('p/<slug:slug>/review/<str:token>/', views.public_review, name='public_review'),
     path('api/patients/search/', views.patient_search_api, name='patient_search_api'),
 ]

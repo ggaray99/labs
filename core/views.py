@@ -4,12 +4,14 @@ from datetime import datetime, timedelta, date
 
 import qrcode
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core import signing
 from django.db.models import Q
+from django.urls import reverse
 
 from .models import (
     Professional, Patient, Appointment,
@@ -18,8 +20,26 @@ from .models import (
 from .forms import (
     ProfessionalSetupForm, BookingPatientForm, PatientForm,
     MissionForm, LandingSettingsForm, BasicsForm, LandingStatForm, LandingCredentialForm,
-    LandingServiceForm, LandingTestimonialForm,
+    LandingServiceForm, LandingTestimonialForm, PublicReviewForm,
 )
+
+
+REVIEW_TOKEN_SALT = 'clyra.appointment.review'
+REVIEW_TOKEN_MAX_AGE = 60 * 24 * 60 * 60  # 60 days
+
+
+def make_review_token(appointment):
+    return signing.TimestampSigner(salt=REVIEW_TOKEN_SALT).sign(str(appointment.id))
+
+
+def parse_review_token(token):
+    try:
+        appointment_id = signing.TimestampSigner(salt=REVIEW_TOKEN_SALT).unsign(
+            token, max_age=REVIEW_TOKEN_MAX_AGE
+        )
+    except signing.BadSignature:
+        return None
+    return Appointment.objects.filter(id=appointment_id).first()
 
 
 # --- Helpers ---
@@ -166,10 +186,10 @@ def dashboard(request):
         return redirect('setup')
 
     today = date.today()
-    appointments_today = Appointment.objects.filter(
+    appointments_today = list(Appointment.objects.filter(
         professional=professional,
         appointment_date=today
-    ).select_related('patient')
+    ).select_related('patient'))
 
     upcoming = Appointment.objects.filter(
         professional=professional,
@@ -181,6 +201,14 @@ def dashboard(request):
 
     public_url = request.build_absolute_uri(f'/p/{professional.slug}/')
     qr_data = generate_qr_base64(public_url)
+
+    # Attach review_link to completed appointments missing a testimonial.
+    for apt in appointments_today:
+        apt.review_link = ''
+        if apt.status == 'completed' and not hasattr(apt, 'testimonial'):
+            apt.review_link = request.build_absolute_uri(
+                reverse('public_review', kwargs={'slug': professional.slug, 'token': make_review_token(apt)})
+            )
 
     return render(request, 'core/dashboard.html', {
         'professional': professional,
@@ -406,6 +434,13 @@ def landing_admin(request):
                 messages.error(request, 'Revisá los campos.')
             return redirect('/dashboard/landing/#basics')
 
+        if action == 'testimonial_approve':
+            obj = get_object_or_404(LandingTestimonial, id=request.POST.get('id'), professional=professional)
+            obj.is_approved = True
+            obj.save()
+            messages.success(request, 'Reseña aprobada y publicada.')
+            return redirect('/dashboard/landing/#testimonials')
+
         # Format: <section>_<verb> with verb in {add, save, delete}
         for section, (Model, FormCls, _) in LANDING_SECTIONS.items():
             anchor = f'/dashboard/landing/#{section}s'
@@ -433,12 +468,14 @@ def landing_admin(request):
                 messages.success(request, 'Item eliminado.')
                 return redirect(anchor)
 
+    testimonials_qs = professional.landing_testimonials.all()
     return render(request, 'core/landing_admin.html', {
         'professional': professional,
         'stats': professional.landing_stats.all(),
         'credentials': professional.landing_credentials.all(),
         'services': professional.landing_services.all(),
-        'testimonials': professional.landing_testimonials.all(),
+        'testimonials': testimonials_qs.filter(is_approved=True),
+        'pending_testimonials': testimonials_qs.filter(is_approved=False),
         'public_url': request.build_absolute_uri(f'/p/{professional.slug}/'),
     })
 
@@ -511,10 +548,51 @@ def public_landing(request, slug):
         'landing_stats': professional.landing_stats.all(),
         'landing_credentials': professional.landing_credentials.all(),
         'landing_services': professional.landing_services.all(),
-        'landing_testimonials': professional.landing_testimonials.all(),
+        'landing_testimonials': professional.landing_testimonials.filter(is_approved=True),
     })
 
 
 def booking(request, slug):
     """Legacy redirect — booking is now inline in public_landing."""
     return redirect('public_landing', slug=slug)
+
+
+def public_review(request, slug, token):
+    professional = get_object_or_404(Professional, slug=slug)
+    appointment = parse_review_token(token)
+
+    if not appointment or appointment.professional_id != professional.id:
+        return render(request, 'core/review.html', {
+            'professional': professional, 'invalid': True,
+        })
+
+    if hasattr(appointment, 'testimonial'):
+        return render(request, 'core/review.html', {
+            'professional': professional, 'already_submitted': True,
+        })
+
+    if request.method == 'POST':
+        form = PublicReviewForm(request.POST)
+        if form.is_valid():
+            patient = appointment.patient
+            author_name = f'{patient.first_name} {patient.last_name[:1].upper()}.'
+            LandingTestimonial.objects.create(
+                professional=professional,
+                appointment=appointment,
+                quote=form.cleaned_data['quote'],
+                rating=form.cleaned_data['rating'],
+                author_name=author_name,
+                author_meta=f'Paciente — {appointment.appointment_date.strftime("%m/%Y")}',
+                is_approved=False,
+            )
+            return render(request, 'core/review.html', {
+                'professional': professional, 'success': True,
+            })
+    else:
+        form = PublicReviewForm()
+
+    return render(request, 'core/review.html', {
+        'professional': professional,
+        'appointment': appointment,
+        'form': form,
+    })

@@ -31,6 +31,8 @@ class Professional(models.Model):
     show_services = models.BooleanField('Mostrar servicios', default=True)
     show_testimonials = models.BooleanField('Mostrar testimonios', default=True)
     show_contact = models.BooleanField('Mostrar sección de contacto', default=True)
+    show_map = models.BooleanField('Mostrar mapa de ubicación', default=True,
+                                   help_text='Solo se renderiza si además hay una dirección cargada.')
     slug = models.SlugField(unique=True, max_length=255)
     working_days = models.CharField('Días de atención', max_length=255, help_text='Ej: lunes,martes,miercoles')
     start_time = models.TimeField('Hora de inicio')
@@ -141,14 +143,20 @@ class LandingService(models.Model):
 
 class LandingTestimonial(models.Model):
     professional = models.ForeignKey(Professional, on_delete=models.CASCADE, related_name='landing_testimonials')
+    appointment = models.OneToOneField('Appointment', on_delete=models.SET_NULL, null=True, blank=True,
+                                       related_name='testimonial',
+                                       help_text='Si vino del flujo post-turno, queda atado al turno (1 reseña por turno).')
     quote = models.TextField('Texto del testimonio')
     author_name = models.CharField('Nombre del autor', max_length=100)
     author_meta = models.CharField('Detalle', max_length=100, blank=True, help_text='Ej: Paciente desde 2021')
     rating = models.PositiveSmallIntegerField('Estrellas (0-5)', default=5)
+    is_approved = models.BooleanField('Aprobado', default=True,
+                                      help_text='Las reseñas creadas vía link público arrancan en False hasta que el profesional las aprueba.')
     order = models.PositiveIntegerField('Orden', default=0)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     class Meta:
-        ordering = ['order']
+        ordering = ['order', '-created_at']
         verbose_name = 'Testimonio'
         verbose_name_plural = 'Landing — Testimonios'
 

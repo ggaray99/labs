@@ -217,7 +217,7 @@
 
     <!-- CONTACT -->
     {% if professional.show_contact %}
-    <section id="contacto" class="py-6 sm:py-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-10">
+    <section id="contacto" class="py-6 sm:py-10 grid grid-cols-1 {% if professional.address and professional.show_map %}md:grid-cols-2{% endif %} gap-4 sm:gap-10">
       <div class="bg-white p-6 sm:p-10 rounded-2xl ambient-shadow">
         <h2 class="mb-3 sm:mb-4 text-[#191c1e]">Contactame</h2>
         <p class="body-md text-[#434655] mb-6 sm:mb-8">¿Querés consultar algo antes de reservar? Escribime o llamame:</p>
@@ -257,13 +257,18 @@
           {% endif %}
         </div>
       </div>
-      {% if professional.address %}
-      <div class="bg-[#e6e8ea] rounded-2xl overflow-hidden relative min-h-[260px] sm:min-h-[400px] ambient-shadow flex items-center justify-center">
-        <span class="material-symbols-outlined text-[#737686]" style="font-size:64px;">location_on</span>
-        <div class="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 bg-white p-3 sm:p-4 rounded-xl ambient-shadow flex items-center gap-3">
+      {% if professional.address and professional.show_map %}
+      <div class="rounded-2xl overflow-hidden relative min-h-[260px] sm:min-h-[400px] ambient-shadow">
+        <iframe
+          src="https://www.google.com/maps?q={{ professional.address|urlencode }}&output=embed"
+          class="absolute inset-0 w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+        <a href="https://www.google.com/maps/search/?api=1&query={{ professional.address|urlencode }}" target="_blank" rel="noopener"
+           class="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 bg-white p-3 sm:p-4 rounded-xl ambient-shadow flex items-center gap-3 hover:bg-[#f7f9fb] transition-colors">
           <span class="material-symbols-outlined text-[var(--theme-primary)] shrink-0">location_on</span>
-          <span class="body-sm font-bold text-[#191c1e]">{{ professional.address }}</span>
-        </div>
+          <span class="body-sm font-bold text-[#191c1e] flex-1">{{ professional.address }}</span>
+          <span class="material-symbols-outlined text-[#737686]" style="font-size:18px;">open_in_new</span>
+        </a>
       </div>
       {% endif %}
     </section>
@@ -271,10 +276,10 @@
 
     <!-- SCHEDULE / BOOKING -->
     <section id="reservar-turno" class="py-6 sm:py-10">
-      <div class="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 ambient-shadow">
-        <div class="text-center mb-6 sm:mb-10">
-          <h2 class="mb-3 sm:mb-4 text-[#191c1e]">Reservá tu turno</h2>
-          <p class="body-md text-[#434655] max-w-xl mx-auto">Elegí un día y un horario disponibles.</p>
+      <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-10 ambient-shadow max-w-3xl mx-auto">
+        <div class="text-center mb-6 sm:mb-8">
+          <h2 class="mb-2 sm:mb-3 text-[#191c1e]">Reservá tu turno</h2>
+          <p class="body-md text-[#434655]">3 pasos. Te toma menos de un minuto.</p>
         </div>
 
         {% if messages %}
@@ -283,95 +288,108 @@
         {% endfor %}
         {% endif %}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-          <!-- Date picker -->
-          <div class="bg-[#f2f4f6] p-4 sm:p-6 rounded-2xl border border-[#c3c6d7]">
-            <h4 class="body-md font-bold mb-4 sm:mb-6 text-[#191c1e]">Próximos días disponibles</h4>
-            {% if available_dates %}
-            <div class="grid grid-cols-3 sm:grid-cols-3 gap-2">
+        <!-- Step 1: Date -->
+        <div class="mb-6 sm:mb-8">
+          <div class="flex items-center gap-3 mb-3 sm:mb-4">
+            <span class="w-7 h-7 rounded-full bg-[var(--theme-primary)] text-white flex items-center justify-center body-sm font-bold shrink-0">1</span>
+            <h4 class="body-md font-bold text-[#191c1e]">Elegí el día</h4>
+          </div>
+          {% if available_dates %}
+          <div class="overflow-x-auto -mx-1 px-1 pb-2 scrollbar-thin">
+            <div class="flex gap-2 min-w-min">
               {% for d in available_dates %}
               <a href="?date={{ d|date:'Y-m-d' }}#reservar-turno"
-                 class="flex flex-col items-center justify-center py-2 sm:py-3 rounded-xl transition-all {% if selected_date == d %}bg-[var(--theme-primary)] text-white{% else %}bg-white text-[#191c1e] hover:bg-[#e6e8ea] border border-[#c3c6d7]{% endif %}">
+                 class="flex-shrink-0 w-[72px] flex flex-col items-center justify-center py-3 rounded-xl transition-all border {% if selected_date == d %}bg-[var(--theme-primary)] text-white border-[var(--theme-primary)]{% else %}bg-white text-[#191c1e] hover:border-[var(--theme-primary)] border-[#c3c6d7]{% endif %}">
                 <span class="label-caps {% if selected_date != d %}text-[#434655]{% endif %}">{{ d|date:'D' }}</span>
-                <span class="body-md font-bold mt-1">{{ d|date:'d/m' }}</span>
+                <span class="body-md font-bold mt-1">{{ d|date:'d' }}</span>
+                <span class="body-sm {% if selected_date == d %}opacity-90{% else %}text-[#737686]{% endif %}">{{ d|date:'M' }}</span>
               </a>
               {% endfor %}
             </div>
-            {% else %}
-            <p class="body-sm text-[#434655]">No hay días disponibles próximamente.</p>
-            {% endif %}
           </div>
-
-          <!-- Time slots -->
-          <div class="flex flex-col">
-            {% if selected_date %}
-            <h4 class="body-md font-bold mb-4 sm:mb-6 text-[#191c1e]">Horarios — {{ selected_date|date:'l d/m' }}</h4>
-            {% if slots %}
-            <div class="grid grid-cols-3 gap-2 sm:gap-3" id="timeSlots">
-              {% for slot in slots %}
-              <button type="button" onclick="selectTime('{{ slot|time:'H:i' }}', this)"
-                      class="time-btn py-2 sm:py-3 px-2 sm:px-4 border border-[#c3c6d7] rounded-lg body-sm font-semibold hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-all bg-white text-[#191c1e]">
-                {{ slot|time:'H:i' }}
-              </button>
-              {% endfor %}
-            </div>
-            {% else %}
-            <p class="body-sm text-[#434655]">No hay horarios para este día. Elegí otro.</p>
-            {% endif %}
-            {% else %}
-            <h4 class="body-md font-bold mb-4 sm:mb-6 text-[#191c1e]">Horarios</h4>
-            <p class="body-sm text-[#434655]">Elegí primero un día.</p>
-            {% endif %}
-          </div>
+          {% else %}
+          <p class="body-sm text-[#434655]">No hay días disponibles próximamente.</p>
+          {% endif %}
         </div>
 
-        <!-- Patient form -->
-        {% if selected_date %}
-        <div id="patientForm" class="hidden mt-6 sm:mt-10 bg-[#f2f4f6] rounded-2xl p-5 sm:p-8 border border-[#c3c6d7]">
-          <h4 class="body-md font-bold mb-4 sm:mb-6 text-[#191c1e]">Tus datos</h4>
-          <form method="post" class="space-y-4">
+        <!-- Step 2: Time -->
+        <div class="mb-6 sm:mb-8">
+          <div class="flex items-center gap-3 mb-3 sm:mb-4">
+            <span class="w-7 h-7 rounded-full {% if selected_date %}bg-[var(--theme-primary)] text-white{% else %}bg-[#e6e8ea] text-[#737686]{% endif %} flex items-center justify-center body-sm font-bold shrink-0">2</span>
+            <h4 class="body-md font-bold text-[#191c1e]">
+              Elegí la hora
+              {% if selected_date %}<span class="font-normal text-[#434655]"> — {{ selected_date|date:'l d/m' }}</span>{% endif %}
+            </h4>
+          </div>
+          {% if not selected_date %}
+          <div class="bg-[#f2f4f6] rounded-xl p-5 text-center">
+            <p class="body-sm text-[#737686]">Primero elegí un día arriba.</p>
+          </div>
+          {% elif not slots %}
+          <div class="bg-[#f2f4f6] rounded-xl p-5 text-center">
+            <p class="body-sm text-[#434655]">No quedan horarios para este día. Elegí otro.</p>
+          </div>
+          {% else %}
+          <div class="grid grid-cols-3 sm:grid-cols-4 gap-2" id="timeSlots">
+            {% for slot in slots %}
+            <button type="button" onclick="selectTime('{{ slot|time:'H:i' }}', this)"
+                    class="time-btn py-3 px-2 border border-[#c3c6d7] rounded-lg body-md font-semibold bg-white text-[#191c1e] hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-all">
+              {{ slot|time:'H:i' }}
+            </button>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Step 3: Form -->
+        {% if selected_date and slots %}
+        <div id="patientForm" class="hidden">
+          <div class="flex items-center gap-3 mb-3 sm:mb-4">
+            <span class="w-7 h-7 rounded-full bg-[var(--theme-primary)] text-white flex items-center justify-center body-sm font-bold shrink-0">3</span>
+            <h4 class="body-md font-bold text-[#191c1e]">Tus datos</h4>
+          </div>
+
+          <div id="bookingSummary" class="mb-4 p-3 sm:p-4 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center gap-3">
+            <span class="material-symbols-outlined text-[var(--theme-primary)]">event_available</span>
+            <div class="body-sm">
+              <span class="text-[#434655]">Reservando: </span>
+              <span class="font-bold text-[#191c1e]">{{ selected_date|date:'l d/m' }} a las <span id="summaryTime">—</span></span>
+            </div>
+          </div>
+
+          <form method="post" class="space-y-3 sm:space-y-4">
             {% csrf_token %}
             <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
             <input type="hidden" name="time" id="selectedTime" value="">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="label-caps text-[#434655] block mb-2">Nombre</label>
-                <input type="text" name="first_name" required class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
-              </div>
-              <div>
-                <label class="label-caps text-[#434655] block mb-2">Apellido</label>
-                <input type="text" name="last_name" required class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
-              </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <input type="text" name="first_name" required placeholder="Nombre"
+                     class="bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
+              <input type="text" name="last_name" required placeholder="Apellido"
+                     class="bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
+              <input type="tel" inputmode="tel" name="phone" required placeholder="Teléfono / WhatsApp"
+                     class="bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
+              <input type="email" inputmode="email" name="email" placeholder="Email (opcional)"
+                     class="bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="label-caps text-[#434655] block mb-2">Teléfono</label>
-                <input type="tel" inputmode="tel" name="phone" required class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
+
+            <details class="bg-[#f7f9fb] rounded-lg border border-[#c3c6d7]">
+              <summary class="cursor-pointer p-3 body-sm font-semibold text-[#434655] flex items-center gap-2">
+                <span class="material-symbols-outlined" style="font-size:18px;">add_circle</span>
+                Agregar obra social (opcional)
+              </summary>
+              <div class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <input type="text" name="health_insurance" placeholder="Obra social"
+                       class="bg-white border border-[#c3c6d7] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
+                <input type="text" name="health_insurance_plan" placeholder="Plan"
+                       class="bg-white border border-[#c3c6d7] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
+                <input type="text" name="health_insurance_number" placeholder="Nro. afiliado"
+                       class="bg-white border border-[#c3c6d7] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
               </div>
-              <div>
-                <label class="label-caps text-[#434655] block mb-2">Email (opcional)</label>
-                <input type="email" inputmode="email" name="email" class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
-              </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label class="label-caps text-[#434655] block mb-2">Obra social</label>
-                <input type="text" name="health_insurance" class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-sm focus:border-[var(--theme-primary)] outline-none">
-              </div>
-              <div>
-                <label class="label-caps text-[#434655] block mb-2">Plan</label>
-                <input type="text" name="health_insurance_plan" class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-sm focus:border-[var(--theme-primary)] outline-none">
-              </div>
-              <div>
-                <label class="label-caps text-[#434655] block mb-2">Nro. afiliado</label>
-                <input type="text" name="health_insurance_number" class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-sm focus:border-[var(--theme-primary)] outline-none">
-              </div>
-            </div>
-            <div>
-              <label class="label-caps text-[#434655] block mb-2">Motivo de consulta (opcional)</label>
-              <textarea name="reason" rows="3" class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none"></textarea>
-            </div>
+            </details>
+
+            <textarea name="reason" rows="2" placeholder="Motivo de consulta (opcional)"
+                      class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none"></textarea>
 
             <button type="submit" class="w-full bg-[var(--theme-primary)] text-white py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
               <span class="material-symbols-outlined">check_circle</span> Confirmar turno
@@ -404,6 +422,8 @@ function selectTime(time, btn) {
   btn.classList.remove('bg-white', 'text-[#191c1e]', 'border-[#c3c6d7]');
   btn.classList.add('bg-[var(--theme-primary)]', 'text-white', 'border-[var(--theme-primary)]');
   document.getElementById('selectedTime').value = time;
+  const summaryTime = document.getElementById('summaryTime');
+  if (summaryTime) summaryTime.textContent = time;
   const form = document.getElementById('patientForm');
   if (form) {
     form.classList.remove('hidden');

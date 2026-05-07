@@ -68,6 +68,13 @@
                                     {% endfor %}
                                 </select>
                             </form>
+                            {% if apt.review_link %}
+                            <button type="button" onclick="copyReviewLink(this, '{{ apt.review_link }}')"
+                                    class="text-xs bg-amber-50 text-amber-700 hover:bg-amber-100 px-2.5 py-1 rounded-full font-medium"
+                                    title="Copiar link único de reseña para enviar al paciente">
+                                ★ Copiar link reseña
+                            </button>
+                            {% endif %}
                             <a href="{% url 'patient_detail' apt.patient.id %}" class="text-xs text-primary-600 hover:underline">Ver paciente</a>
                         </div>
                     </div>
@@ -150,4 +157,16 @@
 
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyReviewLink(btn, url) {
+    navigator.clipboard.writeText(url).then(() => {
+        const original = btn.textContent;
+        btn.textContent = '✓ Copiado';
+        setTimeout(() => { btn.textContent = original; }, 2000);
+    });
+}
+</script>
 {% endblock %}

@@ -89,8 +89,12 @@
                         <input type="checkbox" name="show_contact" {% if professional.show_contact %}checked{% endif %} class="accent-primary-500">
                         <span>Contacto</span><span class="text-xs text-gray-400 ml-auto">tel/email/dir.</span>
                     </label>
+                    <label class="flex items-center gap-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" name="show_map" {% if professional.show_map %}checked{% endif %} class="accent-primary-500">
+                        <span>Mapa de ubicación</span><span class="text-xs text-gray-400 ml-auto">{% if professional.address %}dir. cargada{% else %}sin dirección{% endif %}</span>
+                    </label>
                 </div>
-                <p class="text-xs text-gray-400 mt-2">El hero y la sección de reservas siempre se muestran.</p>
+                <p class="text-xs text-gray-400 mt-2">El hero y la sección de reservas siempre se muestran. El mapa se renderiza solo si tenés dirección cargada y este toggle activo.</p>
             </div>
 
             <button type="submit" class="bg-primary-500 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-primary-600">Guardar ajustes</button>
@@ -311,15 +315,58 @@
     </details>
 
     {# === TESTIMONIOS === #}
-    <details id="testimonials" class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+    <details id="testimonials" {% if pending_testimonials %}open{% endif %} class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
         <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
             <div class="flex items-center gap-3">
                 <span class="font-semibold">Testimonios</span>
                 {% if not professional.show_testimonials %}<span class="pill bg-gray-100 text-gray-500">oculta</span>{% endif %}
+                {% if pending_testimonials %}<span class="pill bg-amber-100 text-amber-700">{{ pending_testimonials|length }} pendiente{{ pending_testimonials|length|pluralize }}</span>{% endif %}
             </div>
-            <span class="text-xs text-gray-400">{{ testimonials|length }} item{{ testimonials|length|pluralize }}</span>
+            <span class="text-xs text-gray-400">{{ testimonials|length }} publicada{{ testimonials|length|pluralize }}</span>
         </summary>
         <div class="px-6 py-5">
+
+            {% if pending_testimonials %}
+            <div class="mb-5 border border-amber-200 bg-amber-50 rounded-lg p-4">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="text-amber-700 font-semibold text-sm">★ Reseñas pendientes de aprobación</span>
+                </div>
+                <p class="text-xs text-amber-700/80 mb-3">Llegaron por el link único enviado a pacientes con turno completado. Revisá y aprobá para que se publiquen en tu landing.</p>
+                <div class="space-y-3">
+                    {% for t in pending_testimonials %}
+                    <div class="bg-white border border-amber-200 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2 text-xs text-gray-500">
+                            <span class="font-bold text-gray-700">{{ t.author_name }}</span>
+                            <span>·</span>
+                            <span>{{ t.author_meta }}</span>
+                            <span>·</span>
+                            <span class="text-amber-600">{{ t.rating }}/5 ★</span>
+                        </div>
+                        <p class="text-sm text-gray-700 italic mb-3">"{{ t.quote }}"</p>
+                        <div class="flex gap-2">
+                            <form method="post" class="inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ t.id }}">
+                                <button type="submit" name="action" value="testimonial_approve"
+                                        class="bg-green-600 text-white px-3 py-1.5 rounded text-xs font-medium hover:bg-green-700">
+                                    ✓ Aprobar y publicar
+                                </button>
+                            </form>
+                            <form method="post" class="inline" onsubmit="return confirm('¿Rechazar y eliminar esta reseña?')">
+                                {% csrf_token %}
+                                <input type="hidden" name="id" value="{{ t.id }}">
+                                <button type="submit" name="action" value="testimonial_delete"
+                                        class="bg-white text-red-600 border border-red-200 px-3 py-1.5 rounded text-xs font-medium hover:bg-red-50">
+                                    Rechazar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
             <div class="space-y-3 mb-4">
                 {% for t in testimonials %}
                 <form method="post" class="bg-gray-50 rounded-lg p-3 space-y-2">
