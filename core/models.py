@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.text import slugify
 
-HEX_COLOR_VALIDATOR = RegexValidator(r'^#(?:[0-9a-fA-F]{3}){1,2}$', 'Color en formato hex. Ej: #3B82F6')
+HEX_COLOR_VALIDATOR = RegexValidator(r'^#(?:[0-9a-fA-F]{3}){1,2}$', 'Color en formato hex. Ej: #0047ab')
 
 
 class Professional(models.Model):
@@ -23,7 +23,7 @@ class Professional(models.Model):
     profile_image = models.ImageField('Foto de perfil', upload_to='professionals/', blank=True, null=True)
     common_reasons = models.TextField('Motivos frecuentes de consulta', blank=True, help_text='Separados por coma. Ej: Ansiedad, Estrés, Autoestima')
     mission = models.TextField('Misión / Filosofía', blank=True, help_text='Frase destacada que aparece en la landing como tarjeta azul.')
-    theme_primary = models.CharField('Color principal', max_length=7, default='#004ac6', validators=[HEX_COLOR_VALIDATOR],
+    theme_primary = models.CharField('Color principal', max_length=7, default='#0047ab', validators=[HEX_COLOR_VALIDATOR],
                                      help_text='Color de CTAs, links y tarjeta de misión.')
     show_stats = models.BooleanField('Mostrar estadísticas', default=True)
     show_credentials = models.BooleanField('Mostrar credenciales', default=True)

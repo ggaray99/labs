@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
 
 <style>
-  .clinical { background: #f7f9fb; color: #191c1e; font-family: 'Inter', system-ui, sans-serif; }
+  .clinical { background: #f8f9ff; color: #0b1c30; font-family: 'Manrope', system-ui, sans-serif; }
   .clinical h1, .clinical h2, .clinical h3, .clinical .stats-display, .clinical .brand { font-family: 'Manrope', system-ui, sans-serif; }
   .clinical h1 { font-size: 30px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
   .clinical h2 { font-size: 24px; line-height: 1.25; letter-spacing: -0.01em; font-weight: 600; }
@@ -30,7 +30,7 @@
   }
   .clinical .ambient-shadow { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05); }
   .clinical .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; font-size: 24px; line-height: 1; display: inline-block; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
-  .clinical *:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #006a61; border-radius: 8px; }
+  .clinical *:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #0047ab; border-radius: 8px; }
   .clinical .mobile-menu-btn { display: none; }
   @media (max-width: 767px) { .clinical .mobile-menu-btn { display: inline-flex; } }
   #home-mobile-nav { display: none; }
@@ -42,46 +42,46 @@
 <div class="clinical">
 
   <!-- TOP NAV -->
-  <header class="sticky top-0 z-50 bg-[#f7f9fb] border-b border-[#c3c6d7]/60">
+  <header class="sticky top-0 z-50 bg-[#f8f9ff] border-b border-[#c3c6d5]/60">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-3">
-      <a href="#top" class="brand text-lg sm:text-2xl font-bold text-[#006a61] truncate min-w-0">Labs</a>
+      <a href="#top" class="brand text-lg sm:text-2xl font-bold text-[#0047ab] truncate min-w-0">Labs</a>
       <nav class="hidden md:flex gap-6 lg:gap-8 items-center">
-        <a href="#que-hacemos" class="body-md text-[#434655] hover:text-[#006a61] transition-colors">Qué hacemos</a>
-        <a href="#quienes-somos" class="body-md text-[#434655] hover:text-[#006a61] transition-colors">Quiénes somos</a>
-        <a href="#demo" class="body-md text-[#434655] hover:text-[#006a61] transition-colors">Demo</a>
-        <a href="#planes" class="body-md text-[#434655] hover:text-[#006a61] transition-colors">Planes</a>
-        <a href="#soporte" class="body-md text-[#434655] hover:text-[#006a61] transition-colors">Soporte</a>
-        <a href="#profesionales" class="body-md text-[#434655] hover:text-[#006a61] transition-colors">Profesionales</a>
+        <a href="#que-hacemos" class="body-md text-[#434653] hover:text-[#0047ab] transition-colors">Qué hacemos</a>
+        <a href="#quienes-somos" class="body-md text-[#434653] hover:text-[#0047ab] transition-colors">Quiénes somos</a>
+        <a href="#demo" class="body-md text-[#434653] hover:text-[#0047ab] transition-colors">Demo</a>
+        <a href="#planes" class="body-md text-[#434653] hover:text-[#0047ab] transition-colors">Planes</a>
+        <a href="#soporte" class="body-md text-[#434653] hover:text-[#0047ab] transition-colors">Soporte</a>
+        <a href="#profesionales" class="body-md text-[#434653] hover:text-[#0047ab] transition-colors">Profesionales</a>
       </nav>
       <div class="flex items-center gap-2 shrink-0">
         {% if is_pro %}
-        <a href="{% url 'dashboard' %}" class="bg-[#006a61] text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg body-sm sm:body-md font-semibold hover:opacity-90 transition-all whitespace-nowrap">
+        <a href="{% url 'dashboard' %}" class="bg-[#0047ab] text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg body-sm sm:body-md font-semibold hover:opacity-90 transition-all whitespace-nowrap">
           <span class="hidden sm:inline">Ir al dashboard</span><span class="sm:hidden">Dashboard</span>
         </a>
         {% else %}
-        <a href="{% url 'login' %}" class="hidden sm:inline-flex border border-[#c3c6d7] text-[#434655] px-4 py-2 rounded-lg body-sm font-semibold hover:bg-white hover:text-[#191c1e] transition-all">Iniciar sesión</a>
-        <a href="{% url 'setup' %}" class="bg-[#006a61] text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg body-sm sm:body-md font-semibold hover:opacity-90 transition-all whitespace-nowrap">
+        <a href="{% url 'login' %}" class="hidden sm:inline-flex border border-[#c3c6d5] text-[#434653] px-4 py-2 rounded-lg body-sm font-semibold hover:bg-white hover:text-[#0b1c30] transition-all">Iniciar sesión</a>
+        <a href="{% url 'setup' %}" class="bg-[#0047ab] text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-lg body-sm sm:body-md font-semibold hover:opacity-90 transition-all whitespace-nowrap">
           <span class="hidden sm:inline">Crear cuenta</span><span class="sm:hidden">Crear</span>
         </a>
         {% endif %}
         <button type="button" onclick="document.getElementById('home-mobile-nav').classList.toggle('open')"
-                class="mobile-menu-btn md:hidden items-center justify-center w-10 h-10 rounded-lg border border-[#c3c6d7] text-[#434655]" aria-label="Menú">
+                class="mobile-menu-btn md:hidden items-center justify-center w-10 h-10 rounded-lg border border-[#c3c6d5] text-[#434653]" aria-label="Menú">
           <span class="material-symbols-outlined">menu</span>
         </button>
       </div>
     </div>
-    <nav id="home-mobile-nav" class="md:hidden border-t border-[#c3c6d7]/60 bg-[#f7f9fb]">
+    <nav id="home-mobile-nav" class="md:hidden border-t border-[#c3c6d5]/60 bg-[#f8f9ff]">
       <div class="px-4 py-3 flex flex-col gap-1">
-        <a href="#que-hacemos" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Qué hacemos</a>
-        <a href="#quienes-somos" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Quiénes somos</a>
-        <a href="#demo" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Demo</a>
-        <a href="#planes" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Planes</a>
-        <a href="#soporte" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Soporte</a>
-        <a href="#profesionales" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Profesionales</a>
+        <a href="#que-hacemos" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Qué hacemos</a>
+        <a href="#quienes-somos" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Quiénes somos</a>
+        <a href="#demo" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Demo</a>
+        <a href="#planes" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Planes</a>
+        <a href="#soporte" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Soporte</a>
+        <a href="#profesionales" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Profesionales</a>
         {% if is_pro %}
-        <a href="{% url 'dashboard' %}" class="body-md text-[#006a61] font-semibold py-2 border-t border-[#c3c6d7]/60 mt-2 pt-3">Ir al dashboard</a>
+        <a href="{% url 'dashboard' %}" class="body-md text-[#0047ab] font-semibold py-2 border-t border-[#c3c6d5]/60 mt-2 pt-3">Ir al dashboard</a>
         {% else %}
-        <a href="{% url 'login' %}" class="body-md text-[#006a61] font-semibold py-2 border-t border-[#c3c6d7]/60 mt-2 pt-3">Iniciar sesión</a>
+        <a href="{% url 'login' %}" class="body-md text-[#0047ab] font-semibold py-2 border-t border-[#c3c6d5]/60 mt-2 pt-3">Iniciar sesión</a>
         {% endif %}
       </div>
     </nav>
@@ -92,29 +92,29 @@
     <!-- HERO -->
     <section class="py-6 sm:py-10 grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-stretch">
       <div class="md:col-span-7 flex flex-col justify-center bg-white p-6 sm:p-10 rounded-2xl ambient-shadow reveal">
-        <span class="label-caps text-[#006a61] mb-3 sm:mb-4">Plataforma para profesionales de la salud</span>
-        <h1 class="text-[#191c1e] mb-3 sm:mb-4">
+        <span class="label-caps text-[#0047ab] mb-3 sm:mb-4">Plataforma para profesionales de la salud</span>
+        <h1 class="text-[#0b1c30] mb-3 sm:mb-4">
           Tu landing, tu agenda y tu proceso de alta, en una sola plataforma.
         </h1>
-        <p class="body-lg text-[#434655] mb-6 sm:mb-8 max-w-2xl">
+        <p class="body-lg text-[#434653] mb-6 sm:mb-8 max-w-2xl">
           Labs te da una página profesional clara, reserva de turnos online y un flujo de configuración pensado para que publiques rápido y empieces a recibir pacientes.
         </p>
         <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
           {% if is_pro %}
-          <a href="{% url 'dashboard' %}" class="bg-[#006a61] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+          <a href="{% url 'dashboard' %}" class="bg-[#0047ab] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
             <span class="material-symbols-outlined">space_dashboard</span> Ir al dashboard
           </a>
           {% else %}
-          <a href="{% url 'setup' %}" class="bg-[#006a61] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+          <a href="{% url 'setup' %}" class="bg-[#0047ab] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
             <span class="material-symbols-outlined">add_circle</span> Crear mi cuenta
           </a>
           {% endif %}
           {% if demo_professional %}
-          <a href="{% url 'public_landing' demo_professional.slug %}" class="border border-[#006a61] text-[#006a61] px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:bg-[#006a61]/5 transition-all flex items-center justify-center gap-2">
+          <a href="{% url 'public_landing' demo_professional.slug %}" class="border border-[#0047ab] text-[#0047ab] px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:bg-[#0047ab]/5 transition-all flex items-center justify-center gap-2">
             <span class="material-symbols-outlined">visibility</span> Ver demo real
           </a>
           {% else %}
-          <a href="#demo" class="border border-[#006a61] text-[#006a61] px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:bg-[#006a61]/5 transition-all flex items-center justify-center gap-2">
+          <a href="#demo" class="border border-[#0047ab] text-[#0047ab] px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:bg-[#0047ab]/5 transition-all flex items-center justify-center gap-2">
             <span class="material-symbols-outlined">visibility</span> Ver demo
           </a>
           {% endif %}
@@ -123,37 +123,37 @@
 
       <div class="md:col-span-5 bg-white p-6 sm:p-8 rounded-2xl ambient-shadow reveal">
         <div class="flex items-center gap-2 mb-5">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#c3c6d7]"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-[#c3c6d7]"></span>
-          <span class="w-2.5 h-2.5 rounded-full bg-[#86f2e4]"></span>
-          <span class="ml-auto label-caps text-[#434655]">Panel profesional</span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#c3c6d5]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#c3c6d5]"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-[#dae2ff]"></span>
+          <span class="ml-auto label-caps text-[#434653]">Panel profesional</span>
         </div>
         <div class="space-y-3">
-          <div class="border border-[#c3c6d7]/60 rounded-xl p-4 flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full bg-[#86f2e4] text-[#006f66] flex items-center justify-center shrink-0">
+          <div class="border border-[#c3c6d5]/60 rounded-xl p-4 flex items-start gap-3">
+            <div class="w-9 h-9 rounded-full bg-[#dae2ff] text-[#00327d] flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined" style="font-size:18px;">person_add</span>
             </div>
             <div class="min-w-0">
-              <p class="body-md font-bold text-[#191c1e]">1. Crear cuenta</p>
-              <p class="body-sm text-[#434655]">Datos básicos, especialidad y modalidad.</p>
+              <p class="body-md font-bold text-[#0b1c30]">1. Crear cuenta</p>
+              <p class="body-sm text-[#434653]">Datos básicos, especialidad y modalidad.</p>
             </div>
           </div>
-          <div class="border border-[#c3c6d7]/60 rounded-xl p-4 flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full bg-[#86f2e4] text-[#006f66] flex items-center justify-center shrink-0">
+          <div class="border border-[#c3c6d5]/60 rounded-xl p-4 flex items-start gap-3">
+            <div class="w-9 h-9 rounded-full bg-[#dae2ff] text-[#00327d] flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
             </div>
             <div class="min-w-0">
-              <p class="body-md font-bold text-[#191c1e]">2. Configurar landing</p>
-              <p class="body-sm text-[#434655]">Bio, servicios, credenciales y testimonios.</p>
+              <p class="body-md font-bold text-[#0b1c30]">2. Configurar landing</p>
+              <p class="body-sm text-[#434653]">Bio, servicios, credenciales y testimonios.</p>
             </div>
           </div>
-          <div class="border border-[#c3c6d7]/60 rounded-xl p-4 flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full bg-[#86f2e4] text-[#006f66] flex items-center justify-center shrink-0">
+          <div class="border border-[#c3c6d5]/60 rounded-xl p-4 flex items-start gap-3">
+            <div class="w-9 h-9 rounded-full bg-[#dae2ff] text-[#00327d] flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined" style="font-size:18px;">share</span>
             </div>
             <div class="min-w-0">
-              <p class="body-md font-bold text-[#191c1e]">3. Compartir y recibir turnos</p>
-              <p class="body-sm text-[#434655]">Una URL, agenda real, todo conectado.</p>
+              <p class="body-md font-bold text-[#0b1c30]">3. Compartir y recibir turnos</p>
+              <p class="body-sm text-[#434653]">Una URL, agenda real, todo conectado.</p>
             </div>
           </div>
         </div>
@@ -163,65 +163,65 @@
     <!-- QUÉ HACEMOS -->
     <section id="que-hacemos" class="py-10 sm:py-16 reveal">
       <div class="max-w-3xl mb-8 sm:mb-10">
-        <span class="label-caps text-[#006a61] mb-3 inline-block">Qué hacemos</span>
-        <h2 class="text-[#191c1e] mb-4">Diseñamos el frente público y operativo del profesional, en un solo lugar.</h2>
-        <p class="body-lg text-[#434655]">Resolvemos lo esencial del arranque: contar bien qué hacés, mostrar confianza, ordenar la reserva y dejar listo el siguiente paso.</p>
+        <span class="label-caps text-[#0047ab] mb-3 inline-block">Qué hacemos</span>
+        <h2 class="text-[#0b1c30] mb-4">Diseñamos el frente público y operativo del profesional, en un solo lugar.</h2>
+        <p class="body-lg text-[#434653]">Resolvemos lo esencial del arranque: contar bien qué hacés, mostrar confianza, ordenar la reserva y dejar listo el siguiente paso.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-        <article class="bg-white p-6 rounded-2xl ambient-shadow border border-[#c3c6d7]/60">
-          <div class="w-12 h-12 rounded-xl bg-[#86f2e4] text-[#006f66] flex items-center justify-center mb-4">
+        <article class="bg-white p-6 rounded-2xl ambient-shadow border border-[#c3c6d5]/60">
+          <div class="w-12 h-12 rounded-xl bg-[#dae2ff] text-[#00327d] flex items-center justify-center mb-4">
             <span class="material-symbols-outlined">web</span>
           </div>
-          <h3 class="text-[#191c1e] mb-3">Landing profesional</h3>
-          <p class="body-md text-[#434655]">Una sola URL compartible con propuesta, especialidad, servicios, credenciales, testimonios y contacto.</p>
+          <h3 class="text-[#0b1c30] mb-3">Landing profesional</h3>
+          <p class="body-md text-[#434653]">Una sola URL compartible con propuesta, especialidad, servicios, credenciales, testimonios y contacto.</p>
         </article>
-        <article class="bg-white p-6 rounded-2xl ambient-shadow border border-[#c3c6d7]/60">
-          <div class="w-12 h-12 rounded-xl bg-[#86f2e4] text-[#006f66] flex items-center justify-center mb-4">
+        <article class="bg-white p-6 rounded-2xl ambient-shadow border border-[#c3c6d5]/60">
+          <div class="w-12 h-12 rounded-xl bg-[#dae2ff] text-[#00327d] flex items-center justify-center mb-4">
             <span class="material-symbols-outlined">event_available</span>
           </div>
-          <h3 class="text-[#191c1e] mb-3">Reserva de turnos</h3>
-          <p class="body-md text-[#434655]">El paciente entra, entiende y agenda dentro de la misma experiencia, sin pasos innecesarios.</p>
+          <h3 class="text-[#0b1c30] mb-3">Reserva de turnos</h3>
+          <p class="body-md text-[#434653]">El paciente entra, entiende y agenda dentro de la misma experiencia, sin pasos innecesarios.</p>
         </article>
-        <article class="bg-white p-6 rounded-2xl ambient-shadow border border-[#c3c6d7]/60">
-          <div class="w-12 h-12 rounded-xl bg-[#86f2e4] text-[#006f66] flex items-center justify-center mb-4">
+        <article class="bg-white p-6 rounded-2xl ambient-shadow border border-[#c3c6d5]/60">
+          <div class="w-12 h-12 rounded-xl bg-[#dae2ff] text-[#00327d] flex items-center justify-center mb-4">
             <span class="material-symbols-outlined">rocket_launch</span>
           </div>
-          <h3 class="text-[#191c1e] mb-3">Onboarding rápido</h3>
-          <p class="body-md text-[#434655]">La cuenta del profesional se crea en minutos y dispara el proceso completo para tener la landing online y administrable.</p>
+          <h3 class="text-[#0b1c30] mb-3">Onboarding rápido</h3>
+          <p class="body-md text-[#434653]">La cuenta del profesional se crea en minutos y dispara el proceso completo para tener la landing online y administrable.</p>
         </article>
       </div>
     </section>
 
     <!-- QUIÉNES SOMOS -->
     <section id="quienes-somos" class="py-10 sm:py-16 grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
-      <div class="md:col-span-7 bg-white p-6 sm:p-10 rounded-2xl ambient-shadow border border-[#c3c6d7]/60 reveal">
-        <span class="label-caps text-[#006a61] mb-3 inline-block">Quiénes somos</span>
-        <h2 class="text-[#191c1e] mb-4">Una plataforma enfocada en la primera presencia digital del profesional.</h2>
-        <p class="body-lg text-[#434655] mb-4">No partimos de un sitio genérico: partimos del proceso real de publicar, recibir consultas y empezar a ordenar la agenda.</p>
-        <p class="body-md text-[#434655]">Pensamos cada paso para que el profesional tenga claro qué cargar, qué decir, y cómo se va a ver del otro lado.</p>
+      <div class="md:col-span-7 bg-white p-6 sm:p-10 rounded-2xl ambient-shadow border border-[#c3c6d5]/60 reveal">
+        <span class="label-caps text-[#0047ab] mb-3 inline-block">Quiénes somos</span>
+        <h2 class="text-[#0b1c30] mb-4">Una plataforma enfocada en la primera presencia digital del profesional.</h2>
+        <p class="body-lg text-[#434653] mb-4">No partimos de un sitio genérico: partimos del proceso real de publicar, recibir consultas y empezar a ordenar la agenda.</p>
+        <p class="body-md text-[#434653]">Pensamos cada paso para que el profesional tenga claro qué cargar, qué decir, y cómo se va a ver del otro lado.</p>
       </div>
-      <div class="md:col-span-5 bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d7]/60 reveal">
-        <h3 class="text-[#191c1e] mb-4">Cómo construimos</h3>
+      <div class="md:col-span-5 bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d5]/60 reveal">
+        <h3 class="text-[#0b1c30] mb-4">Cómo construimos</h3>
         <ul class="space-y-4">
           <li class="flex gap-3">
-            <span class="material-symbols-outlined text-[#006a61] shrink-0" style="font-size:20px;">check_circle</span>
+            <span class="material-symbols-outlined text-[#0047ab] shrink-0" style="font-size:20px;">check_circle</span>
             <div>
-              <p class="body-md font-bold text-[#191c1e]">Claridad para el paciente</p>
-              <p class="body-sm text-[#434655]">Que entienda rápido qué hacés y cómo reservar.</p>
+              <p class="body-md font-bold text-[#0b1c30]">Claridad para el paciente</p>
+              <p class="body-sm text-[#434653]">Que entienda rápido qué hacés y cómo reservar.</p>
             </div>
           </li>
           <li class="flex gap-3">
-            <span class="material-symbols-outlined text-[#006a61] shrink-0" style="font-size:20px;">check_circle</span>
+            <span class="material-symbols-outlined text-[#0047ab] shrink-0" style="font-size:20px;">check_circle</span>
             <div>
-              <p class="body-md font-bold text-[#191c1e]">Simplicidad operativa</p>
-              <p class="body-sm text-[#434655]">No necesitás montar herramientas separadas para empezar.</p>
+              <p class="body-md font-bold text-[#0b1c30]">Simplicidad operativa</p>
+              <p class="body-sm text-[#434653]">No necesitás montar herramientas separadas para empezar.</p>
             </div>
           </li>
           <li class="flex gap-3">
-            <span class="material-symbols-outlined text-[#006a61] shrink-0" style="font-size:20px;">check_circle</span>
+            <span class="material-symbols-outlined text-[#0047ab] shrink-0" style="font-size:20px;">check_circle</span>
             <div>
-              <p class="body-md font-bold text-[#191c1e]">Base escalable</p>
-              <p class="body-sm text-[#434655]">Una estructura sobre la que sumar planes, soporte y automatizaciones.</p>
+              <p class="body-md font-bold text-[#0b1c30]">Base escalable</p>
+              <p class="body-sm text-[#434653]">Una estructura sobre la que sumar planes, soporte y automatizaciones.</p>
             </div>
           </li>
         </ul>
@@ -230,75 +230,75 @@
 
     <!-- DEMO -->
     <section id="demo" class="py-10 sm:py-16 grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-stretch">
-      <div class="md:col-span-6 bg-white p-6 sm:p-10 rounded-2xl ambient-shadow border border-[#c3c6d7]/60 reveal">
-        <span class="label-caps text-[#006a61] mb-3 inline-block">Demo</span>
-        <h2 class="text-[#191c1e] mb-4">Mirá la experiencia que va a tener el profesional una vez que publica.</h2>
-        <p class="body-lg text-[#434655] mb-6">La demo no es solo una pantalla: es el recorrido completo, desde la landing hasta la reserva.</p>
+      <div class="md:col-span-6 bg-white p-6 sm:p-10 rounded-2xl ambient-shadow border border-[#c3c6d5]/60 reveal">
+        <span class="label-caps text-[#0047ab] mb-3 inline-block">Demo</span>
+        <h2 class="text-[#0b1c30] mb-4">Mirá la experiencia que va a tener el profesional una vez que publica.</h2>
+        <p class="body-lg text-[#434653] mb-6">La demo no es solo una pantalla: es el recorrido completo, desde la landing hasta la reserva.</p>
         <ul class="space-y-3 mb-6">
-          <li class="flex items-start gap-2 body-md text-[#434655]">
-            <span class="material-symbols-outlined text-[#006a61]" style="font-size:18px;">check</span>
+          <li class="flex items-start gap-2 body-md text-[#434653]">
+            <span class="material-symbols-outlined text-[#0047ab]" style="font-size:18px;">check</span>
             Landing pública con propuesta, servicios y bloque de confianza.
           </li>
-          <li class="flex items-start gap-2 body-md text-[#434655]">
-            <span class="material-symbols-outlined text-[#006a61]" style="font-size:18px;">check</span>
+          <li class="flex items-start gap-2 body-md text-[#434653]">
+            <span class="material-symbols-outlined text-[#0047ab]" style="font-size:18px;">check</span>
             Reserva online con días y horarios disponibles.
           </li>
-          <li class="flex items-start gap-2 body-md text-[#434655]">
-            <span class="material-symbols-outlined text-[#006a61]" style="font-size:18px;">check</span>
+          <li class="flex items-start gap-2 body-md text-[#434653]">
+            <span class="material-symbols-outlined text-[#0047ab]" style="font-size:18px;">check</span>
             Flujo de activación para tener tu espacio listo.
           </li>
         </ul>
         <div class="flex flex-col sm:flex-row gap-3">
           {% if demo_professional %}
-          <a href="{% url 'public_landing' demo_professional.slug %}" class="bg-[#006a61] text-white px-5 py-3 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+          <a href="{% url 'public_landing' demo_professional.slug %}" class="bg-[#0047ab] text-white px-5 py-3 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
             <span class="material-symbols-outlined">open_in_new</span> Abrir demo real
           </a>
           {% endif %}
           {% if is_pro %}
-          <a href="{% url 'dashboard' %}" class="border border-[#006a61] text-[#006a61] px-5 py-3 rounded-lg body-md font-semibold hover:bg-[#006a61]/5 transition-all text-center">Ir al dashboard</a>
+          <a href="{% url 'dashboard' %}" class="border border-[#0047ab] text-[#0047ab] px-5 py-3 rounded-lg body-md font-semibold hover:bg-[#0047ab]/5 transition-all text-center">Ir al dashboard</a>
           {% else %}
-          <a href="{% url 'setup' %}" class="border border-[#006a61] text-[#006a61] px-5 py-3 rounded-lg body-md font-semibold hover:bg-[#006a61]/5 transition-all text-center">Probar el alta</a>
+          <a href="{% url 'setup' %}" class="border border-[#0047ab] text-[#0047ab] px-5 py-3 rounded-lg body-md font-semibold hover:bg-[#0047ab]/5 transition-all text-center">Probar el alta</a>
           {% endif %}
         </div>
       </div>
-      <div class="md:col-span-6 bg-[#eceef0] p-6 sm:p-8 rounded-2xl ambient-shadow reveal">
+      <div class="md:col-span-6 bg-[#e5eeff] p-6 sm:p-8 rounded-2xl ambient-shadow reveal">
         {% if demo_professional %}
         <div class="bg-white p-5 rounded-xl ambient-shadow mb-4">
-          <span class="label-caps text-[#006a61]">Demo cargada en la plataforma</span>
-          <h3 class="text-[#191c1e] mt-2 mb-1">{{ demo_professional.professional_name }}</h3>
-          <p class="body-md text-[#434655]">{{ demo_professional.specialty }}</p>
+          <span class="label-caps text-[#0047ab]">Demo cargada en la plataforma</span>
+          <h3 class="text-[#0b1c30] mt-2 mb-1">{{ demo_professional.professional_name }}</h3>
+          <p class="body-md text-[#434653]">{{ demo_professional.specialty }}</p>
         </div>
         <div class="space-y-3">
-          <div class="bg-white p-4 rounded-xl border border-[#c3c6d7]/60">
-            <p class="label-caps text-[#434655] mb-2">Propuesta</p>
-            <p class="body-md text-[#191c1e] font-semibold">{{ demo_professional.tagline|default:"Atención profesional, cercana y personalizada." }}</p>
+          <div class="bg-white p-4 rounded-xl border border-[#c3c6d5]/60">
+            <p class="label-caps text-[#434653] mb-2">Propuesta</p>
+            <p class="body-md text-[#0b1c30] font-semibold">{{ demo_professional.tagline|default:"Atención profesional, cercana y personalizada." }}</p>
           </div>
-          <div class="bg-white p-4 rounded-xl border border-[#c3c6d7]/60">
-            <p class="label-caps text-[#434655] mb-2">Modalidad</p>
-            <p class="body-md text-[#191c1e] font-semibold">{{ demo_professional.attention_mode|default:"Presencial y online" }}</p>
+          <div class="bg-white p-4 rounded-xl border border-[#c3c6d5]/60">
+            <p class="label-caps text-[#434653] mb-2">Modalidad</p>
+            <p class="body-md text-[#0b1c30] font-semibold">{{ demo_professional.attention_mode|default:"Presencial y online" }}</p>
           </div>
-          <div class="bg-white p-4 rounded-xl border border-[#c3c6d7]/60">
-            <p class="label-caps text-[#434655] mb-2">URL compartible</p>
-            <p class="body-sm text-[#006a61] font-bold break-all">/p/{{ demo_professional.slug }}/</p>
+          <div class="bg-white p-4 rounded-xl border border-[#c3c6d5]/60">
+            <p class="label-caps text-[#434653] mb-2">URL compartible</p>
+            <p class="body-sm text-[#0047ab] font-bold break-all">/p/{{ demo_professional.slug }}/</p>
           </div>
         </div>
         {% else %}
         <div class="bg-white p-5 rounded-xl ambient-shadow mb-4">
-          <span class="label-caps text-[#006a61]">Vista conceptual</span>
-          <h3 class="text-[#191c1e] mt-2">Una landing que ya nace conectada a la operación.</h3>
+          <span class="label-caps text-[#0047ab]">Vista conceptual</span>
+          <h3 class="text-[#0b1c30] mt-2">Una landing que ya nace conectada a la operación.</h3>
         </div>
         <div class="space-y-3">
-          <div class="bg-white p-4 rounded-xl border border-[#c3c6d7]/60">
-            <p class="label-caps text-[#434655] mb-2">Hero</p>
-            <p class="body-md text-[#191c1e]">Especialidad, valor diferencial y CTA para reservar.</p>
+          <div class="bg-white p-4 rounded-xl border border-[#c3c6d5]/60">
+            <p class="label-caps text-[#434653] mb-2">Hero</p>
+            <p class="body-md text-[#0b1c30]">Especialidad, valor diferencial y CTA para reservar.</p>
           </div>
-          <div class="bg-white p-4 rounded-xl border border-[#c3c6d7]/60">
-            <p class="label-caps text-[#434655] mb-2">Agenda</p>
-            <p class="body-md text-[#191c1e]">Calendario y disponibilidad real para tomar turnos.</p>
+          <div class="bg-white p-4 rounded-xl border border-[#c3c6d5]/60">
+            <p class="label-caps text-[#434653] mb-2">Agenda</p>
+            <p class="body-md text-[#0b1c30]">Calendario y disponibilidad real para tomar turnos.</p>
           </div>
-          <div class="bg-white p-4 rounded-xl border border-[#c3c6d7]/60">
-            <p class="label-caps text-[#434655] mb-2">Dashboard</p>
-            <p class="body-md text-[#191c1e]">Pacientes, turnos y publicación en el mismo panel.</p>
+          <div class="bg-white p-4 rounded-xl border border-[#c3c6d5]/60">
+            <p class="label-caps text-[#434653] mb-2">Dashboard</p>
+            <p class="body-md text-[#0b1c30]">Pacientes, turnos y publicación en el mismo panel.</p>
           </div>
         </div>
         {% endif %}
@@ -308,29 +308,29 @@
     <!-- PLANES -->
     <section id="planes" class="py-10 sm:py-16 reveal">
       <div class="max-w-3xl mb-8 sm:mb-10">
-        <span class="label-caps text-[#006a61] mb-3 inline-block">Planes</span>
-        <h2 class="text-[#191c1e] mb-4">El pricing final llega cuando cerremos el paquete comercial.</h2>
-        <p class="body-lg text-[#434655]">Mientras tanto, esta sección queda lista. La prioridad ahora es validar el onboarding, la demo y el flujo operativo.</p>
+        <span class="label-caps text-[#0047ab] mb-3 inline-block">Planes</span>
+        <h2 class="text-[#0b1c30] mb-4">El pricing final llega cuando cerremos el paquete comercial.</h2>
+        <p class="body-lg text-[#434653]">Mientras tanto, esta sección queda lista. La prioridad ahora es validar el onboarding, la demo y el flujo operativo.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <article class="bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d7]/60">
-          <div class="w-12 h-12 rounded-xl bg-[#86f2e4] text-[#006f66] flex items-center justify-center mb-4">
+        <article class="bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d5]/60">
+          <div class="w-12 h-12 rounded-xl bg-[#dae2ff] text-[#00327d] flex items-center justify-center mb-4">
             <span class="material-symbols-outlined">construction</span>
           </div>
-          <h3 class="text-[#191c1e] mb-3">Base preparada</h3>
-          <ul class="space-y-2 body-md text-[#434655]">
-            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[#006a61]" style="font-size:18px;">check</span> Sección de pricing visible desde el menú principal.</li>
-            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[#006a61]" style="font-size:18px;">check</span> Espacio para describir lo que incluye cada plan.</li>
-            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[#006a61]" style="font-size:18px;">check</span> CTA de alta profesional ya activo.</li>
+          <h3 class="text-[#0b1c30] mb-3">Base preparada</h3>
+          <ul class="space-y-2 body-md text-[#434653]">
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[#0047ab]" style="font-size:18px;">check</span> Sección de pricing visible desde el menú principal.</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[#0047ab]" style="font-size:18px;">check</span> Espacio para describir lo que incluye cada plan.</li>
+            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-[#0047ab]" style="font-size:18px;">check</span> CTA de alta profesional ya activo.</li>
           </ul>
         </article>
-        <article class="bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d7]/60">
-          <div class="w-12 h-12 rounded-xl bg-[#86f2e4] text-[#006f66] flex items-center justify-center mb-4">
+        <article class="bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d5]/60">
+          <div class="w-12 h-12 rounded-xl bg-[#dae2ff] text-[#00327d] flex items-center justify-center mb-4">
             <span class="material-symbols-outlined">trending_up</span>
           </div>
-          <h3 class="text-[#191c1e] mb-3">Próximo paso</h3>
-          <p class="body-md text-[#434655] mb-5">Cuando definamos los planes, esta sección pasa de placeholder a tabla comparativa sin rehacer la home.</p>
-          <a href="#profesionales" class="border border-[#006a61] text-[#006a61] px-4 py-2.5 rounded-lg body-md font-semibold hover:bg-[#006a61]/5 transition-all inline-flex items-center gap-2">
+          <h3 class="text-[#0b1c30] mb-3">Próximo paso</h3>
+          <p class="body-md text-[#434653] mb-5">Cuando definamos los planes, esta sección pasa de placeholder a tabla comparativa sin rehacer la home.</p>
+          <a href="#profesionales" class="border border-[#0047ab] text-[#0047ab] px-4 py-2.5 rounded-lg body-md font-semibold hover:bg-[#0047ab]/5 transition-all inline-flex items-center gap-2">
             <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span> Activar onboarding
           </a>
         </article>
@@ -340,71 +340,71 @@
     <!-- SOPORTE -->
     <section id="soporte" class="py-10 sm:py-16 reveal">
       <div class="max-w-3xl mb-8 sm:mb-10">
-        <span class="label-caps text-[#006a61] mb-3 inline-block">Soporte</span>
-        <h2 class="text-[#191c1e] mb-4">El soporte forma parte del proceso, no aparece al final.</h2>
-        <p class="body-lg text-[#434655]">Acompañamos al profesional desde el alta hasta que su landing está publicada.</p>
+        <span class="label-caps text-[#0047ab] mb-3 inline-block">Soporte</span>
+        <h2 class="text-[#0b1c30] mb-4">El soporte forma parte del proceso, no aparece al final.</h2>
+        <p class="body-lg text-[#434653]">Acompañamos al profesional desde el alta hasta que su landing está publicada.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <article class="bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d7]/60">
-          <div class="w-12 h-12 rounded-xl bg-[#86f2e4] text-[#006f66] flex items-center justify-center mb-4">
+        <article class="bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d5]/60">
+          <div class="w-12 h-12 rounded-xl bg-[#dae2ff] text-[#00327d] flex items-center justify-center mb-4">
             <span class="material-symbols-outlined">support_agent</span>
           </div>
-          <h3 class="text-[#191c1e] mb-3">Acompañamiento de alta</h3>
-          <p class="body-md text-[#434655]">Crear cuenta, completar datos clave y entrar rápido al circuito de configuración de la landing.</p>
+          <h3 class="text-[#0b1c30] mb-3">Acompañamiento de alta</h3>
+          <p class="body-md text-[#434653]">Crear cuenta, completar datos clave y entrar rápido al circuito de configuración de la landing.</p>
         </article>
-        <article class="bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d7]/60">
-          <div class="w-12 h-12 rounded-xl bg-[#86f2e4] text-[#006f66] flex items-center justify-center mb-4">
+        <article class="bg-white p-6 sm:p-8 rounded-2xl ambient-shadow border border-[#c3c6d5]/60">
+          <div class="w-12 h-12 rounded-xl bg-[#dae2ff] text-[#00327d] flex items-center justify-center mb-4">
             <span class="material-symbols-outlined">menu_book</span>
           </div>
-          <h3 class="text-[#191c1e] mb-3">Soporte sobre publicación</h3>
-          <p class="body-md text-[#434655]">La plataforma organiza qué contenido completar para salir online con una presencia coherente.</p>
+          <h3 class="text-[#0b1c30] mb-3">Soporte sobre publicación</h3>
+          <p class="body-md text-[#434653]">La plataforma organiza qué contenido completar para salir online con una presencia coherente.</p>
         </article>
       </div>
     </section>
 
     <!-- PROFESIONALES (CTA principal) -->
     <section id="profesionales" class="py-10 sm:py-16">
-      <div class="bg-white p-6 sm:p-10 rounded-2xl ambient-shadow border border-[#c3c6d7]/60 reveal">
+      <div class="bg-white p-6 sm:p-10 rounded-2xl ambient-shadow border border-[#c3c6d5]/60 reveal">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-start">
           <div class="md:col-span-7">
-            <span class="label-caps text-[#006a61] mb-3 inline-block">Profesionales</span>
-            <h2 class="text-[#191c1e] mb-4">La puerta de entrada para tener tu landing publicada.</h2>
-            <p class="body-lg text-[#434655] mb-6">Registrate, cargá tu agenda, definí tu presentación y empezá a construir el espacio público que después vas a compartir con tus pacientes.</p>
+            <span class="label-caps text-[#0047ab] mb-3 inline-block">Profesionales</span>
+            <h2 class="text-[#0b1c30] mb-4">La puerta de entrada para tener tu landing publicada.</h2>
+            <p class="body-lg text-[#434653] mb-6">Registrate, cargá tu agenda, definí tu presentación y empezá a construir el espacio público que después vas a compartir con tus pacientes.</p>
             <div class="flex flex-col sm:flex-row gap-3">
               {% if is_pro %}
-              <a href="{% url 'dashboard' %}" class="bg-[#006a61] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+              <a href="{% url 'dashboard' %}" class="bg-[#0047ab] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined">space_dashboard</span> Ir al dashboard
               </a>
               {% else %}
-              <a href="{% url 'setup' %}" class="bg-[#006a61] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
+              <a href="{% url 'setup' %}" class="bg-[#0047ab] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined">person_add</span> Crear cuenta profesional
               </a>
-              <a href="{% url 'login' %}" class="border border-[#006a61] text-[#006a61] px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:bg-[#006a61]/5 transition-all text-center">Ya tengo cuenta</a>
+              <a href="{% url 'login' %}" class="border border-[#0047ab] text-[#0047ab] px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:bg-[#0047ab]/5 transition-all text-center">Ya tengo cuenta</a>
               {% endif %}
             </div>
           </div>
-          <aside class="md:col-span-5 bg-[#f7f9fb] border border-[#c3c6d7]/60 rounded-xl p-5 sm:p-6">
-            <p class="label-caps text-[#434655] mb-4">Recorrido</p>
+          <aside class="md:col-span-5 bg-[#f8f9ff] border border-[#c3c6d5]/60 rounded-xl p-5 sm:p-6">
+            <p class="label-caps text-[#434653] mb-4">Recorrido</p>
             <div class="space-y-4">
               <div class="flex gap-3">
-                <span class="w-8 h-8 rounded-full bg-[#86f2e4] text-[#006f66] flex items-center justify-center font-bold body-sm shrink-0">1</span>
+                <span class="w-8 h-8 rounded-full bg-[#dae2ff] text-[#00327d] flex items-center justify-center font-bold body-sm shrink-0">1</span>
                 <div>
-                  <p class="body-md font-bold text-[#191c1e]">Alta</p>
-                  <p class="body-sm text-[#434655]">Se genera la cuenta del profesional dentro de la plataforma.</p>
+                  <p class="body-md font-bold text-[#0b1c30]">Alta</p>
+                  <p class="body-sm text-[#434653]">Se genera la cuenta del profesional dentro de la plataforma.</p>
                 </div>
               </div>
               <div class="flex gap-3">
-                <span class="w-8 h-8 rounded-full bg-[#86f2e4] text-[#006f66] flex items-center justify-center font-bold body-sm shrink-0">2</span>
+                <span class="w-8 h-8 rounded-full bg-[#dae2ff] text-[#00327d] flex items-center justify-center font-bold body-sm shrink-0">2</span>
                 <div>
-                  <p class="body-md font-bold text-[#191c1e]">Configuración</p>
-                  <p class="body-sm text-[#434655]">Datos, agenda, propuesta de valor y elementos de la landing.</p>
+                  <p class="body-md font-bold text-[#0b1c30]">Configuración</p>
+                  <p class="body-sm text-[#434653]">Datos, agenda, propuesta de valor y elementos de la landing.</p>
                 </div>
               </div>
               <div class="flex gap-3">
-                <span class="w-8 h-8 rounded-full bg-[#86f2e4] text-[#006f66] flex items-center justify-center font-bold body-sm shrink-0">3</span>
+                <span class="w-8 h-8 rounded-full bg-[#dae2ff] text-[#00327d] flex items-center justify-center font-bold body-sm shrink-0">3</span>
                 <div>
-                  <p class="body-md font-bold text-[#191c1e]">Publicación</p>
-                  <p class="body-sm text-[#434655]">Compartís tu URL y empezás a recibir consultas y turnos.</p>
+                  <p class="body-md font-bold text-[#0b1c30]">Publicación</p>
+                  <p class="body-sm text-[#434653]">Compartís tu URL y empezás a recibir consultas y turnos.</p>
                 </div>
               </div>
             </div>
@@ -415,16 +415,16 @@
 
   </main>
 
-  <footer class="border-t border-[#c3c6d7]/60 bg-white">
+  <footer class="border-t border-[#c3c6d5]/60 bg-white">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <p class="body-sm text-[#434655]">Labs · Plataforma para profesionales de la salud.</p>
+      <p class="body-sm text-[#434653]">Labs · Plataforma para profesionales de la salud.</p>
       <div class="flex items-center gap-5">
-        <a href="#soporte" class="body-sm text-[#434655] hover:text-[#006a61]">Soporte</a>
-        <a href="#planes" class="body-sm text-[#434655] hover:text-[#006a61]">Planes</a>
+        <a href="#soporte" class="body-sm text-[#434653] hover:text-[#0047ab]">Soporte</a>
+        <a href="#planes" class="body-sm text-[#434653] hover:text-[#0047ab]">Planes</a>
         {% if is_pro %}
-        <a href="{% url 'dashboard' %}" class="body-sm text-[#006a61] font-semibold">Ir al dashboard</a>
+        <a href="{% url 'dashboard' %}" class="body-sm text-[#0047ab] font-semibold">Ir al dashboard</a>
         {% else %}
-        <a href="{% url 'setup' %}" class="body-sm text-[#006a61] font-semibold">Alta profesional</a>
+        <a href="{% url 'setup' %}" class="body-sm text-[#0047ab] font-semibold">Alta profesional</a>
         {% endif %}
       </div>
     </div>

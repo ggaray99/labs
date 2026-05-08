@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
 
 <style>
-  .clinical { background: #f7f9fb; color: #191c1e; font-family: 'Inter', system-ui, sans-serif; }
+  .clinical { background: #f8f9ff; color: #0b1c30; font-family: 'Manrope', system-ui, sans-serif; }
   .clinical h1, .clinical h2, .clinical h3, .clinical .stats-display, .clinical .brand { font-family: 'Manrope', system-ui, sans-serif; }
   .clinical h1 { font-size: 30px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 700; }
   .clinical h2 { font-size: 24px; line-height: 1.25; letter-spacing: -0.01em; font-weight: 600; }
@@ -43,33 +43,33 @@
 <div class="clinical" style="--theme-primary: {{ professional.theme_primary|default:'var(--theme-primary)' }};">
 
   <!-- TOP NAV -->
-  <header class="sticky top-0 z-50 bg-[#f7f9fb] border-b border-[#c3c6d7]/60">
+  <header class="sticky top-0 z-50 bg-[#f8f9ff] border-b border-[#c3c6d5]/60">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-3">
       <a href="#sobre" class="brand text-lg sm:text-2xl font-bold text-[var(--theme-primary)] truncate min-w-0">{{ professional.professional_name }}</a>
       <nav class="hidden md:flex gap-6 lg:gap-8 items-center">
-        <a href="#sobre" class="body-md text-[#434655] hover:text-[var(--theme-primary)] transition-colors">Sobre mí</a>
-        {% if landing_services and professional.show_services %}<a href="#servicios" class="body-md text-[#434655] hover:text-[var(--theme-primary)] transition-colors">Servicios</a>{% endif %}
-        {% if landing_credentials and professional.show_credentials %}<a href="#credenciales" class="body-md text-[#434655] hover:text-[var(--theme-primary)] transition-colors">Credenciales</a>{% endif %}
-        {% if landing_testimonials and professional.show_testimonials %}<a href="#testimonios" class="body-md text-[#434655] hover:text-[var(--theme-primary)] transition-colors">Testimonios</a>{% endif %}
-        {% if professional.show_contact %}<a href="#contacto" class="body-md text-[#434655] hover:text-[var(--theme-primary)] transition-colors">Contacto</a>{% endif %}
+        <a href="#sobre" class="body-md text-[#434653] hover:text-[var(--theme-primary)] transition-colors">Sobre mí</a>
+        {% if landing_services and professional.show_services %}<a href="#servicios" class="body-md text-[#434653] hover:text-[var(--theme-primary)] transition-colors">Servicios</a>{% endif %}
+        {% if landing_credentials and professional.show_credentials %}<a href="#credenciales" class="body-md text-[#434653] hover:text-[var(--theme-primary)] transition-colors">Credenciales</a>{% endif %}
+        {% if landing_testimonials and professional.show_testimonials %}<a href="#testimonios" class="body-md text-[#434653] hover:text-[var(--theme-primary)] transition-colors">Testimonios</a>{% endif %}
+        {% if professional.show_contact %}<a href="#contacto" class="body-md text-[#434653] hover:text-[var(--theme-primary)] transition-colors">Contacto</a>{% endif %}
       </nav>
       <div class="flex items-center gap-2 shrink-0">
         <a href="#reservar-turno" class="bg-[var(--theme-primary)] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg body-sm sm:body-md font-semibold hover:opacity-90 transition-all whitespace-nowrap">
           <span class="hidden sm:inline">Reservar turno</span><span class="sm:hidden">Reservar</span>
         </a>
         <button type="button" onclick="document.getElementById('mobile-nav').classList.toggle('open')"
-                class="mobile-menu-btn md:hidden items-center justify-center w-10 h-10 rounded-lg border border-[#c3c6d7] text-[#434655]" aria-label="Menú">
+                class="mobile-menu-btn md:hidden items-center justify-center w-10 h-10 rounded-lg border border-[#c3c6d5] text-[#434653]" aria-label="Menú">
           <span class="material-symbols-outlined">menu</span>
         </button>
       </div>
     </div>
-    <nav id="mobile-nav" class="md:hidden border-t border-[#c3c6d7]/60 bg-[#f7f9fb]">
+    <nav id="mobile-nav" class="md:hidden border-t border-[#c3c6d5]/60 bg-[#f8f9ff]">
       <div class="px-4 py-3 flex flex-col gap-1">
-        <a href="#sobre" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Sobre mí</a>
-        {% if landing_services and professional.show_services %}<a href="#servicios" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Servicios</a>{% endif %}
-        {% if landing_credentials and professional.show_credentials %}<a href="#credenciales" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Credenciales</a>{% endif %}
-        {% if landing_testimonials and professional.show_testimonials %}<a href="#testimonios" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Testimonios</a>{% endif %}
-        {% if professional.show_contact %}<a href="#contacto" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434655] py-2">Contacto</a>{% endif %}
+        <a href="#sobre" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Sobre mí</a>
+        {% if landing_services and professional.show_services %}<a href="#servicios" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Servicios</a>{% endif %}
+        {% if landing_credentials and professional.show_credentials %}<a href="#credenciales" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Credenciales</a>{% endif %}
+        {% if landing_testimonials and professional.show_testimonials %}<a href="#testimonios" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Testimonios</a>{% endif %}
+        {% if professional.show_contact %}<a href="#contacto" onclick="document.getElementById('mobile-nav').classList.remove('open')" class="body-md text-[#434653] py-2">Contacto</a>{% endif %}
       </div>
     </nav>
   </header>
@@ -79,41 +79,41 @@
     <!-- HERO -->
     <section id="sobre" class="py-6 sm:py-10 grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-stretch">
       <div class="md:col-span-7 flex flex-col justify-center bg-white p-6 sm:p-10 rounded-2xl ambient-shadow">
-        <span class="label-caps text-[#006a61] mb-3 sm:mb-4">{{ professional.specialty }}</span>
-        <h1 class="text-[#191c1e] mb-3 sm:mb-4">
+        <span class="label-caps text-[#0047ab] mb-3 sm:mb-4">{{ professional.specialty }}</span>
+        <h1 class="text-[#0b1c30] mb-3 sm:mb-4">
           {% if professional.tagline %}{{ professional.tagline }}{% else %}Atención profesional, cercana y personalizada.{% endif %}
         </h1>
         {% if professional.bio %}
-        <p class="body-lg text-[#434655] mb-6 sm:mb-8 max-w-2xl">{{ professional.bio }}</p>
+        <p class="body-lg text-[#434653] mb-6 sm:mb-8 max-w-2xl">{{ professional.bio }}</p>
         {% endif %}
         <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
           <a href="#reservar-turno" class="bg-[var(--theme-primary)] text-white px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
             <span class="material-symbols-outlined">calendar_today</span> Reservar turno
           </a>
           {% if landing_services %}
-          <a href="#servicios" class="border border-[#006a61] text-[#006a61] px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:bg-[#006a61]/5 transition-all text-center">
+          <a href="#servicios" class="border border-[#0047ab] text-[#0047ab] px-5 sm:px-6 py-3 sm:py-4 rounded-lg body-md font-semibold hover:bg-[#0047ab]/5 transition-all text-center">
             Ver servicios
           </a>
           {% endif %}
         </div>
       </div>
 
-      <div class="md:col-span-5 relative overflow-hidden rounded-2xl min-h-[280px] sm:min-h-[400px] bg-[#eceef0]">
+      <div class="md:col-span-5 relative overflow-hidden rounded-2xl min-h-[280px] sm:min-h-[400px] bg-[#e5eeff]">
         {% if professional.profile_image %}
         <img src="{{ professional.profile_image.url }}" alt="{{ professional.professional_name }}" class="absolute inset-0 w-full h-full object-cover">
         {% else %}
-        <div class="absolute inset-0 flex items-center justify-center text-[120px] sm:text-[160px] font-bold text-[#c3c6d7]" style="font-family:'Manrope';">
+        <div class="absolute inset-0 flex items-center justify-center text-[120px] sm:text-[160px] font-bold text-[#c3c6d5]" style="font-family:'Manrope';">
           {{ professional.professional_name|first }}
         </div>
         {% endif %}
         <div class="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-xl ambient-shadow">
           <div class="flex items-center gap-3 sm:gap-4 min-w-0">
-            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-[#86f2e4] text-[#006f66] rounded-full flex items-center justify-center shrink-0">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 bg-[#dae2ff] text-[#00327d] rounded-full flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined">verified</span>
             </div>
             <div class="min-w-0">
-              <p class="body-md font-bold text-[#191c1e] truncate">{{ professional.professional_name }}</p>
-              <p class="body-sm text-[#434655] truncate">{{ professional.specialty }}</p>
+              <p class="body-md font-bold text-[#0b1c30] truncate">{{ professional.professional_name }}</p>
+              <p class="body-sm text-[#434653] truncate">{{ professional.specialty }}</p>
             </div>
           </div>
         </div>
@@ -127,7 +127,7 @@
         {% for stat in landing_stats %}
         <div class="bg-[#f2f4f6] p-4 sm:p-6 rounded-2xl flex flex-col items-center text-center">
           <span class="stats-display text-[var(--theme-primary)]">{{ stat.value }}</span>
-          <span class="label-caps text-[#434655] mt-2">{{ stat.label }}</span>
+          <span class="label-caps text-[#434653] mt-2">{{ stat.label }}</span>
         </div>
         {% endfor %}
       </div>
@@ -139,14 +139,14 @@
     <section id="credenciales" class="py-6 sm:py-10 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-10">
       {% if landing_credentials and professional.show_credentials %}
       <div class="bg-white p-6 sm:p-10 rounded-2xl ambient-shadow">
-        <h2 class="mb-4 sm:mb-6 text-[#191c1e]">Credenciales y formación</h2>
+        <h2 class="mb-4 sm:mb-6 text-[#0b1c30]">Credenciales y formación</h2>
         <ul class="space-y-4 sm:space-y-6">
           {% for cred in landing_credentials %}
           <li class="flex gap-3 sm:gap-4">
-            <div class="mt-1 text-[#006a61] shrink-0"><span class="material-symbols-outlined">{{ cred.icon }}</span></div>
+            <div class="mt-1 text-[#0047ab] shrink-0"><span class="material-symbols-outlined">{{ cred.icon }}</span></div>
             <div class="min-w-0">
-              <h4 class="body-md font-bold text-[#191c1e]">{{ cred.title }}</h4>
-              {% if cred.subtitle %}<p class="body-sm text-[#434655]">{{ cred.subtitle }}</p>{% endif %}
+              <h4 class="body-md font-bold text-[#0b1c30]">{{ cred.title }}</h4>
+              {% if cred.subtitle %}<p class="body-sm text-[#434653]">{{ cred.subtitle }}</p>{% endif %}
             </div>
           </li>
           {% endfor %}
@@ -169,17 +169,17 @@
     {% if landing_services and professional.show_services %}
     <section id="servicios" class="py-6 sm:py-10">
       <div class="text-center mb-6 sm:mb-10">
-        <h2 class="mb-3 sm:mb-4 text-[#191c1e]">Servicios</h2>
-        <p class="body-md text-[#434655] max-w-xl mx-auto">Áreas en las que acompaño a mis pacientes.</p>
+        <h2 class="mb-3 sm:mb-4 text-[#0b1c30]">Servicios</h2>
+        <p class="body-md text-[#434653] max-w-xl mx-auto">Áreas en las que acompaño a mis pacientes.</p>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         {% for svc in landing_services %}
-        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[#c3c6d7] hover:border-[var(--theme-primary)] transition-all group ambient-shadow">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[#c3c6d5] hover:border-[var(--theme-primary)] transition-all group ambient-shadow">
           <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-[#e6e8ea] flex items-center justify-center text-[var(--theme-primary)] mb-3 sm:mb-4 group-hover:bg-[var(--theme-primary)] group-hover:text-white transition-colors">
             <span class="material-symbols-outlined">{{ svc.icon }}</span>
           </div>
-          <h3 class="font-bold mb-2 text-[#191c1e]">{{ svc.title }}</h3>
-          <p class="body-sm text-[#434655]">{{ svc.description }}</p>
+          <h3 class="font-bold mb-2 text-[#0b1c30]">{{ svc.title }}</h3>
+          <p class="body-sm text-[#434653]">{{ svc.description }}</p>
         </div>
         {% endfor %}
       </div>
@@ -190,23 +190,23 @@
     {% if landing_testimonials and professional.show_testimonials %}
     <section id="testimonios" class="my-6 sm:my-10 bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-10 ambient-shadow">
       <div class="mb-6 sm:mb-10">
-        <h2 class="mb-3 sm:mb-4 text-[#191c1e]">Lo que dicen mis pacientes</h2>
-        <p class="body-md text-[#434655]">Experiencias reales de quienes confiaron en este espacio.</p>
+        <h2 class="mb-3 sm:mb-4 text-[#0b1c30]">Lo que dicen mis pacientes</h2>
+        <p class="body-md text-[#434653]">Experiencias reales de quienes confiaron en este espacio.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {% for t in landing_testimonials %}
-        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[#c3c6d7]">
-          <div class="flex text-[#006a61] mb-3 sm:mb-4">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[#c3c6d5]">
+          <div class="flex text-[#0047ab] mb-3 sm:mb-4">
             {% for i in "12345" %}{% if forloop.counter <= t.rating %}<span class="material-symbols-outlined star-fill">star</span>{% endif %}{% endfor %}
           </div>
-          <p class="body-md italic mb-4 sm:mb-6 text-[#191c1e]">"{{ t.quote }}"</p>
+          <p class="body-md italic mb-4 sm:mb-6 text-[#0b1c30]">"{{ t.quote }}"</p>
           <div class="flex items-center gap-3 sm:gap-4 min-w-0">
-            <div class="w-10 h-10 bg-[#dfe3e7] rounded-full flex items-center justify-center text-[#434655] font-bold shrink-0">
+            <div class="w-10 h-10 bg-[#dfe3e7] rounded-full flex items-center justify-center text-[#434653] font-bold shrink-0">
               {{ t.author_name|first|upper }}
             </div>
             <div class="min-w-0">
-              <p class="body-sm font-bold text-[#191c1e] truncate">{{ t.author_name }}</p>
-              {% if t.author_meta %}<p class="label-caps text-[#434655] truncate">{{ t.author_meta }}</p>{% endif %}
+              <p class="body-sm font-bold text-[#0b1c30] truncate">{{ t.author_name }}</p>
+              {% if t.author_meta %}<p class="label-caps text-[#434653] truncate">{{ t.author_meta }}</p>{% endif %}
             </div>
           </div>
         </div>
@@ -219,39 +219,39 @@
     {% if professional.show_contact %}
     <section id="contacto" class="py-6 sm:py-10 grid grid-cols-1 {% if professional.address and professional.show_map %}md:grid-cols-2{% endif %} gap-4 sm:gap-10">
       <div class="bg-white p-6 sm:p-10 rounded-2xl ambient-shadow">
-        <h2 class="mb-3 sm:mb-4 text-[#191c1e]">Contactame</h2>
-        <p class="body-md text-[#434655] mb-6 sm:mb-8">¿Querés consultar algo antes de reservar? Escribime o llamame:</p>
+        <h2 class="mb-3 sm:mb-4 text-[#0b1c30]">Contactame</h2>
+        <p class="body-md text-[#434653] mb-6 sm:mb-8">¿Querés consultar algo antes de reservar? Escribime o llamame:</p>
         <div class="space-y-3 sm:space-y-4">
           {% if professional.phone %}
-          <a href="tel:{{ professional.phone }}" class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-[#c3c6d7] hover:border-[var(--theme-primary)] transition-all">
+          <a href="tel:{{ professional.phone }}" class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-[#c3c6d5] hover:border-[var(--theme-primary)] transition-all">
             <div class="w-10 h-10 rounded-full bg-[#dbe1ff] flex items-center justify-center text-[#00174b] shrink-0">
               <span class="material-symbols-outlined">call</span>
             </div>
             <div class="min-w-0">
-              <p class="label-caps text-[#434655]">Teléfono / WhatsApp</p>
-              <p class="body-md font-bold text-[#191c1e] truncate">{{ professional.phone }}</p>
+              <p class="label-caps text-[#434653]">Teléfono / WhatsApp</p>
+              <p class="body-md font-bold text-[#0b1c30] truncate">{{ professional.phone }}</p>
             </div>
           </a>
           {% endif %}
           {% if professional.email %}
-          <a href="mailto:{{ professional.email }}" class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-[#c3c6d7] hover:border-[var(--theme-primary)] transition-all">
+          <a href="mailto:{{ professional.email }}" class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-[#c3c6d5] hover:border-[var(--theme-primary)] transition-all">
             <div class="w-10 h-10 rounded-full bg-[#dbe1ff] flex items-center justify-center text-[#00174b] shrink-0">
               <span class="material-symbols-outlined">mail</span>
             </div>
             <div class="min-w-0">
-              <p class="label-caps text-[#434655]">Email</p>
-              <p class="body-md font-bold text-[#191c1e] truncate">{{ professional.email }}</p>
+              <p class="label-caps text-[#434653]">Email</p>
+              <p class="body-md font-bold text-[#0b1c30] truncate">{{ professional.email }}</p>
             </div>
           </a>
           {% endif %}
           {% if professional.attention_mode %}
-          <div class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-[#c3c6d7]">
+          <div class="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-[#c3c6d5]">
             <div class="w-10 h-10 rounded-full bg-[#dbe1ff] flex items-center justify-center text-[#00174b] shrink-0">
               <span class="material-symbols-outlined">medical_services</span>
             </div>
             <div class="min-w-0">
-              <p class="label-caps text-[#434655]">Modalidad</p>
-              <p class="body-md font-bold text-[#191c1e]">{{ professional.attention_mode }}</p>
+              <p class="label-caps text-[#434653]">Modalidad</p>
+              <p class="body-md font-bold text-[#0b1c30]">{{ professional.attention_mode }}</p>
             </div>
           </div>
           {% endif %}
@@ -264,9 +264,9 @@
           class="absolute inset-0 w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
           allowfullscreen></iframe>
         <a href="https://www.google.com/maps/search/?api=1&query={{ professional.address|urlencode }}" target="_blank" rel="noopener"
-           class="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 bg-white p-3 sm:p-4 rounded-xl ambient-shadow flex items-center gap-3 hover:bg-[#f7f9fb] transition-colors">
+           class="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 bg-white p-3 sm:p-4 rounded-xl ambient-shadow flex items-center gap-3 hover:bg-[#f8f9ff] transition-colors">
           <span class="material-symbols-outlined text-[var(--theme-primary)] shrink-0">location_on</span>
-          <span class="body-sm font-bold text-[#191c1e] flex-1">{{ professional.address }}</span>
+          <span class="body-sm font-bold text-[#0b1c30] flex-1">{{ professional.address }}</span>
           <span class="material-symbols-outlined text-[#737686]" style="font-size:18px;">open_in_new</span>
         </a>
       </div>
@@ -278,8 +278,8 @@
     <section id="reservar-turno" class="py-6 sm:py-10">
       <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-10 ambient-shadow max-w-3xl mx-auto">
         <div class="text-center mb-6 sm:mb-8">
-          <h2 class="mb-2 sm:mb-3 text-[#191c1e]">Reservá tu turno</h2>
-          <p class="body-md text-[#434655]">3 pasos. Te toma menos de un minuto.</p>
+          <h2 class="mb-2 sm:mb-3 text-[#0b1c30]">Reservá tu turno</h2>
+          <p class="body-md text-[#434653]">3 pasos. Te toma menos de un minuto.</p>
         </div>
 
         {% if messages %}
@@ -292,15 +292,15 @@
         <div class="mb-6 sm:mb-8">
           <div class="flex items-center gap-3 mb-3 sm:mb-4">
             <span class="w-7 h-7 rounded-full bg-[var(--theme-primary)] text-white flex items-center justify-center body-sm font-bold shrink-0">1</span>
-            <h4 class="body-md font-bold text-[#191c1e]">Elegí el día</h4>
+            <h4 class="body-md font-bold text-[#0b1c30]">Elegí el día</h4>
           </div>
           {% if available_dates %}
           <div class="overflow-x-auto -mx-1 px-1 pb-2 scrollbar-thin">
             <div class="flex gap-2 min-w-min">
               {% for d in available_dates %}
               <a href="?date={{ d|date:'Y-m-d' }}#reservar-turno"
-                 class="flex-shrink-0 w-[72px] flex flex-col items-center justify-center py-3 rounded-xl transition-all border {% if selected_date == d %}bg-[var(--theme-primary)] text-white border-[var(--theme-primary)]{% else %}bg-white text-[#191c1e] hover:border-[var(--theme-primary)] border-[#c3c6d7]{% endif %}">
-                <span class="label-caps {% if selected_date != d %}text-[#434655]{% endif %}">{{ d|date:'D' }}</span>
+                 class="flex-shrink-0 w-[72px] flex flex-col items-center justify-center py-3 rounded-xl transition-all border {% if selected_date == d %}bg-[var(--theme-primary)] text-white border-[var(--theme-primary)]{% else %}bg-white text-[#0b1c30] hover:border-[var(--theme-primary)] border-[#c3c6d5]{% endif %}">
+                <span class="label-caps {% if selected_date != d %}text-[#434653]{% endif %}">{{ d|date:'D' }}</span>
                 <span class="body-md font-bold mt-1">{{ d|date:'d' }}</span>
                 <span class="body-sm {% if selected_date == d %}opacity-90{% else %}text-[#737686]{% endif %}">{{ d|date:'M' }}</span>
               </a>
@@ -308,7 +308,7 @@
             </div>
           </div>
           {% else %}
-          <p class="body-sm text-[#434655]">No hay días disponibles próximamente.</p>
+          <p class="body-sm text-[#434653]">No hay días disponibles próximamente.</p>
           {% endif %}
         </div>
 
@@ -316,9 +316,9 @@
         <div class="mb-6 sm:mb-8">
           <div class="flex items-center gap-3 mb-3 sm:mb-4">
             <span class="w-7 h-7 rounded-full {% if selected_date %}bg-[var(--theme-primary)] text-white{% else %}bg-[#e6e8ea] text-[#737686]{% endif %} flex items-center justify-center body-sm font-bold shrink-0">2</span>
-            <h4 class="body-md font-bold text-[#191c1e]">
+            <h4 class="body-md font-bold text-[#0b1c30]">
               Elegí la hora
-              {% if selected_date %}<span class="font-normal text-[#434655]"> — {{ selected_date|date:'l d/m' }}</span>{% endif %}
+              {% if selected_date %}<span class="font-normal text-[#434653]"> — {{ selected_date|date:'l d/m' }}</span>{% endif %}
             </h4>
           </div>
           {% if not selected_date %}
@@ -327,13 +327,13 @@
           </div>
           {% elif not slots %}
           <div class="bg-[#f2f4f6] rounded-xl p-5 text-center">
-            <p class="body-sm text-[#434655]">No quedan horarios para este día. Elegí otro.</p>
+            <p class="body-sm text-[#434653]">No quedan horarios para este día. Elegí otro.</p>
           </div>
           {% else %}
           <div class="grid grid-cols-3 sm:grid-cols-4 gap-2" id="timeSlots">
             {% for slot in slots %}
             <button type="button" onclick="selectTime('{{ slot|time:'H:i' }}', this)"
-                    class="time-btn py-3 px-2 border border-[#c3c6d7] rounded-lg body-md font-semibold bg-white text-[#191c1e] hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-all">
+                    class="time-btn py-3 px-2 border border-[#c3c6d5] rounded-lg body-md font-semibold bg-white text-[#0b1c30] hover:border-[var(--theme-primary)] hover:text-[var(--theme-primary)] transition-all">
               {{ slot|time:'H:i' }}
             </button>
             {% endfor %}
@@ -346,14 +346,14 @@
         <div id="patientForm" class="hidden">
           <div class="flex items-center gap-3 mb-3 sm:mb-4">
             <span class="w-7 h-7 rounded-full bg-[var(--theme-primary)] text-white flex items-center justify-center body-sm font-bold shrink-0">3</span>
-            <h4 class="body-md font-bold text-[#191c1e]">Tus datos</h4>
+            <h4 class="body-md font-bold text-[#0b1c30]">Tus datos</h4>
           </div>
 
           <div id="bookingSummary" class="mb-4 p-3 sm:p-4 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center gap-3">
             <span class="material-symbols-outlined text-[var(--theme-primary)]">event_available</span>
             <div class="body-sm">
-              <span class="text-[#434655]">Reservando: </span>
-              <span class="font-bold text-[#191c1e]">{{ selected_date|date:'l d/m' }} a las <span id="summaryTime">—</span></span>
+              <span class="text-[#434653]">Reservando: </span>
+              <span class="font-bold text-[#0b1c30]">{{ selected_date|date:'l d/m' }} a las <span id="summaryTime">—</span></span>
             </div>
           </div>
 
@@ -364,32 +364,32 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <input type="text" name="first_name" required placeholder="Nombre"
-                     class="bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
+                     class="bg-white border border-[#c3c6d5] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
               <input type="text" name="last_name" required placeholder="Apellido"
-                     class="bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
+                     class="bg-white border border-[#c3c6d5] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
               <input type="tel" inputmode="tel" name="phone" required placeholder="Teléfono / WhatsApp"
-                     class="bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
+                     class="bg-white border border-[#c3c6d5] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
               <input type="email" inputmode="email" name="email" placeholder="Email (opcional)"
-                     class="bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
+                     class="bg-white border border-[#c3c6d5] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none">
             </div>
 
-            <details class="bg-[#f7f9fb] rounded-lg border border-[#c3c6d7]">
-              <summary class="cursor-pointer p-3 body-sm font-semibold text-[#434655] flex items-center gap-2">
+            <details class="bg-[#f8f9ff] rounded-lg border border-[#c3c6d5]">
+              <summary class="cursor-pointer p-3 body-sm font-semibold text-[#434653] flex items-center gap-2">
                 <span class="material-symbols-outlined" style="font-size:18px;">add_circle</span>
                 Agregar obra social (opcional)
               </summary>
               <div class="px-3 pb-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <input type="text" name="health_insurance" placeholder="Obra social"
-                       class="bg-white border border-[#c3c6d7] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
+                       class="bg-white border border-[#c3c6d5] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
                 <input type="text" name="health_insurance_plan" placeholder="Plan"
-                       class="bg-white border border-[#c3c6d7] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
+                       class="bg-white border border-[#c3c6d5] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
                 <input type="text" name="health_insurance_number" placeholder="Nro. afiliado"
-                       class="bg-white border border-[#c3c6d7] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
+                       class="bg-white border border-[#c3c6d5] rounded-lg p-2.5 body-sm focus:border-[var(--theme-primary)] outline-none">
               </div>
             </details>
 
             <textarea name="reason" rows="2" placeholder="Motivo de consulta (opcional)"
-                      class="w-full bg-white border border-[#c3c6d7] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none"></textarea>
+                      class="w-full bg-white border border-[#c3c6d5] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none"></textarea>
 
             <button type="submit" class="w-full bg-[var(--theme-primary)] text-white py-3 sm:py-4 rounded-lg body-md font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2">
               <span class="material-symbols-outlined">check_circle</span> Confirmar turno
@@ -402,10 +402,10 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-[#f2f4f6] border-t border-[#c3c6d7]/60 mt-6 sm:mt-10">
+  <footer class="bg-[#f2f4f6] border-t border-[#c3c6d5]/60 mt-6 sm:mt-10">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4 text-center md:text-left">
-      <p class="body-sm text-[#434655]">© {{ professional.professional_name }}. Todos los derechos reservados.</p>
-      <p class="body-sm text-[#434655]">Hecho con <a href="/" class="font-bold text-[var(--theme-primary)]">Labs</a></p>
+      <p class="body-sm text-[#434653]">© {{ professional.professional_name }}. Todos los derechos reservados.</p>
+      <p class="body-sm text-[#434653]">Hecho con <a href="/" class="font-bold text-[var(--theme-primary)]">Labs</a></p>
     </div>
   </footer>
 
@@ -417,9 +417,9 @@
 function selectTime(time, btn) {
   document.querySelectorAll('.time-btn').forEach(b => {
     b.classList.remove('bg-[var(--theme-primary)]', 'text-white', 'border-[var(--theme-primary)]');
-    b.classList.add('bg-white', 'text-[#191c1e]', 'border-[#c3c6d7]');
+    b.classList.add('bg-white', 'text-[#0b1c30]', 'border-[#c3c6d5]');
   });
-  btn.classList.remove('bg-white', 'text-[#191c1e]', 'border-[#c3c6d7]');
+  btn.classList.remove('bg-white', 'text-[#0b1c30]', 'border-[#c3c6d5]');
   btn.classList.add('bg-[var(--theme-primary)]', 'text-white', 'border-[var(--theme-primary)]');
   document.getElementById('selectedTime').value = time;
   const summaryTime = document.getElementById('summaryTime');

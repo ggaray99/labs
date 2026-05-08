@@ -6,28 +6,31 @@
     <title>{% block title %}Labs{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: { 50: '#EFF6FF', 100: '#DBEAFE', 200: '#BFDBFE', 300: '#93C5FD', 400: '#60A5FA', 500: '#3B82F6', 600: '#2563EB', 700: '#1D4ED8', 800: '#1E40AF', 900: '#1E3A8A' },
+                        primary: { 50: '#eff4ff', 100: '#dae2ff', 200: '#b1c5ff', 300: '#7da4ff', 400: '#3d77eb', 500: '#0047ab', 600: '#00327d', 700: '#00255e', 800: '#001946', 900: '#000d22' },
+                        ink: { DEFAULT: '#0b1c30', muted: '#434653', faint: '#737784' },
+                        surface: { DEFAULT: '#f8f9ff', low: '#eff4ff', container: '#e5eeff', high: '#dce9ff' },
+                        line: { DEFAULT: '#c3c6d5', soft: '#dae2fd' },
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        sans: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
-        *:focus-visible { outline: none; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #3B82F6; border-radius: 8px; }
+        body { font-family: 'Manrope', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
+        *:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #0047ab; border-radius: 8px; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 min-h-screen">
+<body class="bg-surface text-ink min-h-screen">
     {% block navbar %}{% endblock %}
     <main>
         {% block content %}{% endblock %}
