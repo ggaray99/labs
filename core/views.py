@@ -93,9 +93,12 @@ DAYS_LIST = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'dom
 # --- Public Views ---
 
 def home(request):
-    if request.user.is_authenticated and hasattr(request.user, 'professional'):
-        return redirect('dashboard')
-    return render(request, 'core/home.html')
+    demo_professional = Professional.objects.order_by('created_at').first()
+    is_pro = request.user.is_authenticated and hasattr(request.user, 'professional')
+    return render(request, 'core/home.html', {
+        'demo_professional': demo_professional,
+        'is_pro': is_pro,
+    })
 
 
 def login_view(request):
