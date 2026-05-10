@@ -1,0 +1,28 @@
+{% comment %}
+  Lockup horizontal oficial de la marca consulte.
+  Brand Book v1.0 — isotipo + wordmark "consulte." en lowercase, Manrope 600,
+  letter-spacing -0.045em, punto en Deep Slate (#0B1C30), palabra en Cobalt (#0047AB).
+
+  Variables opcionales:
+    iso_size — alto/ancho del isotipo en px (default 28).
+    text_size — tamaño del wordmark (default 22px). Ignorado si invert=True usa el mismo valor.
+    invert — si es "1", invierte para fondos cobalto (stroke blanco, punto blanco translúcido).
+    aria — etiqueta accesible (default "consulte").
+{% endcomment %}
+{% with iso_size=iso_size|default:"28" text_size=text_size|default:"22" %}
+<span class="inline-flex items-center gap-[10px] leading-none align-middle" aria-label="{{ aria|default:'consulte' }}">
+  {% if invert %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="{{ iso_size }}" height="{{ iso_size }}" aria-hidden="true">
+      <rect x="6" y="6" width="68" height="68" rx="8" fill="none" stroke="#FFFFFF" stroke-width="10"/>
+      <rect x="22" y="36" width="36" height="8" fill="#FFFFFF"/>
+    </svg>
+    <span style="font-family:'Manrope',system-ui,sans-serif;font-weight:600;font-size:{{ text_size }}px;letter-spacing:-0.045em;color:#FFFFFF;">consulte<span style="color:rgba(255,255,255,.65);">.</span></span>
+  {% else %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="{{ iso_size }}" height="{{ iso_size }}" aria-hidden="true">
+      <rect x="6" y="6" width="68" height="68" rx="8" fill="none" stroke="#0047AB" stroke-width="10"/>
+      <rect x="22" y="36" width="36" height="8" fill="#0047AB"/>
+    </svg>
+    <span style="font-family:'Manrope',system-ui,sans-serif;font-weight:600;font-size:{{ text_size }}px;letter-spacing:-0.045em;color:#0047AB;">consulte<span style="color:#0B1C30;">.</span></span>
+  {% endif %}
+</span>
+{% endwith %}

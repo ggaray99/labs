@@ -1,6 +1,8 @@
-# Labs
+# consulte.
 
-Plataforma para que profesionales de la salud creen su landing pública y gestionen turnos online. Django 6 + Tailwind (CDN).
+Plataforma para que profesionales independientes (salud, legal, contable, coaching, consultoría, creativos) creen su landing pública y gestionen turnos online. Django 6 + Tailwind (CDN). Dominio: `consulte.app`.
+
+> El módulo Django interno sigue llamándose `clyra/` por compatibilidad con la configuración de deploy. La identidad visual y el nombre de producto son **consulte.** (lowercase + punto en Deep Slate).
 
 ## Desarrollo local
 

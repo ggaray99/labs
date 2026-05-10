@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Dashboard — Labs{% endblock %}
+{% block title %}Dashboard — consulte.{% endblock %}
 
 {% block navbar %}
 <nav class="bg-white border-b border-gray-200 px-4 sm:px-6 py-3">
     <div class="flex items-center justify-between gap-2">
-        <a href="{% url 'dashboard' %}" class="text-xl font-semibold text-primary-700 tracking-tight">Labs</a>
+        <a href="{% url 'dashboard' %}" class="align-middle">{% include 'core/_brand_lockup.html' with iso_size=26 text_size=20 %}</a>
         <div class="flex items-center gap-2 sm:gap-4 text-sm">
             <span class="hidden md:inline text-gray-500 truncate max-w-[200px]">{{ professional.professional_name }}</span>
             <a href="{% url 'patient_list' %}" class="hidden sm:inline text-primary-600 hover:text-primary-800">Pacientes</a>

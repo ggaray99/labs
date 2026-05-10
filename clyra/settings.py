@@ -1,5 +1,5 @@
 """
-Django settings for clyra project (Labs).
+Django settings for clyra project (consulte.).
 """
 
 import os

@@ -1,25 +1,29 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Labs{% endblock %}</title>
+    <title>{% block title %}consulte.{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'brand/favicon.svg' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: { 50: '#eff4ff', 100: '#dae2ff', 200: '#b1c5ff', 300: '#7da4ff', 400: '#3d77eb', 500: '#0047ab', 600: '#00327d', 700: '#00255e', 800: '#001946', 900: '#000d22' },
-                        ink: { DEFAULT: '#0b1c30', muted: '#434653', faint: '#737784' },
-                        surface: { DEFAULT: '#f8f9ff', low: '#eff4ff', container: '#e5eeff', high: '#dce9ff' },
-                        line: { DEFAULT: '#c3c6d5', soft: '#dae2fd' },
+                        cobalt: { 50: '#F2F5FC', 100: '#DCE5F4', 200: '#A8C0E8', 300: '#5E8DD6', 400: '#2E6BC4', 500: '#0047AB', 600: '#00327D', 700: '#001F4F', 800: '#00112D' },
+                        slate2: { 50: '#F4F6FA', 100: '#E5E9F0', 200: '#CBD2DD', 300: '#A2AEBE', 400: '#6F7E92', 500: '#4A5A6E', 600: '#324358', 700: '#1F3147', 900: '#0B1C30' },
+                        primary: { 50: '#F2F5FC', 100: '#DCE5F4', 200: '#A8C0E8', 300: '#5E8DD6', 400: '#2E6BC4', 500: '#0047AB', 600: '#00327D', 700: '#001F4F', 800: '#00112D', 900: '#000D1F' },
+                        ink: { DEFAULT: '#0B1C30', muted: '#4A5A6E', faint: '#6F7E92' },
+                        surface: { DEFAULT: '#F8F9FF', low: '#F4F6FA', container: '#E5E9F0', high: '#CBD2DD' },
+                        line: { DEFAULT: '#CBD2DD', soft: '#E5E9F0' },
                     },
                     fontFamily: {
                         sans: ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
                     }
                 }
             }
@@ -27,7 +31,8 @@
     </script>
     <style>
         body { font-family: 'Manrope', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; letter-spacing: -0.005em; }
-        *:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #0047ab; border-radius: 8px; }
+        .font-mono, code, .label-mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+        *:focus-visible { outline: none; box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #0047AB; border-radius: 8px; }
     </style>
 </head>
 <body class="bg-surface text-ink min-h-screen">

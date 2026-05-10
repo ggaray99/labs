@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Labs | Landing y agenda para profesionales de la salud{% endblock %}
+{% block title %}consulte. | Landing y agenda online para profesionales{% endblock %}
 
 {% block content %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +44,7 @@
   <!-- TOP NAV -->
   <header class="sticky top-0 z-50 bg-[#f8f9ff] border-b border-[#c3c6d5]/60">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center gap-3">
-      <a href="#top" class="brand text-lg sm:text-2xl font-bold text-[#0047ab] truncate min-w-0">Labs</a>
+      <a href="#top" class="brand truncate min-w-0 align-middle">{% include 'core/_brand_lockup.html' with iso_size=28 text_size=22 %}</a>
       <nav class="hidden md:flex gap-6 lg:gap-8 items-center">
         <a href="#que-hacemos" class="body-md text-[#434653] hover:text-[#0047ab] transition-colors">Qué hacemos</a>
         <a href="#quienes-somos" class="body-md text-[#434653] hover:text-[#0047ab] transition-colors">Quiénes somos</a>
@@ -97,7 +97,7 @@
           Tu landing, tu agenda y tu proceso de alta, en una sola plataforma.
         </h1>
         <p class="body-lg text-[#434653] mb-6 sm:mb-8 max-w-2xl">
-          Labs te da una página profesional clara, reserva de turnos online y un flujo de configuración pensado para que publiques rápido y empieces a recibir pacientes.
+          consulte. te da una página profesional clara, reserva de turnos online y un flujo de configuración pensado para que publiques rápido y empieces a recibir clientes.
         </p>
         <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
           {% if is_pro %}
@@ -417,7 +417,7 @@
 
   <footer class="border-t border-[#c3c6d5]/60 bg-white">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <p class="body-sm text-[#434653]">Labs · Plataforma para profesionales de la salud.</p>
+      <p class="body-sm text-[#434653]">consulte. · Plataforma para profesionales independientes.</p>
       <div class="flex items-center gap-5">
         <a href="#soporte" class="body-sm text-[#434653] hover:text-[#0047ab]">Soporte</a>
         <a href="#planes" class="body-sm text-[#434653] hover:text-[#0047ab]">Planes</a>

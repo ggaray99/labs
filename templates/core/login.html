@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Iniciar sesión — Labs{% endblock %}
+{% block title %}Iniciar sesión — consulte.{% endblock %}
 
 {% block content %}
 <div class="min-h-screen flex items-center justify-center py-12">
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 w-full max-w-sm mx-4">
-        <h1 class="text-3xl font-medium text-primary-700 text-center mb-2 tracking-tight">Labs</h1>
+        <div class="flex justify-center mb-2">{% include 'core/_brand_lockup.html' with iso_size=36 text_size=28 %}</div>
         <p class="text-gray-500 font-light text-center mb-8">Iniciá sesión en tu consultorio</p>
 
         {% if error %}
