@@ -67,8 +67,10 @@
 
   /* Plan cards */
   .clinical .plan { background: var(--paper); border: 1px solid var(--slate-100); border-radius: 12px; padding: 28px; display: flex; flex-direction: column; height: 100%; }
-  .clinical .plan-pro { border: 1px solid var(--cobalt); position: relative; box-shadow: 0 12px 32px -16px rgba(0,71,171,.18); }
-  .clinical .plan-badge { position: absolute; top: -12px; left: 28px; background: var(--cobalt); padding: 6px 12px; border-radius: 4px; }
+  .clinical .plan-pro { background: var(--bg-tint); border: 1px solid var(--cobalt); position: relative; box-shadow: 0 16px 40px -18px rgba(0,71,171,.22); padding: 36px 32px 32px 32px; }
+  .clinical .plan-badge { position: absolute; top: 0; left: 32px; transform: translateY(-50%); background: var(--cobalt); padding: 8px 14px; border-radius: 4px; }
+  .clinical .plan-badge .label-mono-white { font-size: 12px; letter-spacing: 0.16em; }
+  @media (min-width: 768px) { .clinical .plan-pro { padding: 40px 36px 36px 36px; } }
   .clinical .plan-name { font-family: 'Manrope'; font-weight: 600; font-size: 14px; letter-spacing: 0; color: var(--slate-500); margin-bottom: 6px; }
   .clinical .plan-price { font-family: 'Manrope'; font-weight: 600; font-size: 44px; line-height: 1; letter-spacing: -0.03em; color: var(--ink); }
   .clinical .plan-price-unit { font-family: 'Manrope'; font-weight: 500; font-size: 16px; color: var(--slate-400); margin-left: 6px; letter-spacing: 0; }
@@ -152,29 +154,74 @@
     <section class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 py-12 sm:py-20">
       <div class="max-w-3xl mx-auto text-center reveal">
         <span class="label-mono">Pricing</span>
-        <h1 class="display-xl mt-5 sm:mt-6">Empezás gratis.<br>Pagás cuando tu agenda crece.</h1>
+        <h1 class="display-xl mt-5 sm:mt-6">Probalo gratis.<br>Pagás cuando funcione.</h1>
         <p class="body-lg mt-5 sm:mt-6 max-w-[560px] mx-auto">Sin tarjeta para arrancar. Sin compromiso anual. Cambiás de plan cuando quieras.</p>
+      </div>
+    </section>
+
+    <!-- TRUST STRIP -->
+    <section class="max-w-[1100px] mx-auto px-4 sm:px-8 pb-12 sm:pb-16">
+      <div class="reveal">
+        <div class="text-center label-mono-slate mb-6">Para profesionales independientes en</div>
+        <div class="grid grid-cols-3 md:grid-cols-6 gap-4 sm:gap-6">
+          <div class="text-center">
+            <div class="mx-auto flex items-center justify-center" style="width:42px;height:42px;background:var(--paper);border:1px solid var(--slate-100);border-radius:6px;color:var(--cobalt);">
+              <svg width="60%" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="22" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="30" cy="30" r="6" fill="currentColor"/></svg>
+            </div>
+            <div style="font-size:12px;margin-top:8px;color:var(--ink);font-weight:500;">Salud</div>
+          </div>
+          <div class="text-center">
+            <div class="mx-auto flex items-center justify-center" style="width:42px;height:42px;background:var(--paper);border:1px solid var(--slate-100);border-radius:6px;color:var(--cobalt);">
+              <svg width="60%" viewBox="0 0 60 60" aria-hidden="true"><rect x="10" y="10" width="40" height="40" fill="none" stroke="currentColor" stroke-width="3"/><line x1="10" y1="30" x2="50" y2="30" stroke="currentColor" stroke-width="3"/></svg>
+            </div>
+            <div style="font-size:12px;margin-top:8px;color:var(--ink);font-weight:500;">Legal</div>
+          </div>
+          <div class="text-center">
+            <div class="mx-auto flex items-center justify-center" style="width:42px;height:42px;background:var(--paper);border:1px solid var(--slate-100);border-radius:6px;color:var(--cobalt);">
+              <svg width="60%" viewBox="0 0 60 60" aria-hidden="true"><rect x="10" y="42" width="6" height="8" fill="currentColor"/><rect x="22" y="32" width="6" height="18" fill="currentColor"/><rect x="34" y="20" width="6" height="30" fill="currentColor"/><rect x="46" y="10" width="6" height="40" fill="currentColor"/></svg>
+            </div>
+            <div style="font-size:12px;margin-top:8px;color:var(--ink);font-weight:500;">Contable</div>
+          </div>
+          <div class="text-center">
+            <div class="mx-auto flex items-center justify-center" style="width:42px;height:42px;background:var(--paper);border:1px solid var(--slate-100);border-radius:6px;color:var(--cobalt);">
+              <svg width="60%" viewBox="0 0 60 60" aria-hidden="true"><path d="M10 40 L30 14 L50 40" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="30" cy="14" r="4" fill="currentColor"/></svg>
+            </div>
+            <div style="font-size:12px;margin-top:8px;color:var(--ink);font-weight:500;">Coaching</div>
+          </div>
+          <div class="text-center">
+            <div class="mx-auto flex items-center justify-center" style="width:42px;height:42px;background:var(--paper);border:1px solid var(--slate-100);border-radius:6px;color:var(--cobalt);">
+              <svg width="60%" viewBox="0 0 60 60" aria-hidden="true"><rect x="10" y="10" width="22" height="22" fill="currentColor"/><rect x="32" y="32" width="18" height="18" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+            </div>
+            <div style="font-size:12px;margin-top:8px;color:var(--ink);font-weight:500;">Creativos</div>
+          </div>
+          <div class="text-center">
+            <div class="mx-auto flex items-center justify-center" style="width:42px;height:42px;background:var(--paper);border:1px solid var(--slate-100);border-radius:6px;color:var(--cobalt);">
+              <svg width="60%" viewBox="0 0 60 60" aria-hidden="true"><path d="M8 38 Q22 18 30 30 T52 22" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+            </div>
+            <div style="font-size:12px;margin-top:8px;color:var(--ink);font-weight:500;">Bienestar</div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- PLANES -->
     <section class="max-w-[1100px] mx-auto px-4 sm:px-8 pb-12 sm:pb-20">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 items-stretch">
 
         <!-- FREE -->
-        <article class="plan reveal">
+        <article class="plan reveal md:col-span-5">
           <div class="plan-name">Free</div>
           <div class="flex items-baseline">
             <span class="plan-price">USD 0</span>
             <span class="plan-price-unit">/ mes</span>
           </div>
-          <p class="plan-tagline">Para arrancar y validar tu agenda online.</p>
+          <p class="plan-tagline">Para arrancar sin tarjeta.</p>
           <ul class="plan-features">
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Landing pública con tu URL <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cobalt);">consulte.app/p/tu-nombre</code></li>
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Reserva online con calendario y horarios</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Publicá tu landing en <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cobalt);">consulte.app/p/tu-nombre</code></li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Recibí turnos 24/7 con calendario propio</li>
             <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Hasta 25 turnos al mes</li>
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Email de confirmación automático</li>
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Dashboard de turnos y pacientes</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Avisá a tus pacientes con email automático</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Manejá agenda y pacientes desde un dashboard</li>
             <li class="feat-muted"><span class="feat-icon feat-icon-muted"><span class="material-symbols-outlined" style="font-size:18px;">remove</span></span> Color cobalto por defecto (sin custom)</li>
             <li class="feat-muted"><span class="feat-icon feat-icon-muted"><span class="material-symbols-outlined" style="font-size:18px;">remove</span></span> Footer "powered by consulte." en landing y emails</li>
           </ul>
@@ -189,21 +236,21 @@
         </article>
 
         <!-- PRO -->
-        <article class="plan plan-pro reveal">
+        <article class="plan plan-pro reveal md:col-span-7">
           <span class="plan-badge label-mono-white">RECOMENDADO</span>
           <div class="plan-name">Pro</div>
           <div class="flex items-baseline">
             <span class="plan-price">USD 9</span>
             <span class="plan-price-unit">/ mes</span>
           </div>
-          <p class="plan-tagline">Para profesionales que viven de su agenda.</p>
+          <p class="plan-tagline">Cuando tu agenda ya paga sola.</p>
           <ul class="plan-features">
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Todo lo de Free</li>
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Turnos ilimitados</li>
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Color custom + vertical tint para tu landing</li>
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Sin watermark "powered by consulte."</li>
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Soporte prioritario por email</li>
-            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Acceso temprano a nuevas funciones</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Todo lo de Free, sin tope</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Recibí turnos sin límite mensual</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Tiñé tu landing con tu color o tu vertical</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Sacá el watermark "powered by consulte."</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Hablás con nosotros primero ante cualquier consulta</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Probás features nuevas antes que nadie</li>
             <li class="feat-muted"><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;color:var(--slate-400);">schedule</span></span> Próximamente: cobro online integrado</li>
           </ul>
           <div class="plan-cta">
@@ -212,7 +259,6 @@
             {% else %}
               <a href="{% url 'setup' %}" class="btn-primary btn-full">Empezar Pro</a>
             {% endif %}
-            <p class="plan-fineprint">Mientras integramos el billing, escribinos a <a href="mailto:turnos@consulte.app" style="color:var(--cobalt);">turnos@consulte.app</a> para activarlo.</p>
           </div>
         </article>
 
