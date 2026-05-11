@@ -634,6 +634,13 @@ def public_landing(request, slug):
             else:
                 mode = 'presencial'
 
+            selected_service = None
+            service_id = data.get('service_id', '').strip()
+            if service_id:
+                selected_service = LandingService.objects.filter(
+                    id=service_id, professional=professional, is_bookable=True
+                ).first()
+
             patient, _ = Patient.objects.update_or_create(
                 professional=professional, phone=data['phone'],
                 defaults={
@@ -649,6 +656,8 @@ def public_landing(request, slug):
                 appointment_date=selected_date, appointment_time=selected_time,
                 reason=data.get('reason', ''), source='online',
                 mode=mode,
+                service=selected_service,
+                price_at_booking=selected_service.price if selected_service else None,
             )
             send_appointment_confirmation(appointment, request=request)
             return render(request, 'core/booking_confirmation.html', {
@@ -657,6 +666,7 @@ def public_landing(request, slug):
             })
 
     form = BookingPatientForm()
+    landing_services = professional.landing_services.all()
     return render(request, 'core/public_landing.html', {
         'professional': professional,
         'available_dates': available_dates,
@@ -665,7 +675,8 @@ def public_landing(request, slug):
         'form': form,
         'landing_stats': professional.landing_stats.all(),
         'landing_credentials': professional.landing_credentials.all(),
-        'landing_services': professional.landing_services.all(),
+        'landing_services': landing_services,
+        'bookable_services': [s for s in landing_services if s.is_bookable],
         'landing_testimonials': professional.landing_testimonials.filter(is_approved=True),
     })
 

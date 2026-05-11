@@ -26,6 +26,11 @@ VERTICAL_TINTS = {
     'bienestar': '#8A9F7E',   # Sage tierra
 }
 
+CURRENCY_CHOICES = [
+    ('ARS', 'ARS — Pesos argentinos'),
+    ('USD', 'USD — Dólares'),
+]
+
 
 class Professional(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -55,6 +60,8 @@ class Professional(models.Model):
     show_contact = models.BooleanField('Mostrar sección de contacto', default=True)
     show_map = models.BooleanField('Mostrar mapa de ubicación', default=True,
                                    help_text='Solo se renderiza si además hay una dirección cargada.')
+    currency = models.CharField('Moneda', max_length=3, choices=CURRENCY_CHOICES, default='ARS',
+                                help_text='Moneda en la que mostrás los precios de tus servicios.')
     slug = models.SlugField(unique=True, max_length=255)
     working_days = models.CharField('Días de atención', max_length=255, help_text='Ej: lunes,martes,miercoles')
     start_time = models.TimeField('Hora de inicio')
@@ -185,6 +192,10 @@ class LandingService(models.Model):
                             help_text='Nombre de Material Symbol. Ej: monitor_heart, medical_services, video_chat')
     title = models.CharField('Título', max_length=100)
     description = models.TextField('Descripción')
+    price = models.DecimalField('Precio', max_digits=10, decimal_places=2, null=True, blank=True,
+                                help_text='Opcional. Si lo dejás vacío, no se muestra precio en la landing.')
+    is_bookable = models.BooleanField('Reservable online', default=True,
+                                      help_text='Si está activo, los pacientes pueden elegir este servicio al reservar. Desactivá para servicios solo informativos (charlas, workshops).')
     order = models.PositiveIntegerField('Orden', default=0)
 
     class Meta:
@@ -194,6 +205,26 @@ class LandingService(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def formatted_price(self):
+        """Returns the price formatted for display, or '' if no price set.
+
+        ARS uses dot for thousands and comma for decimals (Argentine convention):
+        '$ 15.000' or '$ 1.500,50'. USD uses comma for thousands and dot for
+        decimals: 'USD 1,200' or 'USD 25.50'.
+        """
+        if self.price is None:
+            return ''
+        currency = (self.professional.currency or 'ARS').upper()
+        is_whole = self.price == self.price.to_integral_value()
+        if currency == 'USD':
+            return f'USD {int(self.price):,}' if is_whole else f'USD {self.price:,.2f}'
+        # ARS: swap , and . (Python defaults to anglo format)
+        if is_whole:
+            return f'$ {int(self.price):,}'.replace(',', '.')
+        anglo = f'{self.price:,.2f}'  # e.g. '1,500.50'
+        return f'$ {anglo.replace(",", "X").replace(".", ",").replace("X", ".")}'
 
 
 class LandingTestimonial(models.Model):
@@ -252,6 +283,12 @@ class Appointment(models.Model):
                                   help_text='Solo se completa cuando el turno es online.')
     notes = models.TextField('Notas del turno', blank=True, default='',
                              help_text='Notas privadas del profesional sobre este turno. Solo vos las ves.')
+    service = models.ForeignKey('LandingService', on_delete=models.SET_NULL, null=True, blank=True,
+                                related_name='appointments',
+                                help_text='Servicio elegido. Si es null, se trata como consulta general.')
+    price_at_booking = models.DecimalField('Precio al reservar', max_digits=10, decimal_places=2,
+                                            null=True, blank=True,
+                                            help_text='Precio congelado al momento de la reserva, independiente de cambios posteriores en el servicio.')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

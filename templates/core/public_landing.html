@@ -205,12 +205,18 @@
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         {% for svc in landing_services %}
-        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[var(--slate-200)] hover:border-[var(--theme-primary)] transition-all group ambient-shadow">
+        <div class="bg-white p-5 sm:p-6 rounded-2xl border border-[var(--slate-200)] hover:border-[var(--theme-primary)] transition-all group ambient-shadow flex flex-col">
           <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-lg bg-[var(--slate-50)] flex items-center justify-center text-[var(--theme-primary)] mb-3 sm:mb-4 group-hover:bg-[var(--theme-primary)] group-hover:text-white transition-colors">
             <span class="material-symbols-outlined">{{ svc.icon }}</span>
           </div>
           <h3 class="font-bold mb-2 text-[var(--ink)]">{{ svc.title }}</h3>
           <p class="body-sm text-[var(--slate-500)]">{{ svc.description }}</p>
+          {% if svc.formatted_price %}
+          <div class="mt-auto pt-4 flex items-baseline gap-2">
+            <span class="text-lg font-bold text-[var(--ink)]" style="letter-spacing:-0.01em;">{{ svc.formatted_price }}</span>
+            {% if svc.is_bookable %}<span class="body-sm text-[var(--slate-400)]">· por sesión</span>{% endif %}
+          </div>
+          {% endif %}
         </div>
         {% endfor %}
       </div>
@@ -392,6 +398,35 @@
             {% csrf_token %}
             <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
             <input type="hidden" name="time" id="selectedTime" value="">
+
+            {% if bookable_services %}
+            <div>
+              <p class="label-caps text-[var(--slate-500)] mb-2">¿Qué tipo de consulta?</p>
+              <input type="hidden" name="service_id" id="service_id" value="">
+              <div class="grid grid-cols-1 gap-2">
+                <label class="bg-white border border-[var(--slate-200)] rounded-lg p-3 cursor-pointer flex items-start gap-3 body-md has-[:checked]:border-[var(--theme-primary)] has-[:checked]:bg-[var(--cobalt-50)]">
+                  <input type="radio" name="service_choice" value="" data-service-id="" checked class="mt-1 accent-[var(--theme-primary)]" onchange="document.getElementById('service_id').value=this.dataset.serviceId;">
+                  <div class="flex-1">
+                    <div class="font-semibold text-[var(--ink)]">Consulta general</div>
+                    <div class="body-sm text-[var(--slate-500)]">Si todavía no sabés qué necesitás o no estás seguro.</div>
+                  </div>
+                  <span class="body-sm text-[var(--slate-400)] whitespace-nowrap">Sin costo asignado</span>
+                </label>
+                {% for svc in bookable_services %}
+                <label class="bg-white border border-[var(--slate-200)] rounded-lg p-3 cursor-pointer flex items-start gap-3 body-md has-[:checked]:border-[var(--theme-primary)] has-[:checked]:bg-[var(--cobalt-50)]">
+                  <input type="radio" name="service_choice" value="{{ svc.id }}" data-service-id="{{ svc.id }}" class="mt-1 accent-[var(--theme-primary)]" onchange="document.getElementById('service_id').value=this.dataset.serviceId;">
+                  <div class="flex-1">
+                    <div class="font-semibold text-[var(--ink)]">{{ svc.title }}</div>
+                    <div class="body-sm text-[var(--slate-500)]">{{ svc.description|truncatewords:18 }}</div>
+                  </div>
+                  {% if svc.formatted_price %}
+                  <span class="font-bold text-[var(--ink)] whitespace-nowrap">{{ svc.formatted_price }}</span>
+                  {% endif %}
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <input type="text" name="first_name" required placeholder="Nombre"

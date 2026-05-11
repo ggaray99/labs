@@ -187,9 +187,9 @@
                 Próximo{% if minutes_until_next is not None %} · en {{ minutes_until_next }} min{% endif %}
               </div>
             {% endif %}
-            <div class="t-title">{{ apt.patient.first_name }} {{ apt.patient.last_name }}{% if apt.reason %} · {{ apt.reason|truncatechars:60 }}{% endif %}</div>
+            <div class="t-title">{{ apt.patient.first_name }} {{ apt.patient.last_name }}{% if apt.service %} · {{ apt.service.title }}{% elif apt.reason %} · {{ apt.reason|truncatechars:60 }}{% endif %}</div>
             <div class="t-meta">
-              {{ apt.appointment_time|time:"H:i" }} · {% if apt.mode == 'online' %}videollamada{% else %}presencial{% endif %}{% if apt.source %} · {{ apt.get_source_display|lower }}{% endif %} · {{ apt.get_status_display|lower }}
+              {{ apt.appointment_time|time:"H:i" }} · {% if apt.mode == 'online' %}videollamada{% else %}presencial{% endif %}{% if apt.price_at_booking %} · {% if professional.currency == 'USD' %}USD {{ apt.price_at_booking|floatformat:"-2" }}{% else %}$ {{ apt.price_at_booking|floatformat:"-2" }}{% endif %}{% endif %} · {{ apt.get_status_display|lower }}
             </div>
             <div class="t-actions">
               {% if apt.mode == 'online' and apt.meeting_url and not apt.is_past %}

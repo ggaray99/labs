@@ -37,6 +37,7 @@ class BookingPatientForm(forms.Form):
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False, label='Motivo de consulta')
     mode = forms.ChoiceField(choices=MODE_CHOICES, required=False,
                               widget=forms.RadioSelect, label='Modalidad')
+    service_id = forms.CharField(required=False, widget=forms.HiddenInput)
 
 
 class ManualAppointmentForm(forms.Form):
@@ -64,7 +65,8 @@ class MissionForm(forms.ModelForm):
 class LandingSettingsForm(forms.ModelForm):
     class Meta:
         model = Professional
-        fields = ['vertical', 'theme_primary', 'show_stats', 'show_credentials', 'show_mission',
+        fields = ['vertical', 'theme_primary', 'currency',
+                  'show_stats', 'show_credentials', 'show_mission',
                   'show_services', 'show_testimonials', 'show_contact', 'show_map']
 
 
@@ -89,7 +91,7 @@ class LandingCredentialForm(forms.ModelForm):
 class LandingServiceForm(forms.ModelForm):
     class Meta:
         model = LandingService
-        fields = ['icon', 'title', 'description', 'order']
+        fields = ['icon', 'title', 'description', 'price', 'is_bookable', 'order']
 
 
 class LandingTestimonialForm(forms.ModelForm):

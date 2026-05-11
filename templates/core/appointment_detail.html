@@ -219,6 +219,12 @@
               <span class="field-label">Origen</span>
               <div class="field-value muted">{{ appointment.get_source_display }}</div>
             </div>
+            {% if appointment.service %}
+            <div style="grid-column:1 / -1;">
+              <span class="field-label">Servicio</span>
+              <div class="field-value">{{ appointment.service.title }}{% if appointment.price_at_booking %} · <strong>{% if professional.currency == 'USD' %}USD {{ appointment.price_at_booking|floatformat:"-2" }}{% else %}$ {{ appointment.price_at_booking|floatformat:"-2" }}{% endif %}</strong>{% endif %}</div>
+            </div>
+            {% endif %}
           </div>
 
           {% if appointment.reason %}

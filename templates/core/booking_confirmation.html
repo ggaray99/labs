@@ -14,6 +14,10 @@
             <p class="font-medium mb-3">{{ professional.professional_name }}</p>
             <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">Fecha y hora</p>
             <p class="font-medium mb-3">{{ date|date:"l d/m/Y" }} a las {{ time|time:"H:i" }} hs</p>
+            {% if appointment.service %}
+            <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">Servicio</p>
+            <p class="font-medium mb-3">{{ appointment.service.title }}{% if appointment.price_at_booking %} · {% if professional.currency == 'USD' %}USD {{ appointment.price_at_booking|floatformat:"-2" }}{% else %}$ {{ appointment.price_at_booking|floatformat:"-2" }}{% endif %}{% endif %}</p>
+            {% endif %}
             {% if appointment and appointment.mode == 'online' and appointment.meeting_url %}
             <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">Modalidad</p>
             <p class="font-medium mb-3">Videollamada</p>

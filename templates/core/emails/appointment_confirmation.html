@@ -67,11 +67,19 @@
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding-top:14px;">
+                        <td style="padding:14px 0 {% if appointment.service %}14px{% else %}0{% endif %} 0;{% if appointment.service %} border-bottom:1px solid #DCE5F4;{% endif %}">
                           <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">MODALIDAD</p>
                           <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{% if appointment.mode == 'online' %}Videollamada{% else %}Presencial{% endif %}{% if appointment.mode != 'online' and professional.address %} · {{ professional.address }}{% endif %}</p>
                         </td>
                       </tr>
+                      {% if appointment.service %}
+                      <tr>
+                        <td style="padding-top:14px;">
+                          <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">SERVICIO</p>
+                          <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{{ appointment.service.title }}{% if appointment.price_at_booking %} · <strong style="font-weight:600;">{% if professional.currency == 'USD' %}USD {{ appointment.price_at_booking|floatformat:"-2" }}{% else %}$ {{ appointment.price_at_booking|floatformat:"-2" }}{% endif %}</strong>{% endif %}</p>
+                        </td>
+                      </tr>
+                      {% endif %}
                     </table>
                   </td>
                 </tr>
