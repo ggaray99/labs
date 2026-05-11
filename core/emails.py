@@ -22,6 +22,17 @@ def _absolute_landing_url(professional, request=None):
     return ''
 
 
+def _absolute_profile_image_url(professional, request=None):
+    if not professional.profile_image:
+        return ''
+    url = professional.profile_image.url
+    if request is not None:
+        return request.build_absolute_uri(url)
+    if settings.SITE_BASE_URL:
+        return f'{settings.SITE_BASE_URL}{url}'
+    return ''
+
+
 def send_appointment_confirmation(appointment, request=None):
     """Send the brand-book slide-20 confirmation email to the patient.
 
@@ -43,6 +54,7 @@ def send_appointment_confirmation(appointment, request=None):
         'patient': patient,
         'professional': professional,
         'landing_url': _absolute_landing_url(professional, request),
+        'profile_image_url': _absolute_profile_image_url(professional, request),
     }
 
     subject = (
