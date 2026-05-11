@@ -8,7 +8,7 @@ from .models import (
 class ProfessionalSetupForm(forms.ModelForm):
     class Meta:
         model = Professional
-        fields = ['professional_name', 'specialty', 'email', 'phone', 'address', 'bio',
+        fields = ['professional_name', 'specialty', 'vertical', 'email', 'phone', 'address', 'bio',
                   'tagline', 'attention_mode', 'accepts_insurance', 'accepts_private',
                   'profile_image', 'common_reasons',
                   'working_days', 'start_time', 'end_time', 'appointment_duration_minutes']
@@ -57,7 +57,7 @@ class MissionForm(forms.ModelForm):
 class LandingSettingsForm(forms.ModelForm):
     class Meta:
         model = Professional
-        fields = ['theme_primary', 'show_stats', 'show_credentials', 'show_mission',
+        fields = ['vertical', 'theme_primary', 'show_stats', 'show_credentials', 'show_mission',
                   'show_services', 'show_testimonials', 'show_contact', 'show_map']
 
 

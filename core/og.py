@@ -51,6 +51,13 @@ def _rgba(rgb: tuple[int, int, int], alpha: float) -> tuple[int, int, int, int]:
     return (rgb[0], rgb[1], rgb[2], int(round(alpha * 255)))
 
 
+def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+    h = hex_color.lstrip('#')
+    if len(h) == 3:
+        h = ''.join(c * 2 for c in h)
+    return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
+
+
 # ---------------------------------------------------------------------------
 # Drawing primitives
 # ---------------------------------------------------------------------------
@@ -235,13 +242,14 @@ def render_og_for_professional(professional) -> bytes:
     """Brand book slide 23 — per-professional OG for /p/{slug}, 1200×630.
 
     Layout (scaled up from the brand book preview to native 1200×630):
-      - Cobalt background, decorative grid.
+      - Cobalt (or vertical tint) background, decorative grid.
       - Top-right small inverted lockup.
       - Bottom-left: 160px white avatar (initials in cobalt) + eyebrow
         "{SPECIALTY}" mono uppercase + headline "Agendá con {Nombre}".
       - Bottom-right: mono "→ /p/{slug}".
     """
-    img = Image.new('RGBA', (WIDTH, HEIGHT), COBALT + (255,))
+    bg = _hex_to_rgb(professional.vertical_tint) if professional.vertical_tint else COBALT
+    img = Image.new('RGBA', (WIDTH, HEIGHT), bg + (255,))
     _draw_grid(img)
     draw = ImageDraw.Draw(img, 'RGBA')
 

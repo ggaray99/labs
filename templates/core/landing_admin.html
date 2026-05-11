@@ -51,6 +51,17 @@
             <input type="hidden" name="action" value="settings_save">
 
             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Vertical</label>
+                <select name="vertical" class="w-full md:w-auto border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
+                    <option value="">— Sin asignar —</option>
+                    {% for value, label in settings_form.fields.vertical.choices %}{% if value %}
+                    <option value="{{ value }}" {% if professional.vertical == value %}selected{% endif %}>{{ label }}</option>
+                    {% endif %}{% endfor %}
+                </select>
+                <p class="text-xs text-gray-400 mt-1">Categoriza tu landing y, si dejás el color principal en cobalto, aplica el tint del rubro como acento.</p>
+            </div>
+
+            <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Color principal</label>
                 <div class="flex items-center gap-3">
                     <input type="color" name="theme_primary" value="{{ professional.theme_primary }}"
@@ -58,7 +69,7 @@
                     <input type="text" value="{{ professional.theme_primary }}" readonly
                            class="border border-gray-200 rounded px-3 py-2 text-sm font-mono bg-gray-50 w-28"
                            id="hexPreview">
-                    <span class="text-xs text-gray-400">Afecta CTAs, links y la tarjeta de misión.</span>
+                    <span class="text-xs text-gray-400">Afecta CTAs, links y la tarjeta de misión. Si dejás cobalto, gana el tint del vertical.</span>
                 </div>
             </div>
 

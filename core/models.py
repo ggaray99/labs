@@ -7,11 +7,33 @@ from django.utils.text import slugify
 HEX_COLOR_VALIDATOR = RegexValidator(r'^#(?:[0-9a-fA-F]{3}){1,2}$', 'Color en formato hex. Ej: #0047ab')
 
 
+# Brand book v1.0 — verticales opt-in y sus tints
+VERTICAL_CHOICES = [
+    ('salud',     'Salud'),
+    ('legal',     'Legal'),
+    ('contable',  'Contable / financiero'),
+    ('coaching',  'Coaching / consultoría'),
+    ('creativos', 'Servicios creativos y técnicos'),
+    ('bienestar', 'Bienestar'),
+]
+
+VERTICAL_TINTS = {
+    'salud':     '#5BB89A',   # Mint sereno
+    'legal':     '#3D4F8F',   # Indigo profundo
+    'contable':  '#8C7344',   # Bronce mate
+    'coaching':  '#D88061',   # Coral cálido
+    'creativos': '#7D5E94',   # Plum editorial
+    'bienestar': '#8A9F7E',   # Sage tierra
+}
+
+
 class Professional(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='professional', null=True)
     professional_name = models.CharField('Nombre completo', max_length=255)
     specialty = models.CharField('Especialidad', max_length=255)
+    vertical = models.CharField('Vertical', max_length=20, choices=VERTICAL_CHOICES, blank=True, default='',
+                                help_text='Categoría de servicio. Si se selecciona, define el tint de acento de la landing y la OG image.')
     email = models.EmailField('Email', unique=True)
     phone = models.CharField('Teléfono', max_length=50, blank=True)
     address = models.CharField('Dirección', max_length=255, blank=True)
@@ -24,7 +46,7 @@ class Professional(models.Model):
     common_reasons = models.TextField('Motivos frecuentes de consulta', blank=True, help_text='Separados por coma. Ej: Ansiedad, Estrés, Autoestima')
     mission = models.TextField('Misión / Filosofía', blank=True, help_text='Frase destacada que aparece en la landing como tarjeta azul.')
     theme_primary = models.CharField('Color principal', max_length=7, default='#0047ab', validators=[HEX_COLOR_VALIDATOR],
-                                     help_text='Color de CTAs, links y tarjeta de misión.')
+                                     help_text='Color de CTAs, links y tarjeta de misión. Si dejás vertical seleccionada y este campo en cobalto (#0047ab), el accent toma el tint del vertical.')
     show_stats = models.BooleanField('Mostrar estadísticas', default=True)
     show_credentials = models.BooleanField('Mostrar credenciales', default=True)
     show_mission = models.BooleanField('Mostrar misión', default=True)
@@ -66,6 +88,23 @@ class Professional(models.Model):
         if not self.common_reasons:
             return []
         return [r.strip() for r in self.common_reasons.split(',') if r.strip()]
+
+    @property
+    def vertical_tint(self):
+        """Hex del tint correspondiente a la vertical, o None si no hay vertical."""
+        return VERTICAL_TINTS.get(self.vertical) if self.vertical else None
+
+    @property
+    def accent_color(self):
+        """Color de acento para la landing pública.
+
+        El tint del vertical gana cuando está definido y el profesional dejó
+        theme_primary en el default (#0047ab). Si customizó theme_primary,
+        ese tiene prioridad. Si no hay vertical, cae a theme_primary.
+        """
+        if self.vertical_tint and (self.theme_primary or '').lower() == '#0047ab':
+            return self.vertical_tint
+        return self.theme_primary or '#0047ab'
 
 
 class Patient(models.Model):
