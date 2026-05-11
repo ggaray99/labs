@@ -23,14 +23,65 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Vertical</label>
-                <select name="vertical" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none">
-                    <option value="">— Sin asignar —</option>
-                    {% for value, label in form.fields.vertical.choices %}{% if value %}
-                    <option value="{{ value }}" {% if form.vertical.value == value %}selected{% endif %}>{{ label }}</option>
-                    {% endif %}{% endfor %}
-                </select>
-                <p class="text-xs text-gray-400 mt-1">Si la seleccionás, tu landing usa el color del rubro como acento. Lo podés cambiar después.</p>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Color de tu landing</label>
+                <p class="text-xs text-gray-400 mb-3">Elegí un acento por rubro o dejá el cobalto de consulte. Lo podés cambiar después.</p>
+
+                <style>
+                  .vtint-card { position: relative; cursor: pointer; border: 1px solid #E5E9F0; border-radius: 8px; padding: 12px; transition: border-color 150ms ease, box-shadow 150ms ease; background: #FFFFFF; }
+                  .vtint-card:hover { border-color: #A2AEBE; }
+                  .vtint-card .vtint-swatch { width: 100%; height: 56px; border-radius: 6px; position: relative; }
+                  .vtint-card .vtint-name { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 13px; color: #0B1C30; margin-top: 10px; }
+                  .vtint-card .vtint-meta { font-family: 'Manrope', sans-serif; font-size: 11px; color: #6F7E92; margin-top: 2px; line-height: 1.35; }
+                  .vtint-card input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+                  .vtint-card .vtint-check { position: absolute; top: 8px; right: 8px; width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,.92); display: none; align-items: center; justify-content: center; color: #0B1C30; font-size: 13px; font-weight: 700; line-height: 1; }
+                  .vtint-card:has(input[type="radio"]:checked) { border-color: var(--vtint-color, #0047AB); box-shadow: 0 0 0 1px var(--vtint-color, #0047AB); }
+                  .vtint-card:has(input[type="radio"]:checked) .vtint-check { display: inline-flex; }
+                </style>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <label class="vtint-card" style="--vtint-color:#0047AB;">
+                        <input type="radio" name="vertical" value="" {% if not form.vertical.value %}checked{% endif %}>
+                        <div class="vtint-swatch" style="background:#0047AB;"><span class="vtint-check">✓</span></div>
+                        <div class="vtint-name">Sin asignar</div>
+                        <div class="vtint-meta">Cobalto consulte. · default</div>
+                    </label>
+                    <label class="vtint-card" style="--vtint-color:#5BB89A;">
+                        <input type="radio" name="vertical" value="salud" {% if form.vertical.value == 'salud' %}checked{% endif %}>
+                        <div class="vtint-swatch" style="background:#5BB89A;"><span class="vtint-check">✓</span></div>
+                        <div class="vtint-name">Salud</div>
+                        <div class="vtint-meta">Mint sereno · clínico sin frialdad</div>
+                    </label>
+                    <label class="vtint-card" style="--vtint-color:#3D4F8F;">
+                        <input type="radio" name="vertical" value="legal" {% if form.vertical.value == 'legal' %}checked{% endif %}>
+                        <div class="vtint-swatch" style="background:#3D4F8F;"><span class="vtint-check">✓</span></div>
+                        <div class="vtint-name">Legal</div>
+                        <div class="vtint-meta">Indigo profundo · institucional</div>
+                    </label>
+                    <label class="vtint-card" style="--vtint-color:#8C7344;">
+                        <input type="radio" name="vertical" value="contable" {% if form.vertical.value == 'contable' %}checked{% endif %}>
+                        <div class="vtint-swatch" style="background:#8C7344;"><span class="vtint-check">✓</span></div>
+                        <div class="vtint-name">Contable</div>
+                        <div class="vtint-meta">Bronce mate · seriedad fiscal</div>
+                    </label>
+                    <label class="vtint-card" style="--vtint-color:#D88061;">
+                        <input type="radio" name="vertical" value="coaching" {% if form.vertical.value == 'coaching' %}checked{% endif %}>
+                        <div class="vtint-swatch" style="background:#D88061;"><span class="vtint-check">✓</span></div>
+                        <div class="vtint-name">Coaching</div>
+                        <div class="vtint-meta">Coral cálido · cercanía</div>
+                    </label>
+                    <label class="vtint-card" style="--vtint-color:#7D5E94;">
+                        <input type="radio" name="vertical" value="creativos" {% if form.vertical.value == 'creativos' %}checked{% endif %}>
+                        <div class="vtint-swatch" style="background:#7D5E94;"><span class="vtint-check">✓</span></div>
+                        <div class="vtint-name">Creativos</div>
+                        <div class="vtint-meta">Plum editorial · autoría</div>
+                    </label>
+                    <label class="vtint-card" style="--vtint-color:#8A9F7E;">
+                        <input type="radio" name="vertical" value="bienestar" {% if form.vertical.value == 'bienestar' %}checked{% endif %}>
+                        <div class="vtint-swatch" style="background:#8A9F7E;"><span class="vtint-check">✓</span></div>
+                        <div class="vtint-name">Bienestar</div>
+                        <div class="vtint-meta">Sage tierra · equilibrio</div>
+                    </label>
+                </div>
             </div>
 
             <div>
