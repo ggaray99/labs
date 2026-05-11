@@ -2,15 +2,7 @@
 {% block title %}Editar landing — consulte.{% endblock %}
 
 {% block navbar %}
-<nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-    <a href="{% url 'dashboard' %}" class="align-middle">{% include 'core/_brand_lockup.html' with iso_size=26 text_size=20 %}</a>
-    <div class="flex items-center gap-4 text-sm">
-        <a href="{% url 'dashboard' %}" class="text-gray-500 hover:text-gray-700">Dashboard</a>
-        <a href="{% url 'patient_list' %}" class="text-gray-500 hover:text-gray-700">Pacientes</a>
-        <a href="{{ public_url }}" target="_blank" class="text-primary-600 hover:underline">Ver landing pública ↗</a>
-        <a href="{% url 'logout' %}" class="text-gray-400 hover:text-gray-600">Salir</a>
-    </div>
-</nav>
+{% include 'core/_app_nav.html' with active='pagina' %}
 {% endblock %}
 
 {% block content %}
@@ -26,9 +18,14 @@
 
 <div class="builder max-w-4xl mx-auto px-6 py-8">
 
-    <div class="mb-6">
-        <h1 class="text-2xl font-semibold tracking-tight mb-2">Editar mi landing</h1>
-        <p class="text-gray-500 text-sm">Configurá la apariencia, ocultá secciones y editá el contenido por bloques.</p>
+    <div class="flex flex-wrap items-start justify-between gap-3 mb-6">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight mb-2">Editar mi landing</h1>
+            <p class="text-gray-500 text-sm">Configurá la apariencia, ocultá secciones y editá el contenido por bloques.</p>
+        </div>
+        <a href="{{ public_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium text-gray-700">
+            Ver landing pública ↗
+        </a>
     </div>
 
     {% if messages %}

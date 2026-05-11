@@ -2,10 +2,7 @@
 {% block title %}Nuevo turno — consulte.{% endblock %}
 
 {% block navbar %}
-<nav class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between">
-    <a href="{% url 'dashboard' %}" class="align-middle">{% include 'core/_brand_lockup.html' with iso_size=26 text_size=20 %}</a>
-    <a href="{% url 'dashboard' %}" class="text-sm text-gray-500 hover:text-gray-700">&larr; Volver al dashboard</a>
-</nav>
+{% include 'core/_app_nav.html' with active='agenda' %}
 {% endblock %}
 
 {% block content %}
