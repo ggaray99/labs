@@ -189,29 +189,73 @@ def dashboard(request):
         return redirect('setup')
 
     today = date.today()
+    now = datetime.now()
+    week_start = today - timedelta(days=today.weekday())
+    week_end = week_start + timedelta(days=6)
+    month_start = today.replace(day=1)
+
     appointments_today = list(Appointment.objects.filter(
         professional=professional,
         appointment_date=today
-    ).select_related('patient'))
+    ).select_related('patient').order_by('appointment_time'))
 
-    upcoming = Appointment.objects.filter(
+    upcoming = list(Appointment.objects.filter(
         professional=professional,
-        appointment_date__gte=today,
+        appointment_date__gt=today,
         status__in=['scheduled', 'confirmed']
-    ).select_related('patient').order_by('appointment_date', 'appointment_time')[:10]
+    ).select_related('patient').order_by('appointment_date', 'appointment_time')[:10])
+
+    week_count = Appointment.objects.filter(
+        professional=professional,
+        appointment_date__range=(week_start, week_end),
+        status__in=['scheduled', 'confirmed', 'completed'],
+    ).count()
+    month_count = Appointment.objects.filter(
+        professional=professional,
+        appointment_date__gte=month_start,
+        appointment_date__lte=today,
+        status__in=['scheduled', 'confirmed', 'completed'],
+    ).count()
+    cancelled_count = Appointment.objects.filter(
+        professional=professional,
+        appointment_date__gte=month_start,
+        status='cancelled',
+    ).count()
 
     recent_patients = Patient.objects.filter(professional=professional).order_by('-created_at')[:5]
 
     public_url = request.build_absolute_uri(f'/p/{professional.slug}/')
     qr_data = generate_qr_base64(public_url)
 
-    # Attach review_link to completed appointments missing a testimonial.
+    # Tag each today appointment with helper flags + an optional review link
+    # so the timeline can highlight the next one and offer a copy button.
+    next_appointment = None
     for apt in appointments_today:
         apt.review_link = ''
         if apt.status == 'completed' and not hasattr(apt, 'testimonial'):
             apt.review_link = request.build_absolute_uri(
                 reverse('public_review', kwargs={'slug': professional.slug, 'token': make_review_token(apt)})
             )
+        apt.is_next = False
+        apt.is_past = apt.status in ('completed', 'cancelled') or (
+            apt.appointment_time < now.time()
+        )
+
+    for apt in appointments_today:
+        if not apt.is_past and apt.status in ('scheduled', 'confirmed'):
+            apt.is_next = True
+            next_appointment = apt
+            break
+
+    if next_appointment is None and upcoming:
+        next_appointment = upcoming[0]
+
+    minutes_until_next = None
+    if next_appointment is not None:
+        apt_dt = datetime.combine(next_appointment.appointment_date, next_appointment.appointment_time)
+        delta_seconds = (apt_dt - now).total_seconds()
+        if delta_seconds > 0:
+            minutes_until_next = int(delta_seconds // 60)
 
     return render(request, 'core/dashboard.html', {
         'professional': professional,
@@ -221,6 +265,13 @@ def dashboard(request):
         'public_url': public_url,
         'qr_data': qr_data,
         'today': today,
+        'now': now,
+        'today_count': len(appointments_today),
+        'week_count': week_count,
+        'month_count': month_count,
+        'cancelled_count': cancelled_count,
+        'next_appointment': next_appointment,
+        'minutes_until_next': minutes_until_next,
         'status_choices': Appointment.STATUS_CHOICES,
     })
 
