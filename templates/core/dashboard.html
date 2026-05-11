@@ -240,9 +240,14 @@
             {% endif %}
             <div class="t-title">{{ apt.patient.first_name }} {{ apt.patient.last_name }}{% if apt.reason %} · {{ apt.reason|truncatechars:60 }}{% endif %}</div>
             <div class="t-meta">
-              {{ apt.appointment_time|time:"H:i" }}{% if apt.source %} · {{ apt.get_source_display|lower }}{% endif %} · {{ apt.get_status_display|lower }}
+              {{ apt.appointment_time|time:"H:i" }} · {% if apt.mode == 'online' %}videollamada{% else %}presencial{% endif %}{% if apt.source %} · {{ apt.get_source_display|lower }}{% endif %} · {{ apt.get_status_display|lower }}
             </div>
             <div class="t-actions">
+              {% if apt.mode == 'online' and apt.meeting_url and not apt.is_past %}
+              <a href="{{ apt.meeting_url }}" target="_blank" rel="noopener" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;">
+                <span class="material-symbols-outlined" style="font-size:18px;">videocam</span> Unirme
+              </a>
+              {% endif %}
               <form method="post" action="{% url 'appointment_status' apt.id %}">
                 {% csrf_token %}
                 <select name="status" onchange="this.form.submit()">
@@ -275,7 +280,7 @@
           <div class="t-row">
             <div class="t-time"><span class="mono">{{ apt.appointment_date|date:"d/m" }}</span><br><span style="font-size:11px;color:var(--slate-300);">{{ apt.appointment_time|time:"H:i" }}</span></div>
             <div class="t-card t-card-future">
-              <div class="t-title">{{ apt.patient.first_name }} {{ apt.patient.last_name }}</div>
+              <div class="t-title">{{ apt.patient.first_name }} {{ apt.patient.last_name }}{% if apt.mode == 'online' %} · videollamada{% endif %}</div>
               <div class="t-meta">{{ apt.appointment_date|date:"l d/m" }} · {{ apt.appointment_time|time:"H:i" }} · {{ apt.get_status_display|lower }}</div>
             </div>
           </div>
@@ -328,7 +333,14 @@
         </div>
 
         <div style="margin-top: 24px; display: flex; gap: 8px; flex-wrap: wrap;">
+          {% if next_appointment.mode == 'online' and next_appointment.meeting_url %}
+          <a href="{{ next_appointment.meeting_url }}" target="_blank" rel="noopener" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">videocam</span> Unirme a la videollamada
+          </a>
+          <a href="{% url 'patient_detail' next_appointment.patient.id %}" class="btn-outline">Ver ficha</a>
+          {% else %}
           <a href="{% url 'patient_detail' next_appointment.patient.id %}" class="btn-primary">Ver ficha completa</a>
+          {% endif %}
         </div>
       {% else %}
         <p class="empty">No hay turnos próximos.<br>Compartí tu landing para empezar a recibir reservas.</p>

@@ -320,12 +320,21 @@ def appointment_new(request):
                 ).exists():
                     messages.error(request, 'Ya existe un turno en ese horario.')
                 else:
+                    posted_mode = request.POST.get('mode', '')
+                    if professional.both_modes:
+                        mode = posted_mode if posted_mode in ('online', 'presencial') else 'presencial'
+                    elif professional.supports_online:
+                        mode = 'online'
+                    else:
+                        mode = 'presencial'
+
                     Appointment.objects.create(
                         professional=professional, patient=patient,
                         appointment_date=d, appointment_time=t,
                         reason=request.POST.get('reason', ''),
                         status=request.POST.get('status', 'scheduled'),
                         source='manual',
+                        mode=mode,
                     )
                     messages.success(request, 'Turno creado correctamente.')
                     return redirect('dashboard')
@@ -581,6 +590,14 @@ def public_landing(request, slug):
                 return redirect('public_landing', slug=slug)
 
             data = form.cleaned_data
+
+            if professional.both_modes:
+                mode = data.get('mode') or 'presencial'
+            elif professional.supports_online:
+                mode = 'online'
+            else:
+                mode = 'presencial'
+
             patient, _ = Patient.objects.update_or_create(
                 professional=professional, phone=data['phone'],
                 defaults={
@@ -595,10 +612,12 @@ def public_landing(request, slug):
                 professional=professional, patient=patient,
                 appointment_date=selected_date, appointment_time=selected_time,
                 reason=data.get('reason', ''), source='online',
+                mode=mode,
             )
             send_appointment_confirmation(appointment, request=request)
             return render(request, 'core/booking_confirmation.html', {
                 'professional': professional, 'date': selected_date, 'time': selected_time,
+                'appointment': appointment,
             })
 
     form = BookingPatientForm()

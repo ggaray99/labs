@@ -46,25 +46,39 @@
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding:14px 0 {% if professional.address %}14px{% else %}0{% endif %} 0;{% if professional.address %} border-bottom:1px solid #DCE5F4;{% endif %}">
+                        <td style="padding:14px 0 14px 0; border-bottom:1px solid #DCE5F4;">
                           <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">HORA</p>
                           <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{{ appointment.appointment_time|time:"H:i" }} hs</p>
                         </td>
                       </tr>
-                      {% if professional.address %}
                       <tr>
                         <td style="padding-top:14px;">
-                          <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">DIRECCIÓN</p>
-                          <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{{ professional.address }}</p>
+                          <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">MODALIDAD</p>
+                          <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{% if appointment.mode == 'online' %}Videollamada{% else %}Presencial{% endif %}{% if appointment.mode != 'online' and professional.address %} · {{ professional.address }}{% endif %}</p>
                         </td>
                       </tr>
-                      {% endif %}
                     </table>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
+
+          {% if appointment.mode == 'online' and appointment.meeting_url %}
+          <tr>
+            <td style="padding:24px 32px 8px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0047AB; border-radius:8px;">
+                <tr>
+                  <td style="padding:24px 28px;">
+                    <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-weight:500; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#A8C0E8;">LINK DE LA VIDEOLLAMADA</p>
+                    <p style="margin:0 0 16px 0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:13px; line-height:20px; color:#FFFFFF; word-break:break-all;">{{ appointment.meeting_url }}</p>
+                    <a href="{{ appointment.meeting_url }}" style="display:inline-block; background-color:#FFFFFF; color:#0047AB; font-family:'Manrope',-apple-system,'Segoe UI',sans-serif; font-weight:600; font-size:14px; line-height:1; padding:12px 22px; border-radius:6px; text-decoration:none;">Unirme a la videollamada</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {% endif %}
 
           {% if landing_url %}
           <tr>

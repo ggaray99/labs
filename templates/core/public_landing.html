@@ -419,6 +419,29 @@
               </div>
             </details>
 
+            {% if professional.both_modes %}
+            <div>
+              <p class="label-caps text-[var(--slate-500)] mb-2">Modalidad del turno</p>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="bg-white border border-[var(--slate-200)] rounded-lg p-3 cursor-pointer flex items-center gap-2 body-md has-[:checked]:border-[var(--theme-primary)] has-[:checked]:bg-[var(--cobalt-50)]">
+                  <input type="radio" name="mode" value="presencial" checked class="accent-[var(--theme-primary)]">
+                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--theme-primary);">place</span>
+                  Presencial
+                </label>
+                <label class="bg-white border border-[var(--slate-200)] rounded-lg p-3 cursor-pointer flex items-center gap-2 body-md has-[:checked]:border-[var(--theme-primary)] has-[:checked]:bg-[var(--cobalt-50)]">
+                  <input type="radio" name="mode" value="online" class="accent-[var(--theme-primary)]">
+                  <span class="material-symbols-outlined" style="font-size:18px;color:var(--theme-primary);">videocam</span>
+                  Videollamada
+                </label>
+              </div>
+            </div>
+            {% elif professional.supports_online %}
+            <div class="bg-[var(--cobalt-50)] border border-[var(--cobalt-100)] rounded-lg p-3 flex items-center gap-2 body-sm text-[var(--slate-500)]">
+              <span class="material-symbols-outlined" style="font-size:18px;color:var(--theme-primary);">videocam</span>
+              Este turno es por videollamada. Te enviamos el link por email.
+            </div>
+            {% endif %}
+
             <textarea name="reason" rows="2" placeholder="Motivo de consulta (opcional)"
                       class="w-full bg-white border border-[var(--slate-200)] rounded-lg p-3 body-md focus:border-[var(--theme-primary)] outline-none"></textarea>
 

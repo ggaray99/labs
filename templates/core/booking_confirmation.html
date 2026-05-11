@@ -13,8 +13,25 @@
             <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">Profesional</p>
             <p class="font-medium mb-3">{{ professional.professional_name }}</p>
             <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">Fecha y hora</p>
-            <p class="font-medium">{{ date|date:"l d/m/Y" }} a las {{ time|time:"H:i" }} hs</p>
+            <p class="font-medium mb-3">{{ date|date:"l d/m/Y" }} a las {{ time|time:"H:i" }} hs</p>
+            {% if appointment and appointment.mode == 'online' and appointment.meeting_url %}
+            <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">Modalidad</p>
+            <p class="font-medium mb-3">Videollamada</p>
+            {% elif appointment and appointment.mode == 'presencial' and professional.address %}
+            <p class="text-xs uppercase tracking-wider text-gray-400 mb-1">Dirección</p>
+            <p class="font-medium">{{ professional.address }}</p>
+            {% endif %}
         </div>
+
+        {% if appointment and appointment.mode == 'online' and appointment.meeting_url %}
+        <div class="bg-primary-500 text-white rounded-xl p-5 mb-8 text-left">
+            <p class="text-xs uppercase tracking-wider text-primary-100 mb-2" style="letter-spacing: 0.14em;">LINK DE LA VIDEOLLAMADA</p>
+            <p class="font-mono text-xs mb-4 break-all" style="color:#A8C0E8;">{{ appointment.meeting_url }}</p>
+            <a href="{{ appointment.meeting_url }}" target="_blank" rel="noopener" class="inline-block bg-white text-primary-600 font-semibold px-5 py-2.5 rounded-lg text-sm">Unirme a la videollamada</a>
+            <p class="text-xs text-primary-100 mt-3">Guardá este link. También te lo enviamos por email.</p>
+        </div>
+        {% endif %}
+
         <a href="{% url 'public_landing' professional.slug %}" class="text-primary-600 hover:text-primary-700 text-sm font-medium">Volver a la página del profesional</a>
     </div>
 </div>

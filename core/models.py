@@ -95,6 +95,22 @@ class Professional(models.Model):
         return VERTICAL_TINTS.get(self.vertical) if self.vertical else None
 
     @property
+    def supports_online(self):
+        """True if the pro's attention_mode mentions 'online'."""
+        return 'online' in (self.attention_mode or '').lower()
+
+    @property
+    def supports_presencial(self):
+        """True if the pro accepts in-person (or hasn't configured the field)."""
+        attention = (self.attention_mode or '').lower()
+        return 'presencial' in attention or not attention
+
+    @property
+    def both_modes(self):
+        """True when the pro accepts both formats and the patient must choose."""
+        return self.supports_online and self.supports_presencial
+
+    @property
     def accent_color(self):
         """Color de acento para la landing pública.
 
@@ -217,6 +233,10 @@ class Appointment(models.Model):
         ('email', 'Email'),
         ('phone', 'Teléfono'),
     ]
+    MODE_CHOICES = [
+        ('presencial', 'Presencial'),
+        ('online',     'Online (videollamada)'),
+    ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     professional = models.ForeignKey(Professional, on_delete=models.CASCADE, related_name='appointments')
@@ -226,6 +246,10 @@ class Appointment(models.Model):
     reason = models.TextField('Motivo', blank=True)
     status = models.CharField('Estado', max_length=50, choices=STATUS_CHOICES, default='scheduled')
     source = models.CharField('Origen', max_length=50, choices=SOURCE_CHOICES, default='online')
+    mode = models.CharField('Modalidad', max_length=20, choices=MODE_CHOICES, default='presencial',
+                            help_text='Presencial o videollamada. Si es online, se genera un link de Jitsi automáticamente.')
+    meeting_url = models.URLField('Link de videollamada', blank=True, default='',
+                                  help_text='Solo se completa cuando el turno es online.')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -237,3 +261,19 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f'{self.patient} - {self.appointment_date} {self.appointment_time}'
+
+    def generate_meeting_url(self):
+        """Returns a deterministic Jitsi room URL derived from this appointment's UUID.
+
+        Same appointment always resolves to the same room, so the patient and the
+        professional join the same call without coordinating room names.
+        """
+        room = f"consulte-{str(self.id).split('-')[0]}"
+        return f"https://meet.jit.si/{room}"
+
+    def save(self, *args, **kwargs):
+        # uuid is assigned at __init__ (default=uuid.uuid4), so self.id is
+        # always available here — no need for a two-step save.
+        if self.mode == 'online' and not self.meeting_url:
+            self.meeting_url = self.generate_meeting_url()
+        super().save(*args, **kwargs)

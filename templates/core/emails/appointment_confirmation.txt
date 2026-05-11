@@ -7,7 +7,10 @@ Tu turno con {{ professional.professional_name }} quedó reservado.
 PROFESIONAL: {{ professional.professional_name }}{% if professional.specialty %} — {{ professional.specialty }}{% endif %}
 FECHA:       {{ appointment.appointment_date|date:"l d/m/Y" }}
 HORA:        {{ appointment.appointment_time|time:"H:i" }} hs
-{% if professional.address %}DIRECCIÓN:   {{ professional.address }}
+MODALIDAD:   {% if appointment.mode == 'online' %}Videollamada{% else %}Presencial{% if professional.address %} — {{ professional.address }}{% endif %}{% endif %}
+{% if appointment.mode == 'online' and appointment.meeting_url %}
+LINK DE LA VIDEOLLAMADA:
+{{ appointment.meeting_url }}
 {% endif %}{% if landing_url %}
 Ver consultorio: {{ landing_url }}
 {% endif %}

@@ -22,6 +22,11 @@ class PatientForm(forms.ModelForm):
 
 
 class BookingPatientForm(forms.Form):
+    MODE_CHOICES = [
+        ('presencial', 'Presencial'),
+        ('online',     'Videollamada'),
+    ]
+
     first_name = forms.CharField(max_length=255, label='Nombre')
     last_name = forms.CharField(max_length=255, label='Apellido')
     phone = forms.CharField(max_length=50, label='Teléfono')
@@ -30,6 +35,8 @@ class BookingPatientForm(forms.Form):
     health_insurance_plan = forms.CharField(max_length=255, required=False, label='Plan')
     health_insurance_number = forms.CharField(max_length=255, required=False, label='Nro. afiliado')
     reason = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False, label='Motivo de consulta')
+    mode = forms.ChoiceField(choices=MODE_CHOICES, required=False,
+                              widget=forms.RadioSelect, label='Modalidad')
 
 
 class ManualAppointmentForm(forms.Form):
