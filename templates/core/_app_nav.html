@@ -1,0 +1,55 @@
+{# Top navbar for authenticated app pages. Include with: {% include 'core/_app_nav.html' with active='agenda' %} #}
+<style>
+  .app-nav { position: sticky; top: 0; z-index: 40; background: #FFFFFF; border-bottom: 1px solid #E5E9F0; font-family: 'Manrope', system-ui, sans-serif; }
+  .app-nav-inner { max-width: 1440px; margin: 0 auto; padding: 14px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .app-nav-left  { display: flex; align-items: center; gap: 24px; min-width: 0; }
+  .app-nav-right { display: flex; align-items: center; gap: 14px; }
+  .app-nav .lockup-link { display: inline-flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .app-nav .wordmark { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.045em; color: #0047AB; }
+  .app-nav .wordmark .dot { color: #0B1C30; }
+  .app-nav .sep { width: 1px; height: 20px; background: #CBD2DD; flex-shrink: 0; }
+  .app-nav .tabs { display: flex; gap: 6px; }
+  .app-nav .tab  { padding: 7px 14px; border-radius: 5px; font-size: 13px; font-weight: 500; color: #4A5A6E; text-decoration: none; transition: background 150ms ease-out, color 150ms ease-out; white-space: nowrap; }
+  .app-nav .tab:hover { color: #0B1C30; background: #F4F6FA; }
+  .app-nav .tab-active { background: #F2F5FC; color: #0047AB; font-weight: 600; }
+  .app-nav .date-stamp { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: #6F7E92; white-space: nowrap; text-transform: capitalize; }
+  .app-nav .avatar-mini { width: 32px; height: 32px; border-radius: 50%; background: #0047AB; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .app-nav .logout-link { font-size: 13px; color: #6F7E92; text-decoration: none; }
+  .app-nav .logout-link:hover { color: #0B1C30; }
+  .app-nav .tabs-toggle { display: none; width: 36px; height: 36px; border: 1px solid #CBD2DD; border-radius: 6px; background: #FFFFFF; color: #4A5A6E; font-size: 18px; cursor: pointer; align-items: center; justify-content: center; }
+
+  @media (max-width: 767px) {
+    .app-nav-inner { padding: 12px 16px; gap: 8px; }
+    .app-nav .date-stamp { display: none; }
+    .app-nav .logout-link { display: none; }
+    .app-nav .sep { display: none; }
+    .app-nav .tabs { display: none; position: absolute; top: 60px; left: 16px; right: 16px; flex-direction: column; gap: 2px; padding: 8px; background: #FFFFFF; border: 1px solid #E5E9F0; border-radius: 8px; box-shadow: 0 10px 30px -15px rgba(11,28,48,.2); }
+    .app-nav .tabs.open { display: flex; }
+    .app-nav .tabs-toggle { display: inline-flex; }
+  }
+</style>
+
+<header class="app-nav">
+  <div class="app-nav-inner">
+    <div class="app-nav-left">
+      <a href="{% url 'dashboard' %}" class="lockup-link" aria-label="Ir al dashboard">
+        <svg width="26" height="26" viewBox="0 0 80 80" aria-hidden="true"><rect x="6" y="6" width="68" height="68" rx="8" fill="none" stroke="#0047AB" stroke-width="10"/><rect x="22" y="36" width="36" height="8" fill="#0047AB"/></svg>
+        <span class="wordmark">consulte<span class="dot">.</span></span>
+      </a>
+      <span class="sep" aria-hidden="true"></span>
+      <nav class="tabs" aria-label="Secciones">
+        <a class="tab {% if active == 'agenda' %}tab-active{% endif %}" href="{% url 'dashboard' %}">Agenda</a>
+        <a class="tab {% if active == 'clientes' %}tab-active{% endif %}" href="{% url 'patient_list' %}">Clientes</a>
+        <a class="tab {% if active == 'pagina' %}tab-active{% endif %}" href="{% url 'landing_admin' %}">Página</a>
+      </nav>
+    </div>
+    <div class="app-nav-right">
+      {% if show_date %}<span class="date-stamp">{{ now|date:"l d/m · H:i" }}</span>{% endif %}
+      <span class="avatar-mini" title="{{ professional.professional_name }}">{{ professional.professional_name|slice:":1"|upper }}</span>
+      <a href="{% url 'logout' %}" class="logout-link" title="Salir">Salir</a>
+      <button type="button" class="tabs-toggle" onclick="this.parentElement.parentElement.querySelector('.tabs').classList.toggle('open')" aria-label="Menú">
+        <span aria-hidden="true">≡</span>
+      </button>
+    </div>
+  </div>
+</header>

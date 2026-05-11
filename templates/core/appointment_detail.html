@@ -2,26 +2,7 @@
 {% block title %}Turno · {{ appointment.patient.first_name }} {{ appointment.patient.last_name }} — consulte.{% endblock %}
 
 {% block navbar %}
-<header class="app-nav">
-  <div class="app-nav-inner">
-    <div class="app-nav-left">
-      <a href="{% url 'dashboard' %}" class="lockup-link" aria-label="Ir al dashboard">
-        <svg width="26" height="26" viewBox="0 0 80 80" aria-hidden="true"><rect x="6" y="6" width="68" height="68" rx="8" fill="none" stroke="#0047AB" stroke-width="10"/><rect x="22" y="36" width="36" height="8" fill="#0047AB"/></svg>
-        <span class="wordmark">consulte<span class="dot">.</span></span>
-      </a>
-      <span class="sep" aria-hidden="true"></span>
-      <nav class="tabs" aria-label="Secciones">
-        <a class="tab tab-active" href="{% url 'dashboard' %}">Agenda</a>
-        <a class="tab" href="{% url 'patient_list' %}">Clientes</a>
-        <a class="tab" href="{% url 'landing_admin' %}">Página</a>
-      </nav>
-    </div>
-    <div class="app-nav-right">
-      <span class="avatar-mini" title="{{ professional.professional_name }}">{{ professional.professional_name|slice:":1"|upper }}</span>
-      <a href="{% url 'logout' %}" class="logout-link" title="Salir">Salir</a>
-    </div>
-  </div>
-</header>
+{% include 'core/_app_nav.html' with active='agenda' %}
 {% endblock %}
 
 {% block content %}
