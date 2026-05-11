@@ -250,6 +250,8 @@ class Appointment(models.Model):
                             help_text='Presencial o videollamada. Si es online, se genera un link de Jitsi automáticamente.')
     meeting_url = models.URLField('Link de videollamada', blank=True, default='',
                                   help_text='Solo se completa cuando el turno es online.')
+    notes = models.TextField('Notas del turno', blank=True, default='',
+                             help_text='Notas privadas del profesional sobre este turno. Solo vos las ves.')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

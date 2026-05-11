@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% block title %}Turno · {{ appointment.patient.first_name }} {{ appointment.patient.last_name }} — consulte.{% endblock %}
+
+{% block navbar %}
+<header class="app-nav">
+  <div class="app-nav-inner">
+    <div class="app-nav-left">
+      <a href="{% url 'dashboard' %}" class="lockup-link" aria-label="Ir al dashboard">
+        <svg width="26" height="26" viewBox="0 0 80 80" aria-hidden="true"><rect x="6" y="6" width="68" height="68" rx="8" fill="none" stroke="#0047AB" stroke-width="10"/><rect x="22" y="36" width="36" height="8" fill="#0047AB"/></svg>
+        <span class="wordmark">consulte<span class="dot">.</span></span>
+      </a>
+      <span class="sep" aria-hidden="true"></span>
+      <nav class="tabs" aria-label="Secciones">
+        <a class="tab tab-active" href="{% url 'dashboard' %}">Agenda</a>
+        <a class="tab" href="{% url 'patient_list' %}">Clientes</a>
+        <a class="tab" href="{% url 'landing_admin' %}">Página</a>
+      </nav>
+    </div>
+    <div class="app-nav-right">
+      <span class="avatar-mini" title="{{ professional.professional_name }}">{{ professional.professional_name|slice:":1"|upper }}</span>
+      <a href="{% url 'logout' %}" class="logout-link" title="Salir">Salir</a>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+
+<style>
+  .apt {
+    --cobalt:      #0047AB;
+    --cobalt-dark: #00327D;
+    --cobalt-50:   #F2F5FC;
+    --cobalt-100:  #DCE5F4;
+    --ink:         #0B1C30;
+    --paper:       #FFFFFF;
+    --bg-tint:     #F8F9FF;
+    --slate-50:    #F4F6FA;
+    --slate-100:   #E5E9F0;
+    --slate-200:   #CBD2DD;
+    --slate-300:   #A2AEBE;
+    --slate-400:   #6F7E92;
+    --slate-500:   #4A5A6E;
+    --slate-700:   #1F3147;
+    --success:     #1E9E63;
+    background: var(--bg-tint);
+    color: var(--ink);
+    font-family: 'Manrope', system-ui, sans-serif;
+    min-height: calc(100vh - 60px);
+  }
+  .apt .mono, .apt .label-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .apt .label-mono { font-size: 11px; line-height: 1; letter-spacing: 0.14em; font-weight: 500; text-transform: uppercase; color: var(--slate-400); }
+  .apt .label-mono-cobalt { color: var(--cobalt); }
+  .apt .label-mono-white { color: #fff; }
+
+  .apt .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 24px 80px 24px; }
+  @media (max-width: 767px) { .apt .wrap { padding: 20px 16px 60px 16px; } }
+
+  .apt .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--slate-400); margin-bottom: 16px; }
+  .apt .breadcrumb a { color: var(--slate-500); text-decoration: none; }
+  .apt .breadcrumb a:hover { color: var(--ink); }
+  .apt .breadcrumb .sep { color: var(--slate-300); }
+
+  .apt h1 { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 28px; line-height: 1.15; letter-spacing: -0.02em; color: var(--ink); margin: 0 0 6px 0; }
+  .apt .subline { font-size: 14px; color: var(--slate-500); }
+  @media (min-width: 768px) { .apt h1 { font-size: 32px; } }
+
+  .apt .layout { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 24px; }
+  @media (min-width: 900px) { .apt .layout { grid-template-columns: 1.4fr 1fr; } }
+
+  .apt .card { background: var(--paper); border: 1px solid var(--slate-100); border-radius: 12px; padding: 24px; }
+  .apt .card h2 { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 18px; line-height: 1.25; color: var(--ink); margin: 0 0 14px 0; letter-spacing: -0.005em; }
+  .apt .card h3 { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 15px; color: var(--ink); margin: 0 0 4px 0; }
+
+  /* Meta grid */
+  .apt .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 4px; }
+  .apt .meta-grid .field-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate-400); margin-bottom: 6px; }
+  .apt .meta-grid .field-value { font-size: 14px; color: var(--ink); font-weight: 500; word-break: break-word; }
+  .apt .meta-grid .field-value.muted { color: var(--slate-500); font-weight: 400; }
+  .apt .meta-grid .field-value a { color: var(--cobalt); text-decoration: none; }
+
+  /* Online block */
+  .apt .meeting-card { background: var(--cobalt); color: #fff; border-radius: 10px; padding: 18px 20px; margin-top: 18px; }
+  .apt .meeting-card .label-mono { color: var(--cobalt-100); margin-bottom: 6px; }
+  .apt .meeting-card .meeting-url { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cobalt-100); margin: 4px 0 14px 0; word-break: break-all; }
+  .apt .meeting-card .btn-join { display: inline-flex; align-items: center; gap: 8px; background: #fff; color: var(--cobalt); font-weight: 600; font-size: 14px; padding: 10px 18px; border-radius: 6px; text-decoration: none; }
+  .apt .meeting-card .btn-join:hover { background: var(--cobalt-50); }
+
+  /* Buttons */
+  .apt .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--cobalt); color: #fff; font-weight: 600; font-size: 14px; padding: 10px 18px; border-radius: 6px; border: none; text-decoration: none; cursor: pointer; }
+  .apt .btn-primary:hover { background: var(--cobalt-dark); }
+  .apt .btn-outline { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--ink); border: 1px solid var(--slate-200); font-weight: 500; font-size: 14px; padding: 10px 18px; border-radius: 6px; text-decoration: none; cursor: pointer; }
+  .apt .btn-outline:hover { background: var(--slate-50); border-color: var(--slate-300); }
+
+  /* Notes form */
+  .apt .notes-textarea { width: 100%; min-height: 180px; border: 1px solid var(--slate-200); border-radius: 8px; padding: 14px; font-family: 'Manrope', sans-serif; font-size: 14px; line-height: 1.55; color: var(--ink); background: var(--paper); resize: vertical; }
+  .apt .notes-textarea:focus { outline: none; border-color: var(--cobalt); box-shadow: 0 0 0 3px var(--cobalt-50); }
+  .apt .notes-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .apt .notes-meta { font-size: 12px; color: var(--slate-400); margin-top: 8px; }
+
+  /* Status pill */
+  .apt .status-pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+  .apt .status-scheduled { background: var(--cobalt-50); color: var(--cobalt); }
+  .apt .status-confirmed { background: #E6F4EC; color: var(--success); }
+  .apt .status-cancelled { background: #FCEFEE; color: var(--error, #C8362F); }
+  .apt .status-completed { background: var(--slate-50); color: var(--slate-500); }
+
+  /* Status form inline */
+  .apt .status-form { display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .apt .status-form select { border: 1px solid var(--slate-200); border-radius: 6px; padding: 6px 10px; font-size: 13px; font-family: 'Manrope', sans-serif; background: var(--paper); }
+  .apt .status-form select:focus { outline: none; border-color: var(--cobalt); }
+
+  /* History */
+  .apt .history-item { padding: 16px 0; border-bottom: 1px solid var(--slate-100); }
+  .apt .history-item:last-child { border-bottom: none; }
+  .apt .history-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .apt .history-date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--slate-500); letter-spacing: 0.04em; }
+  .apt .history-status { font-size: 11px; color: var(--slate-400); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+  .apt .history-notes { font-size: 14px; color: var(--ink); line-height: 1.5; }
+  .apt .history-notes.has-notes { color: var(--slate-700); }
+  .apt .history-empty { color: var(--slate-400); font-style: italic; font-size: 13px; }
+  .apt details.history-toggle > summary { cursor: pointer; color: var(--cobalt); font-size: 13px; font-weight: 500; margin-top: 6px; list-style: none; }
+  .apt details.history-toggle > summary::-webkit-details-marker { display: none; }
+  .apt details.history-toggle > summary::after { content: ' Ver completo →'; }
+  .apt details.history-toggle[open] > summary::after { content: ' Ocultar ↑'; }
+  .apt details.history-toggle > .history-full { margin-top: 8px; font-size: 14px; color: var(--ink); line-height: 1.55; white-space: pre-wrap; padding: 12px 14px; background: var(--bg-tint); border-radius: 6px; border-left: 3px solid var(--cobalt-100); }
+
+  .apt .messages { margin-bottom: 16px; }
+  .apt .msg-success { background: #E6F4EC; color: var(--success); border: 1px solid #C8E6D5; padding: 10px 14px; border-radius: 8px; font-size: 13px; }
+
+  .apt .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; line-height: 1; display: inline-block; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
+</style>
+
+<div class="apt">
+  <div class="wrap">
+
+    <div class="breadcrumb">
+      <a href="{% url 'dashboard' %}">Agenda</a>
+      <span class="sep">›</span>
+      <span>Turno · {{ appointment.appointment_date|date:"d/m/Y" }} {{ appointment.appointment_time|time:"H:i" }}</span>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+      {% for msg in messages %}<div class="msg-success">{{ msg }}</div>{% endfor %}
+    </div>
+    {% endif %}
+
+    <h1>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h1>
+    <div class="subline">
+      {{ appointment.appointment_date|date:"l d/m/Y" }} · {{ appointment.appointment_time|time:"H:i" }} hs ·
+      <span class="status-pill status-{{ appointment.status }}">{{ appointment.get_status_display }}</span>
+    </div>
+
+    <div class="layout">
+
+      {# === MAIN COLUMN === #}
+      <div>
+
+        {% if appointment.mode == 'online' and appointment.meeting_url %}
+        <div class="meeting-card">
+          <div class="label-mono label-mono-white" style="opacity:.8;">LINK DE VIDEOLLAMADA</div>
+          <div class="meeting-url">{{ appointment.meeting_url }}</div>
+          <a href="{{ appointment.meeting_url }}" target="_blank" rel="noopener" class="btn-join">
+            <span class="material-symbols-outlined" style="font-size:18px;">videocam</span> Unirme a la videollamada
+          </a>
+        </div>
+        {% endif %}
+
+        <div class="card" style="margin-top:18px;">
+          <h2>Notas del turno</h2>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_notes">
+            <textarea name="notes" class="notes-textarea" placeholder="Anotá lo que conversaron, lo trabajado, plan para el próximo turno...">{{ appointment.notes }}</textarea>
+            <div class="notes-actions">
+              <button type="submit" class="btn-primary">
+                <span class="material-symbols-outlined" style="font-size:18px;">save</span> Guardar notas
+              </button>
+            </div>
+            <p class="notes-meta">Privadas. Solo vos las ves. Última edición: {{ appointment.updated_at|date:"d/m/Y H:i" }}.</p>
+          </form>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h2>Histórico del paciente</h2>
+          {% if history %}
+            {% for h in history %}
+            <div class="history-item">
+              <div class="history-head">
+                <span class="history-date">{{ h.appointment_date|date:"d/m/Y" }} · {{ h.appointment_time|time:"H:i" }}{% if h.mode == 'online' %} · videollamada{% endif %}</span>
+                <span class="history-status">{{ h.get_status_display|lower }}</span>
+              </div>
+              {% if h.notes %}
+                <div class="history-notes has-notes">{{ h.notes|truncatewords:30|linebreaksbr }}</div>
+                {% if h.notes|wordcount > 30 %}
+                <details class="history-toggle">
+                  <summary></summary>
+                  <div class="history-full">{{ h.notes }}</div>
+                </details>
+                {% endif %}
+                <a href="{% url 'appointment_detail' h.id %}" style="font-size:13px;color:var(--slate-400);text-decoration:none;display:inline-block;margin-top:6px;">Abrir turno →</a>
+              {% else %}
+                <div class="history-notes history-empty">Sin notas en este turno.</div>
+                <a href="{% url 'appointment_detail' h.id %}" style="font-size:13px;color:var(--slate-400);text-decoration:none;display:inline-block;margin-top:4px;">Abrir turno →</a>
+              {% endif %}
+            </div>
+            {% endfor %}
+            <a href="{% url 'patient_detail' appointment.patient.id %}" style="display:inline-block;margin-top:12px;color:var(--cobalt);font-size:13px;font-weight:500;text-decoration:none;">Ver ficha completa con todo el archivo →</a>
+          {% else %}
+            <p class="history-empty">Es el primer turno con {{ appointment.patient.first_name }}. Cuando haya más, los vas a ver acá.</p>
+          {% endif %}
+        </div>
+
+      </div>
+
+      {# === SIDEBAR === #}
+      <aside>
+
+        <div class="card">
+          <h2>Datos del turno</h2>
+          <div class="meta-grid">
+            <div>
+              <span class="field-label">Fecha</span>
+              <div class="field-value">{{ appointment.appointment_date|date:"d/m/Y" }}</div>
+            </div>
+            <div>
+              <span class="field-label">Hora</span>
+              <div class="field-value">{{ appointment.appointment_time|time:"H:i" }} hs</div>
+            </div>
+            <div>
+              <span class="field-label">Modalidad</span>
+              <div class="field-value">{% if appointment.mode == 'online' %}Videollamada{% else %}Presencial{% endif %}</div>
+            </div>
+            <div>
+              <span class="field-label">Origen</span>
+              <div class="field-value muted">{{ appointment.get_source_display }}</div>
+            </div>
+          </div>
+
+          {% if appointment.reason %}
+          <div style="margin-top:18px;">
+            <span class="field-label" style="display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--slate-400);margin-bottom:6px;">Motivo del paciente</span>
+            <div style="font-size:14px;color:var(--slate-700);line-height:1.5;background:var(--bg-tint);padding:10px 14px;border-radius:6px;border-left:3px solid var(--cobalt-100);">{{ appointment.reason }}</div>
+          </div>
+          {% endif %}
+
+          <div style="margin-top:18px;">
+            <span class="field-label" style="display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--slate-400);margin-bottom:6px;">Estado</span>
+            <form method="post" class="status-form">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="update_status">
+              <select name="status" onchange="this.form.submit()">
+                {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if appointment.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h2>Paciente</h2>
+          <h3>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h3>
+          <div class="meta-grid" style="margin-top:14px;">
+            {% if appointment.patient.phone %}
+            <div>
+              <span class="field-label">Teléfono</span>
+              <div class="field-value"><a href="tel:{{ appointment.patient.phone }}">{{ appointment.patient.phone }}</a></div>
+            </div>
+            {% endif %}
+            {% if appointment.patient.email %}
+            <div>
+              <span class="field-label">Email</span>
+              <div class="field-value muted" style="font-size:13px;word-break:break-all;">{{ appointment.patient.email }}</div>
+            </div>
+            {% endif %}
+            {% if appointment.patient.health_insurance %}
+            <div style="grid-column:1 / -1;">
+              <span class="field-label">Obra social</span>
+              <div class="field-value muted">{{ appointment.patient.health_insurance }}{% if appointment.patient.health_insurance_plan %} · {{ appointment.patient.health_insurance_plan }}{% endif %}{% if appointment.patient.health_insurance_number %} · #{{ appointment.patient.health_insurance_number }}{% endif %}</div>
+            </div>
+            {% endif %}
+          </div>
+          <a href="{% url 'patient_detail' appointment.patient.id %}" class="btn-outline" style="margin-top:16px;">Ver ficha completa</a>
+        </div>
+
+      </aside>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

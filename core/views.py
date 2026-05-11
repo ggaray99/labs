@@ -350,6 +350,42 @@ def appointment_new(request):
 
 
 @login_required
+def appointment_detail(request, appointment_id):
+    professional = get_professional(request)
+    if not professional:
+        return redirect('setup')
+
+    appointment = get_object_or_404(Appointment, id=appointment_id, professional=professional)
+
+    if request.method == 'POST':
+        action = request.POST.get('action', '')
+        if action == 'save_notes':
+            appointment.notes = request.POST.get('notes', '')
+            appointment.save(update_fields=['notes', 'updated_at'])
+            messages.success(request, 'Notas guardadas.')
+            return redirect('appointment_detail', appointment_id=appointment.id)
+        if action == 'update_status':
+            new_status = request.POST.get('status')
+            if new_status in dict(Appointment.STATUS_CHOICES):
+                appointment.status = new_status
+                appointment.save(update_fields=['status', 'updated_at'])
+                messages.success(request, 'Estado actualizado.')
+            return redirect('appointment_detail', appointment_id=appointment.id)
+
+    # Histórico: últimos 5 turnos previos del mismo paciente (no este)
+    history = Appointment.objects.filter(
+        professional=professional, patient=appointment.patient
+    ).exclude(id=appointment.id).order_by('-appointment_date', '-appointment_time')[:5]
+
+    return render(request, 'core/appointment_detail.html', {
+        'professional': professional,
+        'appointment': appointment,
+        'history': history,
+        'status_choices': Appointment.STATUS_CHOICES,
+    })
+
+
+@login_required
 def appointment_status(request, appointment_id):
     professional = get_professional(request)
     if not professional:

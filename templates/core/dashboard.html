@@ -256,6 +256,7 @@
                   {% endfor %}
                 </select>
               </form>
+              <a href="{% url 'appointment_detail' apt.id %}" class="btn-outline">Abrir turno</a>
               <a href="{% url 'patient_detail' apt.patient.id %}" class="btn-outline">Ver ficha</a>
               {% if apt.review_link %}
               <button type="button" class="review-btn" onclick="copyReviewLink(this, '{{ apt.review_link }}')">★ Link reseña</button>
@@ -279,10 +280,10 @@
           {% for apt in upcoming %}
           <div class="t-row">
             <div class="t-time"><span class="mono">{{ apt.appointment_date|date:"d/m" }}</span><br><span style="font-size:11px;color:var(--slate-300);">{{ apt.appointment_time|time:"H:i" }}</span></div>
-            <div class="t-card t-card-future">
-              <div class="t-title">{{ apt.patient.first_name }} {{ apt.patient.last_name }}{% if apt.mode == 'online' %} · videollamada{% endif %}</div>
+            <a href="{% url 'appointment_detail' apt.id %}" class="t-card t-card-future" style="text-decoration:none;display:block;">
+              <div class="t-title" style="color:var(--ink);">{{ apt.patient.first_name }} {{ apt.patient.last_name }}{% if apt.mode == 'online' %} · videollamada{% endif %}</div>
               <div class="t-meta">{{ apt.appointment_date|date:"l d/m" }} · {{ apt.appointment_time|time:"H:i" }} · {{ apt.get_status_display|lower }}</div>
-            </div>
+            </a>
           </div>
           {% endfor %}
         </div>
@@ -335,12 +336,11 @@
         <div style="margin-top: 24px; display: flex; gap: 8px; flex-wrap: wrap;">
           {% if next_appointment.mode == 'online' and next_appointment.meeting_url %}
           <a href="{{ next_appointment.meeting_url }}" target="_blank" rel="noopener" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;">
-            <span class="material-symbols-outlined" style="font-size:18px;">videocam</span> Unirme a la videollamada
+            <span class="material-symbols-outlined" style="font-size:18px;">videocam</span> Unirme
           </a>
-          <a href="{% url 'patient_detail' next_appointment.patient.id %}" class="btn-outline">Ver ficha</a>
-          {% else %}
-          <a href="{% url 'patient_detail' next_appointment.patient.id %}" class="btn-primary">Ver ficha completa</a>
           {% endif %}
+          <a href="{% url 'appointment_detail' next_appointment.id %}" class="btn-{% if next_appointment.mode == 'online' and next_appointment.meeting_url %}outline{% else %}primary{% endif %}">Abrir turno</a>
+          <a href="{% url 'patient_detail' next_appointment.patient.id %}" class="btn-outline">Ver ficha</a>
         </div>
       {% else %}
         <p class="empty">No hay turnos próximos.<br>Compartí tu landing para empezar a recibir reservas.</p>
