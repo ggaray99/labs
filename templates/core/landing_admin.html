@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load l10n %}
 {% block title %}Editar landing — consulte.{% endblock %}
 
 {% block navbar %}
@@ -297,25 +298,47 @@
 
             <div class="space-y-3 mb-4">
                 {% for sv in services %}
-                <form method="post" class="bg-gray-50 rounded-lg p-3 space-y-2">
+                <form method="post" class="bg-gray-50 rounded-lg p-4 space-y-3">
                     {% csrf_token %}
                     <input type="hidden" name="id" value="{{ sv.id }}">
-                    <div class="grid grid-cols-12 gap-2 items-center">
-                        <input name="icon" value="{{ sv.icon }}" required maxlength="50" class="col-span-2 border border-gray-300 rounded px-2 py-2 text-xs font-mono outline-none">
-                        <input name="title" value="{{ sv.title }}" required maxlength="100" placeholder="Título del servicio" class="col-span-7 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
-                        <input type="number" name="order" value="{{ sv.order }}" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none" title="Orden">
-                        <button type="submit" name="action" value="service_save" class="col-span-1 text-xs text-primary-600 hover:underline">Guardar</button>
-                        <button type="submit" name="action" value="service_delete" onclick="return confirm('¿Eliminar?')" class="col-span-1 text-xs text-red-500 hover:underline">Eliminar</button>
+
+                    <div class="grid grid-cols-12 gap-2">
+                        <div class="col-span-2">
+                            <label class="block text-xs text-gray-500 mb-1">Icono</label>
+                            <input name="icon" value="{{ sv.icon }}" required maxlength="50" class="w-full border border-gray-300 rounded px-2 py-2 text-xs font-mono outline-none focus:border-primary-500">
+                        </div>
+                        <div class="col-span-8">
+                            <label class="block text-xs text-gray-500 mb-1">Título</label>
+                            <input name="title" value="{{ sv.title }}" required maxlength="100" placeholder="Título del servicio" class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none focus:border-primary-500">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs text-gray-500 mb-1">Orden</label>
+                            <input type="number" name="order" value="{{ sv.order }}" min="0" class="w-full border border-gray-300 rounded px-2 py-2 text-sm outline-none focus:border-primary-500">
+                        </div>
                     </div>
-                    <textarea name="description" required rows="2" placeholder="Descripción"
-                              class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none">{{ sv.description }}</textarea>
-                    <div class="grid grid-cols-12 gap-2 items-center">
-                        <label class="col-span-3 text-xs text-gray-500">Precio ({{ professional.currency }})</label>
-                        <input type="number" step="0.01" min="0" name="price" value="{{ sv.price|default_if_none:'' }}" placeholder="Sin precio" class="col-span-3 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
-                        <label class="col-span-6 inline-flex items-center gap-2 text-sm text-gray-700">
-                            <input type="checkbox" name="is_bookable" value="true" {% if sv.is_bookable %}checked{% endif %} class="accent-primary-500">
-                            Reservable online (aparece en el form de booking)
-                        </label>
+
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Descripción</label>
+                        <textarea name="description" required rows="2" placeholder="Descripción"
+                                  class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none focus:border-primary-500">{{ sv.description }}</textarea>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-3 items-end">
+                        <div class="col-span-4">
+                            <label class="block text-xs text-gray-500 mb-1">Precio ({{ professional.currency }})</label>
+                            <input type="number" step="0.01" min="0" name="price" value="{% localize off %}{{ sv.price|default_if_none:'' }}{% endlocalize %}" placeholder="Sin precio" class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none focus:border-primary-500">
+                        </div>
+                        <div class="col-span-8 flex items-center pb-2">
+                            <label class="inline-flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                                <input type="checkbox" name="is_bookable" value="true" {% if sv.is_bookable %}checked{% endif %} class="accent-primary-500 w-4 h-4">
+                                <span>Reservable online <span class="text-xs text-gray-400">(aparece en el form de booking)</span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-2 border-t border-gray-200">
+                        <button type="submit" name="action" value="service_delete" onclick="return confirm('¿Eliminar este servicio?')" class="text-sm text-red-500 hover:underline">Eliminar</button>
+                        <button type="submit" name="action" value="service_save" class="bg-primary-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-primary-700">Guardar cambios</button>
                     </div>
                 </form>
                 {% empty %}
@@ -325,24 +348,46 @@
 
             <details>
                 <summary class="text-sm text-primary-600 cursor-pointer hover:underline">+ Agregar servicio</summary>
-                <form method="post" class="mt-3 p-3 border border-dashed border-gray-200 rounded-lg space-y-2">
+                <form method="post" class="mt-3 p-4 border border-dashed border-gray-200 rounded-lg space-y-3">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="service_add">
+
                     <div class="grid grid-cols-12 gap-2">
-                        <input name="icon" value="medical_services" maxlength="50" class="col-span-2 border border-gray-300 rounded px-2 py-2 text-xs font-mono outline-none">
-                        <input name="title" required maxlength="100" placeholder="Título" class="col-span-7 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
-                        <input type="number" name="order" value="0" min="0" class="col-span-1 border border-gray-300 rounded px-2 py-2 text-sm outline-none">
-                        <button type="submit" class="col-span-2 bg-primary-500 text-white py-2 rounded text-sm font-medium hover:bg-primary-600">Agregar</button>
+                        <div class="col-span-2">
+                            <label class="block text-xs text-gray-500 mb-1">Icono</label>
+                            <input name="icon" value="medical_services" maxlength="50" class="w-full border border-gray-300 rounded px-2 py-2 text-xs font-mono outline-none focus:border-primary-500">
+                        </div>
+                        <div class="col-span-8">
+                            <label class="block text-xs text-gray-500 mb-1">Título</label>
+                            <input name="title" required maxlength="100" placeholder="Título" class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none focus:border-primary-500">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-xs text-gray-500 mb-1">Orden</label>
+                            <input type="number" name="order" value="0" min="0" class="w-full border border-gray-300 rounded px-2 py-2 text-sm outline-none focus:border-primary-500">
+                        </div>
                     </div>
-                    <textarea name="description" required rows="2" placeholder="Descripción del servicio"
-                              class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none"></textarea>
-                    <div class="grid grid-cols-12 gap-2 items-center">
-                        <label class="col-span-3 text-xs text-gray-500">Precio ({{ professional.currency }})</label>
-                        <input type="number" step="0.01" min="0" name="price" placeholder="Opcional" class="col-span-3 border border-gray-300 rounded px-3 py-2 text-sm outline-none">
-                        <label class="col-span-6 inline-flex items-center gap-2 text-sm text-gray-700">
-                            <input type="checkbox" name="is_bookable" value="true" checked class="accent-primary-500">
-                            Reservable online
-                        </label>
+
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Descripción</label>
+                        <textarea name="description" required rows="2" placeholder="Descripción del servicio"
+                                  class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none focus:border-primary-500"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-3 items-end">
+                        <div class="col-span-4">
+                            <label class="block text-xs text-gray-500 mb-1">Precio ({{ professional.currency }})</label>
+                            <input type="number" step="0.01" min="0" name="price" placeholder="Opcional" class="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none focus:border-primary-500">
+                        </div>
+                        <div class="col-span-8 flex items-center pb-2">
+                            <label class="inline-flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                                <input type="checkbox" name="is_bookable" value="true" checked class="accent-primary-500 w-4 h-4">
+                                <span>Reservable online</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end pt-2 border-t border-gray-200">
+                        <button type="submit" class="bg-primary-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-primary-700">Agregar servicio</button>
                     </div>
                 </form>
             </details>
