@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turno confirmado</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0; padding:0; background-color:#F4F6FA; font-family:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:#0B1C30; -webkit-font-smoothing:antialiased;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F6FA;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; background-color:#FFFFFF; border-radius:12px; overflow:hidden;">
+
+          <tr>
+            <td style="background-color:#0047AB; padding:24px 32px;">
+              <span style="font-family:'Manrope',-apple-system,'Segoe UI',sans-serif; font-weight:600; font-size:22px; letter-spacing:-0.045em; color:#FFFFFF; line-height:1;">consulte<span style="color:#A8C0E8;">.</span></span>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:40px 32px 8px 32px;">
+              <p style="margin:0 0 16px 0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-weight:500; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:#0047AB;">TURNO CONFIRMADO</p>
+              <h1 style="margin:0 0 12px 0; font-family:'Manrope',-apple-system,'Segoe UI',sans-serif; font-weight:500; font-size:28px; line-height:34px; letter-spacing:-0.01em; color:#0B1C30;">Hola {{ patient.first_name }},</h1>
+              <p style="margin:0; font-family:'Manrope',-apple-system,'Segoe UI',sans-serif; font-size:16px; line-height:25px; color:#4A5A6E;">Tu turno con {{ professional.professional_name }} quedó reservado. Te dejamos los detalles abajo.</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:24px 32px 8px 32px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8F9FF; border:1px solid #DCE5F4; border-radius:8px;">
+                <tr>
+                  <td style="padding:20px 24px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="padding-bottom:14px; border-bottom:1px solid #DCE5F4;">
+                          <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">PROFESIONAL</p>
+                          <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{{ professional.professional_name }}</p>
+                          {% if professional.specialty %}<p style="margin:2px 0 0 0; font-family:'JetBrains Mono',monospace; font-size:13px; color:#4A5A6E;">{{ professional.specialty }}</p>{% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 0; border-bottom:1px solid #DCE5F4;">
+                          <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">FECHA</p>
+                          <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{{ appointment.appointment_date|date:"l d/m/Y" }}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:14px 0 {% if professional.address %}14px{% else %}0{% endif %} 0;{% if professional.address %} border-bottom:1px solid #DCE5F4;{% endif %}">
+                          <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">HORA</p>
+                          <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{{ appointment.appointment_time|time:"H:i" }} hs</p>
+                        </td>
+                      </tr>
+                      {% if professional.address %}
+                      <tr>
+                        <td style="padding-top:14px;">
+                          <p style="margin:0 0 4px 0; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#6F7E92;">DIRECCIÓN</p>
+                          <p style="margin:0; font-family:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace; font-size:14px; line-height:22px; color:#0B1C30;">{{ professional.address }}</p>
+                        </td>
+                      </tr>
+                      {% endif %}
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          {% if landing_url %}
+          <tr>
+            <td style="padding:24px 32px 8px 32px;">
+              <a href="{{ landing_url }}" style="display:inline-block; background-color:#0047AB; color:#FFFFFF; font-family:'Manrope',-apple-system,'Segoe UI',sans-serif; font-weight:500; font-size:15px; line-height:1; padding:14px 24px; border-radius:6px; text-decoration:none;">Ver consultorio</a>
+            </td>
+          </tr>
+          {% endif %}
+
+          <tr>
+            <td style="padding:24px 32px 40px 32px;">
+              <p style="margin:0; font-family:'Manrope',-apple-system,'Segoe UI',sans-serif; font-size:14px; line-height:21px; color:#4A5A6E;">Si necesitás reprogramar o cancelar, contactá a {{ professional.professional_name }}{% if professional.phone %} al {{ professional.phone }}{% endif %}{% if professional.email %} o por email a <a href="mailto:{{ professional.email }}" style="color:#0047AB; text-decoration:none;">{{ professional.email }}</a>{% endif %}.</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color:#F8F9FF; border-top:1px solid #DCE5F4; padding:20px 32px;">
+              <p style="margin:0; font-family:'Manrope',-apple-system,'Segoe UI',sans-serif; font-size:12px; line-height:18px; color:#6F7E92;">
+                {% if professional.specialty %}{{ professional.specialty }}{% endif %}{% if professional.specialty and professional.address %} · {% endif %}{% if professional.address %}{{ professional.address }}{% endif %}
+              </p>
+              <p style="margin:6px 0 0 0; font-family:'Manrope',-apple-system,'Segoe UI',sans-serif; font-size:12px; line-height:18px; color:#A2AEBE;">powered by consulte<span style="color:#0047AB;">.</span></p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

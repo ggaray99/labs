@@ -1,0 +1,18 @@
+TURNO CONFIRMADO
+
+Hola {{ patient.first_name }},
+
+Tu turno con {{ professional.professional_name }} quedó reservado.
+
+PROFESIONAL: {{ professional.professional_name }}{% if professional.specialty %} — {{ professional.specialty }}{% endif %}
+FECHA:       {{ appointment.appointment_date|date:"l d/m/Y" }}
+HORA:        {{ appointment.appointment_time|time:"H:i" }} hs
+{% if professional.address %}DIRECCIÓN:   {{ professional.address }}
+{% endif %}{% if landing_url %}
+Ver consultorio: {{ landing_url }}
+{% endif %}
+Si necesitás reprogramar o cancelar, contactá a {{ professional.professional_name }}{% if professional.phone %} al {{ professional.phone }}{% endif %}{% if professional.email %} o por email a {{ professional.email }}{% endif %}.
+
+—
+{% if professional.specialty %}{{ professional.specialty }}{% endif %}{% if professional.specialty and professional.address %} · {% endif %}{% if professional.address %}{{ professional.address }}{% endif %}
+powered by consulte.

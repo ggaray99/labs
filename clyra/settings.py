@@ -126,6 +126,13 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# --- Transactional email (Resend) ---
+# If RESEND_API_KEY is empty, email sending is a no-op (booking flow stays green).
+RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'consulte. <turnos@consulte.app>')
+SITE_BASE_URL = os.environ.get('SITE_BASE_URL', '').rstrip('/')
+
+
 # --- Logging (force tracebacks to stdout so Railway captures them) ---
 
 LOGGING = {

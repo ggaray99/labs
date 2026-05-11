@@ -98,7 +98,7 @@
       <nav class="hidden md:flex items-center gap-7 lg:gap-8" style="font-size: 14px; color: var(--slate-500); font-weight: 500;">
         <a href="#que-hacemos" class="hover:text-[#0B1C30] transition-colors">Producto</a>
         <a href="#para-quien" class="hover:text-[#0B1C30] transition-colors">Para quién</a>
-        <a href="#planes" class="hover:text-[#0B1C30] transition-colors">Precios</a>
+        <a href="{% url 'pricing' %}" class="hover:text-[#0B1C30] transition-colors">Precios</a>
         <a href="#soporte" class="hover:text-[#0B1C30] transition-colors">Recursos</a>
       </nav>
       <div class="flex items-center gap-3 shrink-0">
@@ -122,7 +122,7 @@
       <div class="px-4 py-3 flex flex-col gap-1" style="font-size: 15px; color: var(--slate-500);">
         <a href="#que-hacemos" onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="py-2">Producto</a>
         <a href="#para-quien"  onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="py-2">Para quién</a>
-        <a href="#planes"      onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="py-2">Precios</a>
+        <a href="{% url 'pricing' %}" class="py-2">Precios</a>
         <a href="#soporte"     onclick="document.getElementById('home-mobile-nav').classList.remove('open')" class="py-2">Recursos</a>
         {% if is_pro %}
           <a href="{% url 'dashboard' %}" class="py-2 mt-2 pt-3" style="border-top: 1px solid var(--slate-100); color: var(--cobalt); font-weight: 600;">Ir al dashboard</a>
@@ -403,34 +403,31 @@
         </div>
       </section>
 
-      <!-- PLANES -->
+      <!-- PLANES (teaser → /pricing) -->
       <section id="planes" class="py-12 sm:py-20 reveal">
         <div class="max-w-3xl mb-8 sm:mb-10">
           <span class="label-mono">Planes</span>
-          <h2 class="section-h mt-3 mb-4">El pricing final llega cuando cerremos el paquete comercial.</h2>
-          <p class="body-lg">Mientras tanto, esta sección queda lista. La prioridad ahora es validar el onboarding, la demo y el flujo operativo.</p>
+          <h2 class="section-h mt-3 mb-4">Free para arrancar. Pro cuando tu agenda crece.</h2>
+          <p class="body-lg">Sin tarjeta para empezar. Sin compromiso anual. Cambiás de plan cuando quieras.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <article class="card p-6 sm:p-8">
-            <div class="flex items-center justify-center mb-4" style="width:44px;height:44px;background:var(--cobalt-50);border-radius:8px;color:var(--cobalt);">
-              <span class="material-symbols-outlined">construction</span>
+            <div class="flex items-baseline mb-3">
+              <span style="font-family:'Manrope';font-weight:600;font-size:36px;line-height:1;letter-spacing:-0.03em;color:var(--ink);">USD 0</span>
+              <span style="font-family:'Manrope';font-weight:500;font-size:15px;color:var(--slate-400);margin-left:6px;">/ mes</span>
             </div>
-            <h3 class="card-h mb-3">Base preparada</h3>
-            <ul class="space-y-2 body-md">
-              <li class="flex items-start gap-2"><span class="material-symbols-outlined" style="font-size:18px;color:var(--cobalt);">check</span> Sección de pricing visible desde el menú principal.</li>
-              <li class="flex items-start gap-2"><span class="material-symbols-outlined" style="font-size:18px;color:var(--cobalt);">check</span> Espacio para describir lo que incluye cada plan.</li>
-              <li class="flex items-start gap-2"><span class="material-symbols-outlined" style="font-size:18px;color:var(--cobalt);">check</span> CTA de alta profesional ya activo.</li>
-            </ul>
+            <h3 class="card-h mb-2">Free</h3>
+            <p class="body-md mb-4">Landing pública, reserva online y hasta 25 turnos al mes. Para validar.</p>
+            <a href="{% url 'pricing' %}" class="btn-outline">Ver detalles del plan</a>
           </article>
-          <article class="card p-6 sm:p-8">
-            <div class="flex items-center justify-center mb-4" style="width:44px;height:44px;background:var(--cobalt-50);border-radius:8px;color:var(--cobalt);">
-              <span class="material-symbols-outlined">trending_up</span>
+          <article class="card p-6 sm:p-8" style="border:1px solid var(--cobalt);">
+            <div class="flex items-baseline mb-3">
+              <span style="font-family:'Manrope';font-weight:600;font-size:36px;line-height:1;letter-spacing:-0.03em;color:var(--ink);">USD 9</span>
+              <span style="font-family:'Manrope';font-weight:500;font-size:15px;color:var(--slate-400);margin-left:6px;">/ mes</span>
             </div>
-            <h3 class="card-h mb-3">Próximo paso</h3>
-            <p class="body-md mb-5">Cuando definamos los planes, esta sección pasa de placeholder a tabla comparativa sin rehacer la home.</p>
-            <a href="#profesionales" class="btn-outline">
-              <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span> Activar onboarding
-            </a>
+            <h3 class="card-h mb-2">Pro</h3>
+            <p class="body-md mb-4">Turnos ilimitados, color custom y sin watermark. Para vivir de tu agenda.</p>
+            <a href="{% url 'pricing' %}" class="btn-primary">Ver todos los planes</a>
           </article>
         </div>
       </section>
@@ -523,7 +520,7 @@
       </div>
       <div class="flex items-center gap-5 body-sm">
         <a href="#soporte" class="hover:text-[#0B1C30]">Soporte</a>
-        <a href="#planes" class="hover:text-[#0B1C30]">Planes</a>
+        <a href="{% url 'pricing' %}" class="hover:text-[#0B1C30]">Planes</a>
         {% if is_pro %}
           <a href="{% url 'dashboard' %}" style="color:var(--cobalt);font-weight:600;">Ir al dashboard</a>
         {% else %}

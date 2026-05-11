@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% block title %}Planes y precios — consulte.{% endblock %}
+{% block meta_description %}Empezá gratis. Pasá a Pro por USD 9 al mes cuando tu agenda crezca. Sin tarjeta, sin compromiso anual.{% endblock %}
+{% block og_title %}Planes y precios — consulte.{% endblock %}
+{% block og_description %}Free para arrancar. Pro a USD 9/mes. Sin tarjeta, sin compromiso anual.{% endblock %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
+
+<style>
+  .clinical {
+    --cobalt:      #0047AB;
+    --cobalt-dark: #00327D;
+    --cobalt-50:   #F2F5FC;
+    --cobalt-100:  #DCE5F4;
+    --ink:         #0B1C30;
+    --paper:       #FFFFFF;
+    --bg-tint:     #F8F9FF;
+    --slate-50:    #F4F6FA;
+    --slate-100:   #E5E9F0;
+    --slate-200:   #CBD2DD;
+    --slate-300:   #A2AEBE;
+    --slate-400:   #6F7E92;
+    --slate-500:   #4A5A6E;
+    --slate-700:   #1F3147;
+    --success:     #1E9E63;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Manrope', system-ui, sans-serif;
+  }
+
+  .clinical .display-xl { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 40px; line-height: 1.04; letter-spacing: -0.03em; color: var(--ink); }
+  .clinical h2.section-h { font-family: 'Manrope', sans-serif; font-weight: 500; font-size: 28px; line-height: 1.1; letter-spacing: -0.015em; color: var(--ink); }
+  .clinical h3.card-h    { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 22px; line-height: 1.25; letter-spacing: -0.005em; color: var(--ink); }
+  .clinical .body-lg     { font-family: 'Manrope', sans-serif; font-size: 16px; line-height: 1.55; color: var(--slate-500); }
+  .clinical .body-md     { font-family: 'Manrope', sans-serif; font-size: 15px; line-height: 1.55; color: var(--slate-500); }
+  .clinical .body-sm     { font-family: 'Manrope', sans-serif; font-size: 13px; line-height: 1.5;  color: var(--slate-500); }
+  .clinical .label-mono  { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; font-size: 11px; line-height: 1; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cobalt); }
+  .clinical .label-mono-slate { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; font-size: 11px; line-height: 1; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate-400); }
+  .clinical .label-mono-white { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; font-size: 11px; line-height: 1; letter-spacing: 0.14em; text-transform: uppercase; color: #FFFFFF; }
+
+  @media (min-width: 768px) {
+    .clinical .display-xl { font-size: 56px; line-height: 1; }
+    .clinical h2.section-h { font-size: 36px; }
+    .clinical h3.card-h    { font-size: 24px; }
+    .clinical .body-lg     { font-size: 18px; }
+    .clinical .body-md     { font-size: 16px; }
+    .clinical .body-sm     { font-size: 14px; }
+    .clinical .label-mono, .clinical .label-mono-slate, .clinical .label-mono-white { font-size: 12px; }
+  }
+
+  .clinical .wordmark { font-family: 'Manrope', sans-serif; font-weight: 600; letter-spacing: -0.045em; color: var(--cobalt); }
+  .clinical .wordmark .dot { color: var(--ink); }
+
+  .clinical .btn-primary { background: var(--cobalt); color: #fff; padding: 12px 20px; border-radius: 6px; font-family: 'Manrope'; font-weight: 600; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 150ms ease-out; }
+  .clinical .btn-primary:hover { background: var(--cobalt-dark); }
+  .clinical .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--slate-200); padding: 12px 20px; border-radius: 6px; font-family: 'Manrope'; font-weight: 500; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: background 150ms ease-out, border-color 150ms ease-out; }
+  .clinical .btn-outline:hover { background: var(--slate-50); border-color: var(--slate-300); }
+  .clinical .btn-sm { padding: 10px 18px; font-size: 14px; }
+  .clinical .btn-full { width: 100%; }
+
+  .clinical .card { background: var(--paper); border: 1px solid var(--slate-100); border-radius: 12px; }
+  .clinical .chip-eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--cobalt-50); border-radius: 4px; }
+  .clinical .chip-eyebrow .dot { color: var(--cobalt); }
+
+  /* Plan cards */
+  .clinical .plan { background: var(--paper); border: 1px solid var(--slate-100); border-radius: 12px; padding: 28px; display: flex; flex-direction: column; height: 100%; }
+  .clinical .plan-pro { border: 1px solid var(--cobalt); position: relative; box-shadow: 0 12px 32px -16px rgba(0,71,171,.18); }
+  .clinical .plan-badge { position: absolute; top: -12px; left: 28px; background: var(--cobalt); padding: 6px 12px; border-radius: 4px; }
+  .clinical .plan-name { font-family: 'Manrope'; font-weight: 600; font-size: 14px; letter-spacing: 0; color: var(--slate-500); margin-bottom: 6px; }
+  .clinical .plan-price { font-family: 'Manrope'; font-weight: 600; font-size: 44px; line-height: 1; letter-spacing: -0.03em; color: var(--ink); }
+  .clinical .plan-price-unit { font-family: 'Manrope'; font-weight: 500; font-size: 16px; color: var(--slate-400); margin-left: 6px; letter-spacing: 0; }
+  .clinical .plan-tagline { font-family: 'Manrope'; font-size: 14px; color: var(--slate-500); margin-top: 8px; margin-bottom: 24px; }
+  .clinical .plan-features { list-style: none; padding: 0; margin: 0 0 28px 0; display: flex; flex-direction: column; gap: 12px; }
+  .clinical .plan-features li { display: flex; align-items: flex-start; gap: 10px; font-family: 'Manrope'; font-size: 15px; line-height: 1.45; color: var(--ink); }
+  .clinical .plan-features li.feat-muted { color: var(--slate-400); }
+  .clinical .feat-icon { flex-shrink: 0; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; color: var(--cobalt); margin-top: 2px; }
+  .clinical .feat-icon-muted { color: var(--slate-300); }
+  .clinical .plan-cta { margin-top: auto; }
+  .clinical .plan-fineprint { font-family: 'Manrope'; font-size: 12px; color: var(--slate-400); margin-top: 10px; line-height: 1.4; }
+
+  /* FAQ */
+  .clinical .faq-item { padding: 20px 0; border-bottom: 1px solid var(--slate-100); }
+  .clinical .faq-item:last-child { border-bottom: none; }
+  .clinical .faq-q { font-family: 'Manrope'; font-weight: 600; font-size: 16px; color: var(--ink); margin-bottom: 8px; }
+  .clinical .faq-a { font-family: 'Manrope'; font-size: 15px; color: var(--slate-500); line-height: 1.55; }
+
+  .clinical .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; font-size: 24px; line-height: 1; display: inline-block; -webkit-font-feature-settings: 'liga'; -webkit-font-smoothing: antialiased; }
+  .clinical *:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--cobalt); border-radius: 8px; }
+
+  .clinical .reveal { opacity: 0; transform: translateY(16px); transition: opacity 500ms ease, transform 500ms ease; }
+  .clinical .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  .clinical .mobile-menu-btn { display: none; }
+  @media (max-width: 767px) { .clinical .mobile-menu-btn { display: inline-flex; } }
+  #pricing-mobile-nav { display: none; }
+  #pricing-mobile-nav.open { display: block; }
+</style>
+
+<div class="clinical">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50" style="background: var(--paper); border-bottom: 1px solid var(--slate-100);">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 py-4 sm:py-5 flex items-center justify-between gap-3">
+      <a href="{% url 'home' %}" class="flex items-center gap-[10px] shrink-0">
+        <svg width="28" height="28" viewBox="0 0 80 80" aria-hidden="true"><rect x="6" y="6" width="68" height="68" rx="8" fill="none" stroke="#0047AB" stroke-width="10"/><rect x="22" y="36" width="36" height="8" fill="#0047AB"/></svg>
+        <span class="wordmark" style="font-size: 22px;">consulte<span class="dot">.</span></span>
+      </a>
+      <nav class="hidden md:flex items-center gap-7 lg:gap-8" style="font-size: 14px; color: var(--slate-500); font-weight: 500;">
+        <a href="{% url 'home' %}#que-hacemos" class="hover:text-[#0B1C30] transition-colors">Producto</a>
+        <a href="{% url 'home' %}#para-quien" class="hover:text-[#0B1C30] transition-colors">Para quién</a>
+        <a href="{% url 'pricing' %}" class="transition-colors" style="color: var(--ink); font-weight: 600;">Precios</a>
+        <a href="{% url 'home' %}#soporte" class="hover:text-[#0B1C30] transition-colors">Recursos</a>
+      </nav>
+      <div class="flex items-center gap-3 shrink-0">
+        {% if is_pro %}
+          <a href="{% url 'dashboard' %}" class="btn-primary btn-sm">
+            <span class="hidden sm:inline">Ir al dashboard</span><span class="sm:hidden">Dashboard</span>
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}" class="hidden sm:inline-flex items-center" style="color: var(--slate-700); font-size: 14px; font-weight: 500;">Iniciar sesión</a>
+          <a href="{% url 'setup' %}" class="btn-primary btn-sm">
+            <span class="hidden sm:inline">Empezar gratis</span><span class="sm:hidden">Empezar</span>
+          </a>
+        {% endif %}
+        <button type="button" onclick="document.getElementById('pricing-mobile-nav').classList.toggle('open')"
+                class="mobile-menu-btn md:hidden items-center justify-center w-10 h-10 rounded-md" style="border: 1px solid var(--slate-200); color: var(--slate-500);" aria-label="Menú">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+      </div>
+    </div>
+    <nav id="pricing-mobile-nav" class="md:hidden" style="border-top: 1px solid var(--slate-100); background: var(--paper);">
+      <div class="px-4 py-3 flex flex-col gap-1" style="font-size: 15px; color: var(--slate-500);">
+        <a href="{% url 'home' %}#que-hacemos" class="py-2">Producto</a>
+        <a href="{% url 'home' %}#para-quien"  class="py-2">Para quién</a>
+        <a href="{% url 'pricing' %}" class="py-2" style="color: var(--ink); font-weight: 600;">Precios</a>
+        <a href="{% url 'home' %}#soporte"     class="py-2">Recursos</a>
+        {% if is_pro %}
+          <a href="{% url 'dashboard' %}" class="py-2 mt-2 pt-3" style="border-top: 1px solid var(--slate-100); color: var(--cobalt); font-weight: 600;">Ir al dashboard</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="py-2 mt-2 pt-3" style="border-top: 1px solid var(--slate-100); color: var(--cobalt); font-weight: 600;">Iniciar sesión</a>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 py-12 sm:py-20">
+      <div class="max-w-3xl mx-auto text-center reveal">
+        <span class="label-mono">Pricing</span>
+        <h1 class="display-xl mt-5 sm:mt-6">Empezás gratis.<br>Pagás cuando tu agenda crece.</h1>
+        <p class="body-lg mt-5 sm:mt-6 max-w-[560px] mx-auto">Sin tarjeta para arrancar. Sin compromiso anual. Cambiás de plan cuando quieras.</p>
+      </div>
+    </section>
+
+    <!-- PLANES -->
+    <section class="max-w-[1100px] mx-auto px-4 sm:px-8 pb-12 sm:pb-20">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 items-stretch">
+
+        <!-- FREE -->
+        <article class="plan reveal">
+          <div class="plan-name">Free</div>
+          <div class="flex items-baseline">
+            <span class="plan-price">USD 0</span>
+            <span class="plan-price-unit">/ mes</span>
+          </div>
+          <p class="plan-tagline">Para arrancar y validar tu agenda online.</p>
+          <ul class="plan-features">
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Landing pública con tu URL <code style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cobalt);">consulte.app/p/tu-nombre</code></li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Reserva online con calendario y horarios</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Hasta 25 turnos al mes</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Email de confirmación automático</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Dashboard de turnos y pacientes</li>
+            <li class="feat-muted"><span class="feat-icon feat-icon-muted"><span class="material-symbols-outlined" style="font-size:18px;">remove</span></span> Color cobalto por defecto (sin custom)</li>
+            <li class="feat-muted"><span class="feat-icon feat-icon-muted"><span class="material-symbols-outlined" style="font-size:18px;">remove</span></span> Footer "powered by consulte." en landing y emails</li>
+          </ul>
+          <div class="plan-cta">
+            {% if is_pro %}
+              <a href="{% url 'dashboard' %}" class="btn-outline btn-full">Ir al dashboard</a>
+            {% else %}
+              <a href="{% url 'setup' %}" class="btn-outline btn-full">Empezar gratis</a>
+            {% endif %}
+            <p class="plan-fineprint">Sin tarjeta. Sin vencimiento.</p>
+          </div>
+        </article>
+
+        <!-- PRO -->
+        <article class="plan plan-pro reveal">
+          <span class="plan-badge label-mono-white">RECOMENDADO</span>
+          <div class="plan-name">Pro</div>
+          <div class="flex items-baseline">
+            <span class="plan-price">USD 9</span>
+            <span class="plan-price-unit">/ mes</span>
+          </div>
+          <p class="plan-tagline">Para profesionales que viven de su agenda.</p>
+          <ul class="plan-features">
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Todo lo de Free</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Turnos ilimitados</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Color custom + vertical tint para tu landing</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Sin watermark "powered by consulte."</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Soporte prioritario por email</li>
+            <li><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;">check</span></span> Acceso temprano a nuevas funciones</li>
+            <li class="feat-muted"><span class="feat-icon"><span class="material-symbols-outlined" style="font-size:18px;color:var(--slate-400);">schedule</span></span> Próximamente: cobro online integrado</li>
+          </ul>
+          <div class="plan-cta">
+            {% if is_pro %}
+              <a href="{% url 'dashboard' %}" class="btn-primary btn-full">Ir al dashboard</a>
+            {% else %}
+              <a href="{% url 'setup' %}" class="btn-primary btn-full">Empezar Pro</a>
+            {% endif %}
+            <p class="plan-fineprint">Mientras integramos el billing, escribinos a <a href="mailto:turnos@consulte.app" style="color:var(--cobalt);">turnos@consulte.app</a> para activarlo.</p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="max-w-[820px] mx-auto px-4 sm:px-8 pb-16 sm:pb-24">
+      <div class="text-center mb-10 reveal">
+        <span class="label-mono">FAQ</span>
+        <h2 class="section-h mt-3">Preguntas frecuentes</h2>
+      </div>
+      <div class="card p-6 sm:p-8 reveal">
+        <div class="faq-item">
+          <p class="faq-q">¿Necesito tarjeta para crear la cuenta?</p>
+          <p class="faq-a">No. El plan Free es para siempre, sin tarjeta. Sólo pedimos datos de pago si decidís pasar a Pro.</p>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">¿Qué pasa si supero los 25 turnos del Free?</p>
+          <p class="faq-a">Te avisamos antes. Podés esperar al próximo mes o pasar a Pro y desbloquear turnos ilimitados al instante.</p>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">¿Puedo cambiar de plan en cualquier momento?</p>
+          <p class="faq-a">Sí. Subís a Pro cuando lo necesitás y volvés a Free si no. No hay compromiso anual ni penalidad.</p>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">¿Aceptan métodos de pago locales?</p>
+          <p class="faq-a">Estamos integrando Mercado Pago y tarjeta. Mientras tanto, activamos Pro de forma manual contra transferencia o pago directo — escribinos a turnos@consulte.app.</p>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">¿Mis pacientes pagan algo por reservar?</p>
+          <p class="faq-a">No. Tus pacientes reservan gratis. consulte. cobra sólo al profesional.</p>
+        </div>
+        <div class="faq-item">
+          <p class="faq-q">¿Sirve para mi profesión?</p>
+          <p class="faq-a">Si trabajás con turnos o consultas, sí. Lo usan profesionales de salud, legal, contable, coaching, consultoría, servicios creativos y bienestar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="max-w-[1100px] mx-auto px-4 sm:px-8 pb-16 sm:pb-24">
+      <div class="card p-8 sm:p-12 text-center reveal" style="background: var(--bg-tint); border-color: var(--cobalt-100);">
+        <h2 class="section-h mb-4">Empezá hoy. Decidí más adelante.</h2>
+        <p class="body-lg mb-6 max-w-xl mx-auto">Crear tu cuenta lleva 4 minutos. Si en algún momento Free te queda corto, pasás a Pro en un click.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          {% if is_pro %}
+            <a href="{% url 'dashboard' %}" class="btn-primary">
+              <span class="material-symbols-outlined" style="font-size:18px;">space_dashboard</span> Ir al dashboard
+            </a>
+          {% else %}
+            <a href="{% url 'setup' %}" class="btn-primary">
+              <span class="material-symbols-outlined" style="font-size:18px;">person_add</span> Empezar gratis
+            </a>
+            <a href="{% url 'home' %}" class="btn-outline">Volver al inicio</a>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="border-top: 1px solid var(--slate-100); background: var(--paper);">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-14 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-[10px]">
+        <svg width="22" height="22" viewBox="0 0 80 80" aria-hidden="true"><rect x="6" y="6" width="68" height="68" rx="8" fill="none" stroke="#0047AB" stroke-width="10"/><rect x="22" y="36" width="36" height="8" fill="#0047AB"/></svg>
+        <span class="wordmark" style="font-size: 17px;">consulte<span class="dot">.</span></span>
+        <span class="body-sm ml-2 hidden sm:inline">· Plataforma para profesionales independientes</span>
+      </div>
+      <div class="flex items-center gap-5 body-sm">
+        <a href="{% url 'home' %}#soporte" class="hover:text-[#0B1C30]">Soporte</a>
+        <a href="{% url 'pricing' %}" class="hover:text-[#0B1C30]">Planes</a>
+        {% if is_pro %}
+          <a href="{% url 'dashboard' %}" style="color:var(--cobalt);font-weight:600;">Ir al dashboard</a>
+        {% else %}
+          <a href="{% url 'setup' %}" style="color:var(--cobalt);font-weight:600;">Alta profesional</a>
+        {% endif %}
+      </div>
+    </div>
+  </footer>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function() {
+    var sections = document.querySelectorAll('.clinical .reveal');
+    if (!sections.length) return;
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    sections.forEach(function(section, index) {
+      section.style.transitionDelay = Math.min(index * 40, 180) + 'ms';
+      observer.observe(section);
+    });
+  })();
+</script>
+{% endblock %}

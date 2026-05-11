@@ -22,6 +22,7 @@ from .forms import (
     MissionForm, LandingSettingsForm, BasicsForm, LandingStatForm, LandingCredentialForm,
     LandingServiceForm, LandingTestimonialForm, PublicReviewForm,
 )
+from .emails import send_appointment_confirmation
 
 
 REVIEW_TOKEN_SALT = 'clyra.appointment.review'
@@ -97,6 +98,13 @@ def home(request):
     is_pro = request.user.is_authenticated and hasattr(request.user, 'professional')
     return render(request, 'core/home.html', {
         'demo_professional': demo_professional,
+        'is_pro': is_pro,
+    })
+
+
+def pricing(request):
+    is_pro = request.user.is_authenticated and hasattr(request.user, 'professional')
+    return render(request, 'core/pricing.html', {
         'is_pro': is_pro,
     })
 
@@ -583,11 +591,12 @@ def public_landing(request, slug):
                     'health_insurance_number': data.get('health_insurance_number', ''),
                 }
             )
-            Appointment.objects.create(
+            appointment = Appointment.objects.create(
                 professional=professional, patient=patient,
                 appointment_date=selected_date, appointment_time=selected_time,
                 reason=data.get('reason', ''), source='online',
             )
+            send_appointment_confirmation(appointment, request=request)
             return render(request, 'core/booking_confirmation.html', {
                 'professional': professional, 'date': selected_date, 'time': selected_time,
             })
