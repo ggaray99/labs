@@ -599,3 +599,25 @@ def public_review(request, slug, token):
         'appointment': appointment,
         'form': form,
     })
+
+
+# --- OG images (brand book v1.0 slides 21 + 23) ---
+
+def _og_response(png_bytes, max_age):
+    from django.http import HttpResponse
+    response = HttpResponse(png_bytes, content_type='image/png')
+    response['Cache-Control'] = f'public, max-age={max_age}'
+    return response
+
+
+def og_default(request):
+    """Default OG image for the marketing site (1200×630)."""
+    from .og import render_og_default
+    return _og_response(render_og_default(), max_age=86400)
+
+
+def og_professional(request, slug):
+    """Per-professional OG image for /p/{slug} (1200×630)."""
+    from .og import render_og_for_professional
+    professional = get_object_or_404(Professional, slug=slug)
+    return _og_response(render_og_for_professional(professional), max_age=3600)

@@ -17,4 +17,6 @@ urlpatterns = [
     path('p/<slug:slug>/booking/', views.booking, name='booking'),
     path('p/<slug:slug>/review/<str:token>/', views.public_review, name='public_review'),
     path('api/patients/search/', views.patient_search_api, name='patient_search_api'),
+    path('og/default.png', views.og_default, name='og_default'),
+    path('og/p/<slug:slug>.png', views.og_professional, name='og_professional'),
 ]

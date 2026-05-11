@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}{{ professional.professional_name }} — {{ professional.specialty }}{% endblock %}
+{% block og_type %}profile{% endblock %}
+{% block og_title %}Agendá con {{ professional.professional_name }} — {{ professional.specialty }}{% endblock %}
+{% block og_description %}{% if professional.tagline %}{{ professional.tagline }}{% else %}Reservá tu turno online con {{ professional.professional_name }} en consulte.{% endif %}{% endblock %}
+{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% url 'og_professional' slug=professional.slug %}{% endblock %}
+{% block meta_description %}{% if professional.tagline %}{{ professional.tagline }} · {% endif %}{{ professional.specialty }}. Reservá tu turno online.{% endblock %}
 
 {% block content %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
