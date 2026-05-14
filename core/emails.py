@@ -52,26 +52,46 @@ def send_clinic_invitation(invitation, request=None):
     else:
         join_url = join_path
 
+    # Owner name for a personal-feeling subject and a real Reply-To.
+    # Personal subjects land in Inbox more often than generic "we invited you" lines.
+    owner_name = ''
+    owner_email = ''
+    if invitation.invited_by:
+        owner_email = invitation.invited_by.email
+        owner_pro = getattr(invitation.invited_by, 'professional', None)
+        owner_name = owner_pro.professional_name if owner_pro else owner_email
+
     context = {
         'invitation': invitation,
         'organization': organization,
         'join_url': join_url,
+        'owner_name': owner_name,
     }
 
-    subject = f'{organization.name} te invitó a sumarte como profesional'
+    if owner_name:
+        subject = f'{owner_name} te invita a sumarte a {organization.name}'
+    else:
+        subject = f'Invitación a {organization.name}'
+
     html_body = render_to_string('core/emails/clinic_invitation.html', context)
     text_body = render_to_string('core/emails/clinic_invitation.txt', context)
 
     try:
         import resend
         resend.api_key = api_key
-        resend.Emails.send({
+        payload = {
             'from': settings.DEFAULT_FROM_EMAIL,
             'to': [invitation.email],
             'subject': subject,
             'html': html_body,
             'text': text_body,
-        })
+            'headers': {
+                'X-Entity-Ref-ID': str(invitation.id),
+            },
+        }
+        if owner_email:
+            payload['reply_to'] = [owner_email]
+        resend.Emails.send(payload)
         return True
     except Exception:
         logger.exception('Failed to send clinic invitation email')

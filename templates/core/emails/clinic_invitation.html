@@ -19,26 +19,29 @@
 
           <tr>
             <td style="padding:24px 40px 8px 40px;">
-              <h1 style="margin:0; font-size:24px; line-height:1.25; font-weight:600; color:#0B1C30;">
+              <h1 style="margin:0; font-size:22px; line-height:1.3; font-weight:600; color:#0B1C30;">
                 {% if invitation.invited_name %}Hola {{ invitation.invited_name }},{% else %}Hola,{% endif %}
               </h1>
-              <p style="margin:16px 0 0 0; font-size:16px; line-height:1.55; color:#4A5A6E;">
-                Te invitaron a sumarte como profesional a <strong style="color:#0B1C30;">{{ organization.name }}</strong> en consulte.
+              <p style="margin:16px 0 0 0; font-size:15px; line-height:1.6; color:#4A5A6E;">
+                {% if owner_name %}{{ owner_name }} te suma como profesional a <strong style="color:#0B1C30;">{{ organization.name }}</strong>.{% else %}Te suman como profesional a <strong style="color:#0B1C30;">{{ organization.name }}</strong>.{% endif %}
               </p>
-              <p style="margin:12px 0 0 0; font-size:16px; line-height:1.55; color:#4A5A6E;">
-                Vas a tener tu propio perfil, tu agenda y tus pacientes, dentro de la clínica.
+              <p style="margin:12px 0 0 0; font-size:15px; line-height:1.6; color:#4A5A6E;">
+                Vas a poder configurar tu agenda y atender pacientes dentro de la clínica, manteniendo tu perfil propio.
+              </p>
+              <p style="margin:18px 0 0 0; font-size:15px; line-height:1.6; color:#4A5A6E;">
+                Para crear tu cuenta entrá acá:
               </p>
             </td>
           </tr>
 
           <tr>
-            <td style="padding:28px 40px;">
+            <td style="padding:18px 40px 28px 40px;">
               <a href="{{ join_url }}"
-                 style="display:inline-block; background:#0047AB; color:#FFFFFF; text-decoration:none; padding:14px 28px; border-radius:6px; font-size:16px; font-weight:600;">
-                Aceptar invitación
+                 style="display:inline-block; background:#0047AB; color:#FFFFFF; text-decoration:none; padding:12px 22px; border-radius:6px; font-size:15px; font-weight:500;">
+                Confirmar y crear mi cuenta
               </a>
-              <p style="margin:16px 0 0 0; font-size:13px; line-height:1.5; color:#6F7E92;">
-                Este link expira en 14 días. Si no esperabas esta invitación, podés ignorar este mensaje.
+              <p style="margin:18px 0 0 0; font-size:13px; line-height:1.5; color:#6F7E92;">
+                El link vence en 14 días. Si no esperabas este mensaje, podés ignorarlo.
               </p>
             </td>
           </tr>

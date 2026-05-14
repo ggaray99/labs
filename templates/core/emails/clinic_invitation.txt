@@ -1,12 +1,13 @@
 {% if invitation.invited_name %}Hola {{ invitation.invited_name }},{% else %}Hola,{% endif %}
 
-Te invitaron a sumarte como profesional a {{ organization.name }} en consulte.
+{% if owner_name %}{{ owner_name }} te suma como profesional a {{ organization.name }}.{% else %}Te suman como profesional a {{ organization.name }}.{% endif %}
 
-Vas a tener tu propio perfil, tu agenda y tus pacientes, dentro de la clínica.
+Vas a poder configurar tu agenda y atender pacientes dentro de la clínica, manteniendo tu perfil propio.
 
-Aceptar invitación: {{ join_url }}
+Para crear tu cuenta entrá acá:
+{{ join_url }}
 
-Este link expira en 14 días. Si no esperabas esta invitación, podés ignorar este mensaje.
+El link vence en 14 días. Si no esperabas este mensaje, podés ignorarlo.
 
 —
 consulte. — Plataforma para profesionales independientes

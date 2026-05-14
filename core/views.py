@@ -810,8 +810,12 @@ def clinic_dashboard(request):
         return redirect('clinic_setup')
 
     members = list(org.members.select_related('user').all())
-    pending_invites = org.invitations.filter(accepted_at__isnull=True).order_by('-created_at')
+    pending_invites = list(org.invitations.filter(accepted_at__isnull=True).order_by('-created_at'))
     pending_invites = [inv for inv in pending_invites if not inv.is_expired]
+    for inv in pending_invites:
+        inv.join_url = request.build_absolute_uri(
+            reverse('clinic_join', kwargs={'token': inv.token})
+        )
 
     today = date.today()
     first_of_month = today.replace(day=1)
