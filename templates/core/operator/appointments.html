@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Turnos — Operador{% endblock %}
+
+{% block navbar %}{% include 'core/operator/_nav.html' with active='appts' %}{% endblock %}
+
+{% block content %}
+<style>
+  .op-page { background: #F4F6FA; min-height: 100vh; font-family: 'Manrope', sans-serif; padding: 24px 16px; }
+  .op-wrap { max-width: 1280px; margin: 0 auto; }
+  .op-h1 { font-size: 20px; font-weight: 600; color: #0B1C30; margin-bottom: 14px; }
+  .op-card { background: #fff; border: 1px solid #E5E9F0; border-radius: 12px; overflow: hidden; }
+  table.op-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.op-table th { text-align: left; padding: 10px 14px; background: #F8F9FF; color: #4A5A6E; font-weight: 600; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid #E5E9F0; }
+  table.op-table td { padding: 11px 14px; border-bottom: 1px solid #F4F6FA; vertical-align: middle; }
+  .pill { display: inline-flex; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 600; }
+  .pill-scheduled { background: rgba(0,71,171,.1); color: #0047AB; }
+  .pill-confirmed { background: rgba(30,158,99,.15); color: #1E9E63; }
+  .pill-cancelled { background: rgba(199,76,72,.15); color: #C74C48; }
+  .pill-completed { background: rgba(111,126,146,.15); color: #4A5A6E; }
+  .empty { padding: 36px; text-align: center; color: #6F7E92; font-size: 13px; }
+</style>
+
+<div class="op-page">
+  <div class="op-wrap">
+    <h1 class="op-h1">Últimos 100 turnos creados</h1>
+    <div class="op-card">
+      {% if appointments %}
+      <table class="op-table">
+        <thead>
+          <tr>
+            <th>Creado</th>
+            <th>Cuándo</th>
+            <th>Profesional</th>
+            <th>Paciente</th>
+            <th>Servicio</th>
+            <th>Origen</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in appointments %}
+          <tr>
+            <td style="font-size:11px; color:#6F7E92;">{{ a.created_at|date:'d/m H:i' }}</td>
+            <td><strong>{{ a.appointment_date|date:'d/m' }}</strong> · {{ a.appointment_time|time:'H:i' }}</td>
+            <td>{{ a.professional.professional_name }}</td>
+            <td>{{ a.patient.first_name }} {{ a.patient.last_name }}</td>
+            <td style="font-size:12px;">{% if a.service %}{{ a.service.title }}{% else %}<span style="color:#A2AEBE;">—</span>{% endif %}</td>
+            <td style="font-size:11px; color:#6F7E92;">{{ a.get_source_display }}</td>
+            <td><span class="pill pill-{{ a.status }}">{{ a.get_status_display|upper }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="empty">Sin turnos creados.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

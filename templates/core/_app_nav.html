@@ -41,6 +41,11 @@
         <a class="tab {% if active == 'agenda' %}tab-active{% endif %}" href="{% url 'dashboard' %}">Agenda</a>
         <a class="tab {% if active == 'clientes' %}tab-active{% endif %}" href="{% url 'patient_list' %}">Clientes</a>
         <a class="tab {% if active == 'pagina' %}tab-active{% endif %}" href="{% url 'landing_admin' %}">Página</a>
+        {% if professional.role == 'owner' %}
+          <a class="tab {% if active == 'clinica' %}tab-active{% endif %}" href="{% url 'clinic_dashboard' %}">Mi clínica</a>
+        {% elif professional.organization %}
+          <a class="tab {% if active == 'clinica' %}tab-active{% endif %}" href="{% url 'clinic_public_landing' slug=professional.organization.slug %}" target="_blank">Mi clínica ↗</a>
+        {% endif %}
       </nav>
     </div>
     <div class="app-nav-right">

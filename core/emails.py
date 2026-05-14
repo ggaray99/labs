@@ -33,6 +33,51 @@ def _absolute_profile_image_url(professional, request=None):
     return ''
 
 
+def send_clinic_invitation(invitation, request=None):
+    """Send an invitation email to a professional joining a clinic.
+
+    Returns True if accepted by Resend, False otherwise. Never raises.
+    """
+    api_key = settings.RESEND_API_KEY
+    if not api_key:
+        logger.info('Resend API key not set, skipping clinic invitation email.')
+        return False
+
+    organization = invitation.organization
+    join_path = reverse('clinic_join', kwargs={'token': invitation.token})
+    if request is not None:
+        join_url = request.build_absolute_uri(join_path)
+    elif settings.SITE_BASE_URL:
+        join_url = f'{settings.SITE_BASE_URL}{join_path}'
+    else:
+        join_url = join_path
+
+    context = {
+        'invitation': invitation,
+        'organization': organization,
+        'join_url': join_url,
+    }
+
+    subject = f'{organization.name} te invitó a sumarte como profesional'
+    html_body = render_to_string('core/emails/clinic_invitation.html', context)
+    text_body = render_to_string('core/emails/clinic_invitation.txt', context)
+
+    try:
+        import resend
+        resend.api_key = api_key
+        resend.Emails.send({
+            'from': settings.DEFAULT_FROM_EMAIL,
+            'to': [invitation.email],
+            'subject': subject,
+            'html': html_body,
+            'text': text_body,
+        })
+        return True
+    except Exception:
+        logger.exception('Failed to send clinic invitation email')
+        return False
+
+
 def send_appointment_confirmation(appointment, request=None):
     """Send the brand-book slide-20 confirmation email to the patient.
 

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Clínicas — Operador{% endblock %}
+
+{% block navbar %}{% include 'core/operator/_nav.html' with active='orgs' %}{% endblock %}
+
+{% block content %}
+<style>
+  .op-page { background: #F4F6FA; min-height: 100vh; font-family: 'Manrope', sans-serif; padding: 24px 16px; }
+  .op-wrap { max-width: 1280px; margin: 0 auto; }
+  .op-h1 { font-size: 20px; font-weight: 600; color: #0B1C30; margin-bottom: 14px; }
+  .op-card { background: #fff; border: 1px solid #E5E9F0; border-radius: 12px; overflow: hidden; }
+  table.op-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.op-table th { text-align: left; padding: 10px 14px; background: #F8F9FF; color: #4A5A6E; font-weight: 600; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid #E5E9F0; }
+  table.op-table td { padding: 12px 14px; border-bottom: 1px solid #F4F6FA; vertical-align: middle; }
+  table.op-table tr:hover td { background: #FAFBFE; }
+  .empty { padding: 36px; text-align: center; color: #6F7E92; font-size: 13px; }
+  .counter { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6F7E92; }
+</style>
+
+<div class="op-page">
+  <div class="op-wrap">
+    <h1 class="op-h1">Clínicas / Consultoras <span class="counter">({{ total }})</span></h1>
+    <div class="op-card">
+      {% if rows %}
+      <table class="op-table">
+        <thead>
+          <tr>
+            <th>Clínica</th>
+            <th>Owner</th>
+            <th style="text-align:right;">Miembros</th>
+            <th style="text-align:right;">Turnos del mes</th>
+            <th>Creada</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td>
+              <div style="font-weight:500; color:#0B1C30;">{{ r.org.name }}</div>
+              <div style="font-size:11px; color:#6F7E92;">/c/{{ r.org.slug }}</div>
+            </td>
+            <td>
+              <div>{{ r.org.owner.email }}</div>
+              {% if r.org.owner.id %}<a href="{% url 'operator_user_detail' user_id=r.org.owner.id %}" style="font-size:11px; color:#0047AB;">ver user →</a>{% endif %}
+            </td>
+            <td style="text-align:right; font-family:'JetBrains Mono', monospace;">{{ r.org.member_count }}</td>
+            <td style="text-align:right; font-family:'JetBrains Mono', monospace;">{{ r.appts_month }}</td>
+            <td style="font-size:11px; color:#6F7E92;">{{ r.org.created_at|date:'d/m/Y' }}</td>
+            <td style="text-align:right;">
+              <a href="{% url 'clinic_public_landing' slug=r.org.slug %}" target="_blank" style="font-size:12px; color:#0047AB;">Landing ↗</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="empty">Todavía no hay clínicas creadas.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

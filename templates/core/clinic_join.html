@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Sumate a {{ invitation.organization.name }} — consulte.{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#F8F9FF] flex items-center justify-center px-4 py-10">
+  <div class="max-w-md w-full bg-white border border-gray-100 rounded-xl shadow-sm p-8">
+
+    <div class="flex items-center gap-2 mb-6">
+      <svg width="24" height="24" viewBox="0 0 80 80" aria-hidden="true"><rect x="6" y="6" width="68" height="68" rx="8" fill="none" stroke="#0047AB" stroke-width="10"/><rect x="22" y="36" width="36" height="8" fill="#0047AB"/></svg>
+      <span style="font-family:'Manrope',sans-serif; font-weight:600; font-size:18px; letter-spacing:-0.045em; color:#0047AB;">consulte<span style="color:#0B1C30;">.</span></span>
+    </div>
+
+    <p class="text-xs uppercase tracking-widest text-[#0047AB] font-semibold mb-2">Invitación</p>
+    <h1 class="text-2xl font-semibold tracking-tight text-[#0B1C30] mb-2">Sumate a {{ invitation.organization.name }}</h1>
+    <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+      Vas a crear tu cuenta como profesional dentro de {{ invitation.organization.name }}. Tu perfil, tu agenda y tus pacientes son tuyos.
+    </p>
+
+    {% if errors %}
+      <div class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
+        <ul class="list-disc list-inside space-y-1">
+          {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" value="{{ invitation.email }}" disabled
+               class="w-full border border-gray-200 bg-gray-50 rounded-lg px-4 py-2 text-sm text-gray-500">
+        <p class="text-xs text-gray-400 mt-1">El email viene de la invitación y no se puede cambiar.</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Tu nombre completo</label>
+        <input type="text" name="professional_name" required maxlength="255" value="{{ form.professional_name.value|default:invitation.invited_name|default:'' }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Especialidad</label>
+        <input type="text" name="specialty" required maxlength="255" value="{{ form.specialty.value|default:'' }}"
+               placeholder="Ej: Psicología clínica, Abogado laboral"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono (opcional)</label>
+        <input type="text" name="phone" maxlength="50" value="{{ form.phone.value|default:'' }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+        <input type="password" name="password" required minlength="8"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        <p class="text-xs text-gray-400 mt-1">Mínimo 8 caracteres.</p>
+      </div>
+
+      <div class="rounded-lg bg-[#F2F5FC] border border-[#DCE5F4] px-4 py-3 text-xs text-[#1F3147] leading-relaxed">
+        Vas a poder configurar tu agenda (días y horarios) y personalizar tu landing pública después de entrar.
+      </div>
+
+      <button type="submit" class="w-full bg-[#0047AB] hover:bg-[#00327D] text-white py-2.5 rounded-lg text-sm font-semibold">
+        Crear mi cuenta
+      </button>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

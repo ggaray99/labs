@@ -1,7 +1,11 @@
+import secrets
 import uuid
+from datetime import timedelta
+
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
 
 HEX_COLOR_VALIDATOR = RegexValidator(r'^#(?:[0-9a-fA-F]{3}){1,2}$', 'Color en formato hex. Ej: #0047ab')
@@ -32,9 +36,112 @@ CURRENCY_CHOICES = [
 ]
 
 
+class Organization(models.Model):
+    """Clínica o consultora con uno o más profesionales adentro."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                              related_name='owned_organizations')
+    name = models.CharField('Nombre de la clínica/consultora', max_length=255)
+    slug = models.SlugField(unique=True, max_length=255)
+    tagline = models.CharField('Frase de valor', max_length=255, blank=True)
+    bio = models.TextField('Descripción', blank=True)
+    mission = models.TextField('Misión', blank=True)
+    address = models.CharField('Dirección', max_length=255, blank=True)
+    phone = models.CharField('Teléfono', max_length=50, blank=True)
+    email = models.EmailField('Email de contacto', blank=True)
+    logo = models.ImageField('Logo', upload_to='organizations/', blank=True, null=True)
+    theme_primary = models.CharField('Color principal', max_length=7, default='#0047ab',
+                                     validators=[HEX_COLOR_VALIDATOR])
+    instagram_url = models.URLField('Instagram', blank=True, default='')
+    facebook_url = models.URLField('Facebook', blank=True, default='')
+    x_url = models.URLField('X (Twitter)', blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Clínica / Consultora'
+        verbose_name_plural = 'Clínicas / Consultoras'
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 2
+            while Organization.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f'{base_slug}-{counter}'
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    @property
+    def has_social_links(self):
+        return bool(self.instagram_url or self.facebook_url or self.x_url)
+
+
+class OrganizationInvitation(models.Model):
+    """Invitación pendiente para que un profesional se sume a una clínica."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE,
+                                     related_name='invitations')
+    email = models.EmailField('Email del invitado')
+    invited_name = models.CharField('Nombre', max_length=255, blank=True,
+                                    help_text='Opcional. Se usa solo para el saludo en el email.')
+    token = models.CharField(max_length=64, unique=True, editable=False)
+    invited_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   null=True, blank=True, related_name='sent_invitations')
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    accepted_at = models.DateTimeField(null=True, blank=True)
+    accepted_professional = models.ForeignKey('Professional', on_delete=models.SET_NULL,
+                                              null=True, blank=True,
+                                              related_name='+',
+                                              help_text='Profesional creado al aceptar la invitación.')
+
+    class Meta:
+        verbose_name = 'Invitación a clínica'
+        verbose_name_plural = 'Invitaciones a clínica'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.email} → {self.organization.name}'
+
+    def save(self, *args, **kwargs):
+        if not self.token:
+            self.token = secrets.token_urlsafe(32)
+        if not self.expires_at:
+            self.expires_at = timezone.now() + timedelta(days=14)
+        super().save(*args, **kwargs)
+
+    @property
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+
+    @property
+    def is_accepted(self):
+        return self.accepted_at is not None
+
+    @property
+    def is_pending(self):
+        return not self.is_accepted and not self.is_expired
+
+
 class Professional(models.Model):
+    ROLE_CHOICES = [
+        ('solo',   'Profesional individual'),
+        ('owner',  'Dueño/a de clínica'),
+        ('member', 'Miembro de clínica'),
+    ]
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='professional', null=True)
+    organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, blank=True,
+                                     related_name='members',
+                                     help_text='Si pertenece a una clínica/consultora, su organización. Null = profesional independiente.')
+    role = models.CharField('Rol', max_length=20, choices=ROLE_CHOICES, default='solo',
+                            help_text='solo = sin clínica; owner = dueño; member = profesional invitado.')
     professional_name = models.CharField('Nombre completo', max_length=255)
     specialty = models.CharField('Especialidad', max_length=255)
     vertical = models.CharField('Vertical', max_length=20, choices=VERTICAL_CHOICES, blank=True, default='',
@@ -62,6 +169,12 @@ class Professional(models.Model):
                                    help_text='Solo se renderiza si además hay una dirección cargada.')
     currency = models.CharField('Moneda', max_length=3, choices=CURRENCY_CHOICES, default='ARS',
                                 help_text='Moneda en la que mostrás los precios de tus servicios.')
+    instagram_url = models.URLField('Instagram', blank=True, default='',
+                                    help_text='URL completa de tu perfil. Ej: https://instagram.com/tu-usuario')
+    facebook_url = models.URLField('Facebook', blank=True, default='',
+                                   help_text='URL completa de tu página o perfil.')
+    x_url = models.URLField('X (Twitter)', blank=True, default='',
+                            help_text='URL completa de tu perfil. Ej: https://x.com/tu-usuario')
     slug = models.SlugField(unique=True, max_length=255)
     working_days = models.CharField('Días de atención', max_length=255, help_text='Ej: lunes,martes,miercoles')
     start_time = models.TimeField('Hora de inicio')
@@ -116,6 +229,10 @@ class Professional(models.Model):
     def both_modes(self):
         """True when the pro accepts both formats and the patient must choose."""
         return self.supports_online and self.supports_presencial
+
+    @property
+    def has_social_links(self):
+        return bool(self.instagram_url or self.facebook_url or self.x_url)
 
     @property
     def accent_color(self):
@@ -316,3 +433,46 @@ class Appointment(models.Model):
         if self.mode == 'online' and not self.meeting_url:
             self.meeting_url = self.generate_meeting_url()
         super().save(*args, **kwargs)
+
+
+class Subscription(models.Model):
+    """Plan + estado de cobro del usuario. Se crea auto en signup como 'free'."""
+    PLAN_CHOICES = [
+        ('free', 'Free'),
+        ('pro',  'Pro'),
+    ]
+    STATUS_CHOICES = [
+        ('active',    'Activa'),
+        ('trialing',  'En prueba'),
+        ('past_due',  'Pago vencido'),
+        ('cancelled', 'Cancelada'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                related_name='subscription')
+    plan = models.CharField(max_length=10, choices=PLAN_CHOICES, default='free')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    mp_preapproval_id = models.CharField('Mercado Pago preapproval ID', max_length=100,
+                                         blank=True, default='')
+    trial_end = models.DateTimeField(null=True, blank=True)
+    current_period_end = models.DateTimeField(null=True, blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+    manually_set = models.BooleanField(default=False,
+                                       help_text='True cuando el plan fue cambiado a mano desde el admin de operador. Bloquea sobrescritura por webhooks de MP.')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Suscripción'
+        verbose_name_plural = 'Suscripciones'
+
+    def __str__(self):
+        return f'{self.user.email} — {self.get_plan_display()} ({self.get_status_display()})'
+
+    @property
+    def is_pro(self):
+        """True si el plan da acceso a features Pro (independiente del proveedor de cobro)."""
+        if self.plan != 'pro':
+            return False
+        return self.status in ('active', 'trialing')

@@ -1,0 +1,32 @@
+{# Operator-only top nav. Include with: {% include 'core/operator/_nav.html' with active='home' %} #}
+<style>
+  .op-nav { background: #0B1C30; color: #fff; font-family: 'Manrope', system-ui, sans-serif; position: sticky; top: 0; z-index: 40; }
+  .op-nav-inner { max-width: 1440px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .op-nav-left { display: flex; align-items: center; gap: 18px; }
+  .op-nav .badge { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #92E3A9; background: rgba(146,227,169,.1); padding: 4px 8px; border-radius: 4px; border: 1px solid rgba(146,227,169,.25); }
+  .op-nav .brand { font-weight: 600; letter-spacing: -0.02em; font-size: 16px; color: #fff; }
+  .op-nav .tabs { display: flex; gap: 4px; margin-left: 8px; }
+  .op-nav .tab { padding: 6px 12px; border-radius: 5px; font-size: 13px; color: #A2AEBE; text-decoration: none; transition: background 150ms, color 150ms; }
+  .op-nav .tab:hover { background: rgba(255,255,255,.06); color: #fff; }
+  .op-nav .tab-active { background: rgba(255,255,255,.1); color: #fff; font-weight: 600; }
+  .op-nav .exit { font-size: 12px; color: #A2AEBE; text-decoration: none; }
+  .op-nav .exit:hover { color: #fff; }
+  @media (max-width: 768px) { .op-nav-inner { padding: 12px 16px; flex-wrap: wrap; } .op-nav .tabs { width: 100%; overflow-x: auto; } }
+</style>
+<header class="op-nav">
+  <div class="op-nav-inner">
+    <div class="op-nav-left">
+      <span class="badge">Operador</span>
+      <a href="{% url 'operator_home' %}" class="brand">consulte<span style="color:#92E3A9;">.</span></a>
+      <nav class="tabs">
+        <a class="tab {% if active == 'home' %}tab-active{% endif %}" href="{% url 'operator_home' %}">KPIs</a>
+        <a class="tab {% if active == 'pros' %}tab-active{% endif %}" href="{% url 'operator_professionals' %}">Profesionales</a>
+        <a class="tab {% if active == 'orgs' %}tab-active{% endif %}" href="{% url 'operator_organizations' %}">Clínicas</a>
+        <a class="tab {% if active == 'appts' %}tab-active{% endif %}" href="{% url 'operator_appointments' %}">Turnos</a>
+      </nav>
+    </div>
+    <div>
+      <a href="{% url 'dashboard' %}" class="exit">Salir del modo operador →</a>
+    </div>
+  </div>
+</header>

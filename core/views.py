@@ -10,19 +10,23 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core import signing
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.urls import reverse
+from django.utils import timezone
 
 from .models import (
-    Professional, Patient, Appointment,
+    Professional, Patient, Appointment, Organization, OrganizationInvitation,
+    Subscription,
     LandingStat, LandingCredential, LandingService, LandingTestimonial,
 )
 from .forms import (
     ProfessionalSetupForm, BookingPatientForm, PatientForm,
-    MissionForm, LandingSettingsForm, BasicsForm, LandingStatForm, LandingCredentialForm,
+    MissionForm, LandingSettingsForm, BasicsForm, SocialLinksForm,
+    LandingStatForm, LandingCredentialForm,
     LandingServiceForm, LandingTestimonialForm, PublicReviewForm,
+    OrganizationSetupForm, OrganizationBrandingForm, InvitationForm, JoinClinicForm,
 )
-from .emails import send_appointment_confirmation
+from .emails import send_appointment_confirmation, send_clinic_invitation
 
 
 REVIEW_TOKEN_SALT = 'clyra.appointment.review'
@@ -541,6 +545,15 @@ def landing_admin(request):
                 messages.error(request, 'Revisá los campos.')
             return redirect('/dashboard/landing/#basics')
 
+        if action == 'social_save':
+            form = SocialLinksForm(request.POST, instance=professional)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Redes sociales actualizadas.')
+            else:
+                messages.error(request, 'Revisá las URLs — tienen que empezar con https://')
+            return redirect('/dashboard/landing/#social')
+
         if action == 'testimonial_approve':
             obj = get_object_or_404(LandingTestimonial, id=request.POST.get('id'), professional=professional)
             obj.is_approved = True
@@ -747,3 +760,405 @@ def og_professional(request, slug):
     from .og import render_og_for_professional
     professional = get_object_or_404(Professional, slug=slug)
     return _og_response(render_og_for_professional(professional), max_age=3600)
+
+
+# --- Clinic / Organization ---
+
+def _get_owned_organization(request):
+    """Return the Organization owned by the logged-in user, or None."""
+    if not request.user.is_authenticated:
+        return None
+    return Organization.objects.filter(owner=request.user).first()
+
+
+@login_required
+def clinic_setup(request):
+    """Convert a solo Professional account into a clinic (owner)."""
+    professional = get_professional(request)
+    if not professional:
+        return redirect('setup')
+
+    if _get_owned_organization(request):
+        return redirect('clinic_dashboard')
+
+    if request.method == 'POST':
+        form = OrganizationSetupForm(request.POST)
+        if form.is_valid():
+            org = form.save(commit=False)
+            org.owner = request.user
+            org.save()
+            professional.organization = org
+            professional.role = 'owner'
+            professional.save(update_fields=['organization', 'role'])
+            messages.success(request, f'¡{org.name} creada! Ya podés invitar profesionales.')
+            return redirect('clinic_dashboard')
+    else:
+        form = OrganizationSetupForm(initial={'name': '', 'phone': professional.phone,
+                                              'address': professional.address,
+                                              'email': professional.email})
+
+    return render(request, 'core/clinic_setup.html', {
+        'form': form,
+        'professional': professional,
+    })
+
+
+@login_required
+def clinic_dashboard(request):
+    org = _get_owned_organization(request)
+    if not org:
+        return redirect('clinic_setup')
+
+    members = list(org.members.select_related('user').all())
+    pending_invites = org.invitations.filter(accepted_at__isnull=True).order_by('-created_at')
+    pending_invites = [inv for inv in pending_invites if not inv.is_expired]
+
+    today = date.today()
+    first_of_month = today.replace(day=1)
+    member_ids = [m.id for m in members]
+    appts_this_month = Appointment.objects.filter(
+        professional_id__in=member_ids,
+        appointment_date__gte=first_of_month,
+        appointment_date__lte=today,
+    ).count()
+    upcoming = Appointment.objects.filter(
+        professional_id__in=member_ids,
+        appointment_date__gte=today,
+    ).exclude(status='cancelled').count()
+
+    return render(request, 'core/clinic_dashboard.html', {
+        'organization': org,
+        'members': members,
+        'pending_invites': pending_invites,
+        'kpi_members': len(members),
+        'kpi_appts_this_month': appts_this_month,
+        'kpi_upcoming': upcoming,
+        'public_url': request.build_absolute_uri(reverse('clinic_public_landing', kwargs={'slug': org.slug})),
+    })
+
+
+@login_required
+def clinic_invite(request):
+    org = _get_owned_organization(request)
+    if not org:
+        return redirect('clinic_setup')
+
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip().lower()
+        already_member = org.members.filter(user__email__iexact=email).exists()
+        already_invited = org.invitations.filter(email__iexact=email, accepted_at__isnull=True).exists()
+        if already_member:
+            messages.error(request, 'Esa persona ya es parte de la clínica.')
+            return redirect('clinic_dashboard')
+        if already_invited:
+            messages.warning(request, 'Ya hay una invitación pendiente para ese email.')
+            return redirect('clinic_dashboard')
+
+        form = InvitationForm(request.POST)
+        if form.is_valid():
+            invitation = form.save(commit=False)
+            invitation.organization = org
+            invitation.invited_by = request.user
+            invitation.save()
+            send_clinic_invitation(invitation, request=request)
+            messages.success(request, f'Invitación enviada a {invitation.email}.')
+            return redirect('clinic_dashboard')
+        messages.error(request, 'Revisá el email.')
+
+    return redirect('clinic_dashboard')
+
+
+@login_required
+def clinic_revoke_invitation(request, invitation_id):
+    org = _get_owned_organization(request)
+    if not org:
+        return redirect('clinic_setup')
+    if request.method == 'POST':
+        invitation = get_object_or_404(OrganizationInvitation, id=invitation_id, organization=org)
+        invitation.delete()
+        messages.success(request, 'Invitación cancelada.')
+    return redirect('clinic_dashboard')
+
+
+@login_required
+def clinic_remove_member(request, professional_id):
+    org = _get_owned_organization(request)
+    if not org:
+        return redirect('clinic_setup')
+    if request.method == 'POST':
+        member = get_object_or_404(Professional, id=professional_id, organization=org)
+        if member.role == 'owner':
+            messages.error(request, 'No podés sacarte a vos mismo de la clínica desde acá.')
+            return redirect('clinic_dashboard')
+        member.organization = None
+        member.role = 'solo'
+        member.save(update_fields=['organization', 'role'])
+        messages.success(request, f'{member.professional_name} ya no pertenece a {org.name}.')
+    return redirect('clinic_dashboard')
+
+
+@login_required
+def clinic_branding(request):
+    org = _get_owned_organization(request)
+    if not org:
+        return redirect('clinic_setup')
+    if request.method == 'POST':
+        form = OrganizationBrandingForm(request.POST, request.FILES, instance=org)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Branding de la clínica actualizado.')
+        else:
+            messages.error(request, 'Revisá los campos.')
+    return redirect('clinic_dashboard')
+
+
+def clinic_join(request, token):
+    """Public view: an invitee opens the magic link from their email."""
+    invitation = get_object_or_404(OrganizationInvitation, token=token)
+    if invitation.is_accepted:
+        messages.info(request, 'Esta invitación ya fue aceptada.')
+        return redirect('login')
+    if invitation.is_expired:
+        return render(request, 'core/clinic_join_expired.html', {'invitation': invitation}, status=410)
+
+    if request.method == 'POST':
+        form = JoinClinicForm(request.POST)
+        errors = []
+        if User.objects.filter(email__iexact=invitation.email).exists():
+            errors.append('Ya existe una cuenta con ese email. Iniciá sesión y avisale al dueño de la clínica.')
+        if form.is_valid() and not errors:
+            user = User.objects.create_user(
+                username=invitation.email,
+                email=invitation.email,
+                password=form.cleaned_data['password'],
+            )
+            org = invitation.organization
+            professional = Professional.objects.create(
+                user=user,
+                organization=org,
+                role='member',
+                professional_name=form.cleaned_data['professional_name'],
+                specialty=form.cleaned_data['specialty'],
+                email=invitation.email,
+                phone=form.cleaned_data.get('phone', '') or '',
+                working_days='lunes,martes,miercoles,jueves,viernes',
+                start_time='09:00',
+                end_time='18:00',
+                appointment_duration_minutes=30,
+            )
+            invitation.accepted_at = timezone.now()
+            invitation.accepted_professional = professional
+            invitation.save(update_fields=['accepted_at', 'accepted_professional'])
+            login(request, user)
+            messages.success(request, f'¡Bienvenido/a a {org.name}! Configurá tu agenda y tu landing.')
+            return redirect('landing_admin')
+        for field_errors in form.errors.values():
+            errors.extend(field_errors)
+        return render(request, 'core/clinic_join.html', {
+            'invitation': invitation, 'form': form, 'errors': errors,
+        })
+
+    form = JoinClinicForm(initial={'professional_name': invitation.invited_name})
+    return render(request, 'core/clinic_join.html', {
+        'invitation': invitation, 'form': form,
+    })
+
+
+def clinic_public_landing(request, slug):
+    """Public landing for a clinic, listing its professionals."""
+    organization = get_object_or_404(Organization, slug=slug)
+    members = organization.members.order_by('professional_name')
+    return render(request, 'core/clinic_public_landing.html', {
+        'organization': organization,
+        'members': members,
+    })
+
+
+# --- Operator admin (superuser only) ---
+
+def _superuser_required(view_func):
+    from functools import wraps
+
+    @wraps(view_func)
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_authenticated or not request.user.is_superuser:
+            raise Http404()
+        return view_func(request, *args, **kwargs)
+    return wrapped
+
+
+@_superuser_required
+def operator_home(request):
+    today = date.today()
+    week_ago = today - timedelta(days=7)
+    month_start = today.replace(day=1)
+    days_30_ago = today - timedelta(days=30)
+
+    users_total = User.objects.count()
+    pros_total = Professional.objects.count()
+    orgs_total = Organization.objects.count()
+
+    appts_today = Appointment.objects.filter(appointment_date=today).count()
+    appts_week = Appointment.objects.filter(appointment_date__gte=week_ago, appointment_date__lte=today).count()
+    appts_month = Appointment.objects.filter(appointment_date__gte=month_start, appointment_date__lte=today).count()
+
+    signups_week = User.objects.filter(date_joined__gte=week_ago).count()
+    signups_today = User.objects.filter(date_joined__date=today).count()
+
+    pro_subs = Subscription.objects.filter(plan='pro', status__in=['active', 'trialing']).count()
+    free_subs = Subscription.objects.filter(plan='free').count()
+    mrr_estimate_ars = pro_subs * 9900
+
+    # Signups por día últimos 30
+    signups_by_day = []
+    for i in range(29, -1, -1):
+        d = today - timedelta(days=i)
+        c = User.objects.filter(date_joined__date=d).count()
+        signups_by_day.append({'date': d, 'count': c})
+    max_signups = max((s['count'] for s in signups_by_day), default=0) or 1
+
+    pending_invites = OrganizationInvitation.objects.filter(accepted_at__isnull=True).count()
+    pending_reviews = LandingTestimonial.objects.filter(is_approved=False).count()
+
+    return render(request, 'core/operator/home.html', {
+        'users_total': users_total,
+        'pros_total': pros_total,
+        'orgs_total': orgs_total,
+        'appts_today': appts_today,
+        'appts_week': appts_week,
+        'appts_month': appts_month,
+        'signups_today': signups_today,
+        'signups_week': signups_week,
+        'pro_subs': pro_subs,
+        'free_subs': free_subs,
+        'mrr_estimate_ars': mrr_estimate_ars,
+        'signups_by_day': signups_by_day,
+        'max_signups': max_signups,
+        'pending_invites': pending_invites,
+        'pending_reviews': pending_reviews,
+    })
+
+
+@_superuser_required
+def operator_professionals(request):
+    qs = Professional.objects.select_related('user', 'organization', 'user__subscription').order_by('-created_at')
+
+    plan_filter = request.GET.get('plan', '')
+    vertical_filter = request.GET.get('vertical', '')
+    clinic_filter = request.GET.get('clinic', '')
+    search = request.GET.get('q', '').strip()
+
+    if plan_filter in ('free', 'pro'):
+        qs = qs.filter(user__subscription__plan=plan_filter)
+    if vertical_filter:
+        qs = qs.filter(vertical=vertical_filter)
+    if clinic_filter == 'yes':
+        qs = qs.filter(organization__isnull=False)
+    elif clinic_filter == 'no':
+        qs = qs.filter(organization__isnull=True)
+    if search:
+        qs = qs.filter(
+            Q(professional_name__icontains=search) |
+            Q(email__icontains=search) |
+            Q(specialty__icontains=search)
+        )
+
+    month_start = date.today().replace(day=1)
+    pros = list(qs[:200])
+    pro_ids = [p.id for p in pros]
+    appt_counts = dict(
+        Appointment.objects.filter(professional_id__in=pro_ids,
+                                   appointment_date__gte=month_start)
+        .values('professional_id')
+        .annotate(c=Count('id'))
+        .values_list('professional_id', 'c')
+    )
+    for p in pros:
+        p._appt_month = appt_counts.get(p.id, 0)
+
+    from .models import VERTICAL_CHOICES
+    return render(request, 'core/operator/professionals.html', {
+        'pros': pros,
+        'total': qs.count(),
+        'plan_filter': plan_filter,
+        'vertical_filter': vertical_filter,
+        'clinic_filter': clinic_filter,
+        'search': search,
+        'vertical_choices': VERTICAL_CHOICES,
+    })
+
+
+@_superuser_required
+def operator_organizations(request):
+    orgs = Organization.objects.select_related('owner').annotate(
+        member_count=Count('members'),
+    ).order_by('-created_at')
+
+    month_start = date.today().replace(day=1)
+    out = []
+    for org in orgs:
+        member_ids = list(org.members.values_list('id', flat=True))
+        appts_month = Appointment.objects.filter(
+            professional_id__in=member_ids,
+            appointment_date__gte=month_start,
+        ).count() if member_ids else 0
+        out.append({'org': org, 'appts_month': appts_month})
+
+    return render(request, 'core/operator/organizations.html', {
+        'rows': out,
+        'total': orgs.count(),
+    })
+
+
+@_superuser_required
+def operator_appointments(request):
+    appts = (Appointment.objects
+             .select_related('professional', 'patient', 'service')
+             .order_by('-created_at')[:100])
+    return render(request, 'core/operator/appointments.html', {
+        'appointments': appts,
+    })
+
+
+@_superuser_required
+def operator_user_detail(request, user_id):
+    user = get_object_or_404(User.objects.select_related('subscription'), id=user_id)
+    professional = getattr(user, 'professional', None)
+    owned_org = Organization.objects.filter(owner=user).first()
+    appts_total = Appointment.objects.filter(professional=professional).count() if professional else 0
+    month_start = date.today().replace(day=1)
+    appts_month = (Appointment.objects.filter(professional=professional, appointment_date__gte=month_start).count()
+                   if professional else 0)
+    last_appts = (Appointment.objects.filter(professional=professional)
+                  .select_related('patient').order_by('-created_at')[:10]
+                  if professional else [])
+    return render(request, 'core/operator/user_detail.html', {
+        'detail_user': user,
+        'professional': professional,
+        'owned_organization': owned_org,
+        'appts_total': appts_total,
+        'appts_month': appts_month,
+        'last_appts': last_appts,
+    })
+
+
+@_superuser_required
+def operator_toggle_pro(request, user_id):
+    if request.method != 'POST':
+        return redirect('operator_user_detail', user_id=user_id)
+    user = get_object_or_404(User, id=user_id)
+    sub, _ = Subscription.objects.get_or_create(user=user, defaults={'plan': 'free'})
+    if sub.plan == 'pro':
+        sub.plan = 'free'
+        sub.status = 'active'
+        sub.cancelled_at = timezone.now()
+        sub.manually_set = True
+        messages.success(request, f'{user.email} pasó a Free.')
+    else:
+        sub.plan = 'pro'
+        sub.status = 'active'
+        sub.cancelled_at = None
+        sub.manually_set = True
+        messages.success(request, f'{user.email} activado en Pro manualmente.')
+    sub.save()
+    return redirect('operator_user_detail', user_id=user_id)

@@ -1,6 +1,6 @@
 from django import forms
 from .models import (
-    Professional, Patient, Appointment,
+    Professional, Patient, Appointment, Organization, OrganizationInvitation,
     LandingStat, LandingCredential, LandingService, LandingTestimonial,
 )
 
@@ -76,6 +76,12 @@ class BasicsForm(forms.ModelForm):
         fields = ['professional_name', 'specialty', 'tagline', 'bio', 'profile_image']
 
 
+class SocialLinksForm(forms.ModelForm):
+    class Meta:
+        model = Professional
+        fields = ['instagram_url', 'facebook_url', 'x_url']
+
+
 class LandingStatForm(forms.ModelForm):
     class Meta:
         model = LandingStat
@@ -104,3 +110,32 @@ class PublicReviewForm(forms.Form):
     rating = forms.IntegerField(min_value=1, max_value=5, label='Puntaje')
     quote = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'maxlength': 600}),
                             label='¿Cómo fue tu experiencia?', max_length=600)
+
+
+class OrganizationSetupForm(forms.ModelForm):
+    """Form para convertir una cuenta solo en cuenta de clínica."""
+    class Meta:
+        model = Organization
+        fields = ['name', 'tagline', 'address', 'phone', 'email']
+
+
+class OrganizationBrandingForm(forms.ModelForm):
+    class Meta:
+        model = Organization
+        fields = ['name', 'tagline', 'bio', 'mission', 'address', 'phone', 'email',
+                  'logo', 'theme_primary', 'instagram_url', 'facebook_url', 'x_url']
+
+
+class InvitationForm(forms.ModelForm):
+    class Meta:
+        model = OrganizationInvitation
+        fields = ['email', 'invited_name']
+
+
+class JoinClinicForm(forms.Form):
+    """Form que ve un invitado al aceptar la invitación. Crea User + Professional."""
+    professional_name = forms.CharField(max_length=255, label='Tu nombre completo')
+    specialty = forms.CharField(max_length=255, label='Especialidad')
+    phone = forms.CharField(max_length=50, required=False, label='Teléfono (opcional)')
+    password = forms.CharField(widget=forms.PasswordInput, min_length=8, label='Contraseña',
+                               help_text='Mínimo 8 caracteres.')

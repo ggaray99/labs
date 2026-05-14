@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invitación a {{ organization.name }}</title>
+</head>
+<body style="margin:0; padding:0; background-color:#F4F6FA; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; color:#0B1C30; -webkit-font-smoothing:antialiased;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F4F6FA;">
+    <tr>
+      <td align="center" style="padding:32px 16px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; background-color:#FFFFFF; border-radius:12px; overflow:hidden;">
+
+          <tr>
+            <td style="padding:32px 40px 0 40px;">
+              <div style="font-size:22px; font-weight:600; letter-spacing:-0.045em; color:#0047AB;">consulte<span style="color:#0B1C30;">.</span></div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:24px 40px 8px 40px;">
+              <h1 style="margin:0; font-size:24px; line-height:1.25; font-weight:600; color:#0B1C30;">
+                {% if invitation.invited_name %}Hola {{ invitation.invited_name }},{% else %}Hola,{% endif %}
+              </h1>
+              <p style="margin:16px 0 0 0; font-size:16px; line-height:1.55; color:#4A5A6E;">
+                Te invitaron a sumarte como profesional a <strong style="color:#0B1C30;">{{ organization.name }}</strong> en consulte.
+              </p>
+              <p style="margin:12px 0 0 0; font-size:16px; line-height:1.55; color:#4A5A6E;">
+                Vas a tener tu propio perfil, tu agenda y tus pacientes, dentro de la clínica.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:28px 40px;">
+              <a href="{{ join_url }}"
+                 style="display:inline-block; background:#0047AB; color:#FFFFFF; text-decoration:none; padding:14px 28px; border-radius:6px; font-size:16px; font-weight:600;">
+                Aceptar invitación
+              </a>
+              <p style="margin:16px 0 0 0; font-size:13px; line-height:1.5; color:#6F7E92;">
+                Este link expira en 14 días. Si no esperabas esta invitación, podés ignorar este mensaje.
+              </p>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 40px 32px 40px;">
+              <hr style="border:none; border-top:1px solid #E5E9F0; margin:0 0 16px 0;">
+              <p style="margin:0; font-size:12px; line-height:1.5; color:#6F7E92;">
+                Si el botón no funciona, copiá y pegá este link en tu navegador:<br>
+                <span style="color:#0047AB; word-break:break-all;">{{ join_url }}</span>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <p style="margin:16px 0 0 0; font-size:12px; color:#6F7E92;">consulte. — Plataforma para profesionales independientes</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

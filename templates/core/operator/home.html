@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Operador — consulte.{% endblock %}
+
+{% block navbar %}{% include 'core/operator/_nav.html' with active='home' %}{% endblock %}
+
+{% block content %}
+<style>
+  .op-page { background: #F4F6FA; min-height: 100vh; font-family: 'Manrope', sans-serif; padding: 24px 16px; }
+  .op-wrap { max-width: 1280px; margin: 0 auto; }
+  .op-h1 { font-size: 22px; font-weight: 600; color: #0B1C30; letter-spacing: -0.02em; margin-bottom: 18px; }
+  .op-grid { display: grid; gap: 14px; margin-bottom: 18px; }
+  .op-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 768px) { .op-grid-4 { grid-template-columns: repeat(4, 1fr); } }
+  .op-card { background: #fff; border: 1px solid #E5E9F0; border-radius: 12px; padding: 18px 20px; }
+  .op-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #6F7E92; }
+  .op-value { font-size: 28px; font-weight: 600; color: #0B1C30; line-height: 1; margin-top: 6px; letter-spacing: -0.02em; }
+  .op-delta { font-size: 11px; color: #4A5A6E; margin-top: 4px; }
+  .op-section-h { font-size: 14px; font-weight: 600; color: #0B1C30; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+  .chart { display: flex; align-items: flex-end; gap: 3px; height: 120px; padding: 0; }
+  .bar { flex: 1; background: linear-gradient(to top, #0047AB, #3D6FCC); border-radius: 2px 2px 0 0; min-height: 2px; position: relative; }
+  .bar:hover::after { content: attr(data-label); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: #0B1C30; color: #fff; font-size: 10px; padding: 4px 6px; border-radius: 4px; white-space: nowrap; margin-bottom: 4px; }
+  .xaxis { display: flex; justify-content: space-between; font-size: 10px; color: #6F7E92; margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+  .alert-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .alert { background: #FFF8E6; border: 1px solid #FFE5A8; color: #7A4F00; padding: 10px 14px; border-radius: 8px; font-size: 13px; }
+</style>
+
+<div class="op-page">
+  <div class="op-wrap">
+    <h1 class="op-h1">Panel de KPIs</h1>
+
+    <div class="op-grid op-grid-4">
+      <div class="op-card"><div class="op-label">Usuarios</div><div class="op-value">{{ users_total }}</div><div class="op-delta">+{{ signups_week }} esta semana</div></div>
+      <div class="op-card"><div class="op-label">Profesionales</div><div class="op-value">{{ pros_total }}</div></div>
+      <div class="op-card"><div class="op-label">Clínicas</div><div class="op-value">{{ orgs_total }}</div></div>
+      <div class="op-card"><div class="op-label">Turnos hoy</div><div class="op-value">{{ appts_today }}</div><div class="op-delta">{{ appts_week }} esta semana · {{ appts_month }} este mes</div></div>
+    </div>
+
+    <div class="op-grid op-grid-4">
+      <div class="op-card"><div class="op-label">Pro activos</div><div class="op-value" style="color:#1E9E63;">{{ pro_subs }}</div></div>
+      <div class="op-card"><div class="op-label">Free</div><div class="op-value">{{ free_subs }}</div></div>
+      <div class="op-card"><div class="op-label">MRR estimado</div><div class="op-value">${{ mrr_estimate_ars|stringformat:"d" }}</div><div class="op-delta">Pro × $9.900 ARS</div></div>
+      <div class="op-card"><div class="op-label">Signups hoy</div><div class="op-value">{{ signups_today }}</div></div>
+    </div>
+
+    {% if pending_invites or pending_reviews %}
+    <div class="alert-row" style="margin-bottom: 18px;">
+      {% if pending_invites %}<div class="alert">{{ pending_invites }} invitación{{ pending_invites|pluralize:"es" }} a clínica pendiente{{ pending_invites|pluralize }}</div>{% endif %}
+      {% if pending_reviews %}<div class="alert">{{ pending_reviews }} reseña{{ pending_reviews|pluralize }} sin aprobar (de profesionales)</div>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="op-card">
+      <div class="op-section-h">
+        <span>Signups · últimos 30 días</span>
+        <span class="op-label">pico: {{ max_signups }}</span>
+      </div>
+      <div class="chart">
+        {% for d in signups_by_day %}
+          <div class="bar" style="height: {% if d.count %}{% widthratio d.count max_signups 100 %}{% else %}1{% endif %}%;" data-label="{{ d.date|date:'d/m' }}: {{ d.count }}"></div>
+        {% endfor %}
+      </div>
+      <div class="xaxis">
+        <span>{{ signups_by_day.0.date|date:'d/m' }}</span>
+        <span>{{ signups_by_day.14.date|date:'d/m' }}</span>
+        <span>hoy</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

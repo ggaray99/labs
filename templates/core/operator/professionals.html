@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block title %}Profesionales — Operador{% endblock %}
+
+{% block navbar %}{% include 'core/operator/_nav.html' with active='pros' %}{% endblock %}
+
+{% block content %}
+<style>
+  .op-page { background: #F4F6FA; min-height: 100vh; font-family: 'Manrope', sans-serif; padding: 24px 16px; }
+  .op-wrap { max-width: 1280px; margin: 0 auto; }
+  .op-h1 { font-size: 20px; font-weight: 600; color: #0B1C30; margin-bottom: 14px; }
+  .op-card { background: #fff; border: 1px solid #E5E9F0; border-radius: 12px; overflow: hidden; }
+  .op-filters { padding: 14px 16px; background: #FFF; border-bottom: 1px solid #E5E9F0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .op-filters input, .op-filters select { font-size: 13px; padding: 7px 10px; border: 1px solid #CBD2DD; border-radius: 6px; background: #fff; min-width: 120px; }
+  .op-filters input[type=text] { min-width: 200px; }
+  .op-filters .btn { padding: 7px 14px; background: #0047AB; color: #fff; border-radius: 6px; font-size: 13px; font-weight: 600; }
+  .op-filters .clear { font-size: 12px; color: #6F7E92; padding: 7px 4px; }
+  table.op-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.op-table th { text-align: left; padding: 10px 14px; background: #F8F9FF; color: #4A5A6E; font-weight: 600; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; border-bottom: 1px solid #E5E9F0; }
+  table.op-table td { padding: 12px 14px; border-bottom: 1px solid #F4F6FA; vertical-align: middle; }
+  table.op-table tr:hover td { background: #FAFBFE; }
+  .avatar-sm { width: 28px; height: 28px; border-radius: 50%; background: #F2F5FC; color: #0047AB; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+  .pill { display: inline-flex; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: 600; }
+  .pill-pro { background: rgba(30,158,99,.15); color: #1E9E63; }
+  .pill-free { background: rgba(111,126,146,.15); color: #4A5A6E; }
+  .pill-clinic { background: rgba(0,71,171,.1); color: #0047AB; }
+  .empty { padding: 36px; text-align: center; color: #6F7E92; font-size: 13px; }
+  .counter { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6F7E92; }
+</style>
+
+<div class="op-page">
+  <div class="op-wrap">
+    <h1 class="op-h1">Profesionales <span class="counter">({{ total }})</span></h1>
+
+    <div class="op-card">
+      <form method="get" class="op-filters">
+        <input type="text" name="q" value="{{ search }}" placeholder="Buscar nombre, email, especialidad...">
+        <select name="plan">
+          <option value="">Plan: todos</option>
+          <option value="free" {% if plan_filter == 'free' %}selected{% endif %}>Free</option>
+          <option value="pro" {% if plan_filter == 'pro' %}selected{% endif %}>Pro</option>
+        </select>
+        <select name="vertical">
+          <option value="">Vertical: todas</option>
+          {% for value, label in vertical_choices %}
+            <option value="{{ value }}" {% if vertical_filter == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <select name="clinic">
+          <option value="">Clínica: indistinto</option>
+          <option value="yes" {% if clinic_filter == 'yes' %}selected{% endif %}>Pertenece a clínica</option>
+          <option value="no" {% if clinic_filter == 'no' %}selected{% endif %}>Sin clínica</option>
+        </select>
+        <button type="submit" class="btn">Filtrar</button>
+        {% if search or plan_filter or vertical_filter or clinic_filter %}
+          <a href="{% url 'operator_professionals' %}" class="clear">limpiar</a>
+        {% endif %}
+      </form>
+
+      {% if pros %}
+      <table class="op-table">
+        <thead>
+          <tr>
+            <th>Profesional</th>
+            <th>Especialidad / Vertical</th>
+            <th>Plan</th>
+            <th>Clínica</th>
+            <th style="text-align:right;">Turnos del mes</th>
+            <th>Alta</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in pros %}
+          <tr>
+            <td>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span class="avatar-sm">{{ p.professional_name|first|upper }}</span>
+                <div>
+                  <div style="font-weight:500; color:#0B1C30;">{{ p.professional_name }}</div>
+                  <div style="font-size:11px; color:#6F7E92;">{{ p.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div>{{ p.specialty }}</div>
+              {% if p.vertical %}<div style="font-size:11px; color:#6F7E92;">{{ p.get_vertical_display }}</div>{% endif %}
+            </td>
+            <td>
+              {% if p.user.subscription.is_pro %}
+                <span class="pill pill-pro">PRO</span>
+                {% if p.user.subscription.manually_set %}<span style="font-size:9px; color:#6F7E92; margin-left:4px;" title="Activado manualmente">m</span>{% endif %}
+              {% else %}
+                <span class="pill pill-free">FREE</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if p.organization %}
+                <span class="pill pill-clinic">{% if p.role == 'owner' %}♛ {% endif %}{{ p.organization.name }}</span>
+              {% else %}
+                <span style="color:#A2AEBE; font-size:11px;">—</span>
+              {% endif %}
+            </td>
+            <td style="text-align:right; font-family:'JetBrains Mono', monospace;">{{ p._appt_month }}</td>
+            <td style="font-size:11px; color:#6F7E92;">{{ p.created_at|date:'d/m/Y' }}</td>
+            <td style="text-align:right;">
+              {% if p.user %}<a href="{% url 'operator_user_detail' user_id=p.user.id %}" style="font-size:12px; color:#0047AB;">Ver →</a>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="empty">No hay profesionales que coincidan con esos filtros.</div>
+      {% endif %}
+    </div>
+
+    {% if total > pros|length %}
+      <p style="margin-top:10px; font-size:12px; color:#6F7E92;">Mostrando primeros {{ pros|length }} de {{ total }}. Refiná los filtros para ver el resto.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

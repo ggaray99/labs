@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Crear clínica — consulte.{% endblock %}
+
+{% block navbar %}
+{% include 'core/_app_nav.html' with active='clinica' %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-6 py-10">
+
+  <div class="mb-8">
+    <p class="text-xs uppercase tracking-widest text-[#0047AB] font-semibold mb-2">Nuevo</p>
+    <h1 class="text-3xl font-semibold tracking-tight text-[#0B1C30] mb-2">Convertí tu cuenta en clínica</h1>
+    <p class="text-gray-500 text-sm leading-relaxed">
+      Sumá uno o más profesionales bajo el mismo paraguas. Cada uno mantiene su agenda, sus pacientes y su landing — vos sumás
+      una landing de clínica compartida y un panel para gestionar el equipo. Tus datos actuales no se tocan.
+    </p>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="mb-4 p-3 rounded-lg text-sm {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% else %}bg-red-50 text-red-700 border border-red-200{% endif %}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" class="bg-white border border-gray-100 rounded-xl shadow-sm p-6 space-y-5">
+    {% csrf_token %}
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la clínica / consultora</label>
+      <input type="text" name="name" required maxlength="255"
+             placeholder="Ej: Clínica Norte, Estudio Pérez & Asoc."
+             value="{{ form.name.value|default:'' }}"
+             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+      <p class="text-xs text-gray-400 mt-1">Aparece en la landing pública y en el navbar.</p>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Frase de valor (opcional)</label>
+      <input type="text" name="tagline" maxlength="255"
+             placeholder="Ej: Atención multidisciplinaria en zona norte"
+             value="{{ form.tagline.value|default:'' }}"
+             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono (opcional)</label>
+        <input type="text" name="phone" maxlength="50"
+               value="{{ form.phone.value|default:'' }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email de contacto (opcional)</label>
+        <input type="email" name="email"
+               value="{{ form.email.value|default:'' }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Dirección (opcional)</label>
+      <input type="text" name="address" maxlength="255"
+             value="{{ form.address.value|default:'' }}"
+             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+    </div>
+
+    <div class="rounded-lg bg-[#F2F5FC] border border-[#DCE5F4] px-4 py-3 text-xs text-[#1F3147] leading-relaxed">
+      <strong>Cómo funciona:</strong> al crear la clínica, vos pasás a ser <em>dueño/a</em> manteniendo tu perfil y tu agenda intactos.
+      Después podés invitar nuevos profesionales por email — ellos crean su cuenta dentro de tu clínica con su propia agenda.
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 pt-2">
+      <button type="submit" class="bg-[#0047AB] hover:bg-[#00327D] text-white px-5 py-2 rounded-lg text-sm font-semibold">
+        Crear clínica
+      </button>
+      <a href="{% url 'dashboard' %}" class="text-sm text-gray-500 hover:text-gray-700">Cancelar</a>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

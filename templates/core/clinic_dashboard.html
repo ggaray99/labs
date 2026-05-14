@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% block title %}{{ organization.name }} — consulte.{% endblock %}
+
+{% block navbar %}
+{% include 'core/_app_nav.html' with active='clinica' %}
+{% endblock %}
+
+{% block content %}
+<style>
+  .clinic-page details { transition: background 0.15s; }
+  .clinic-page details[open] > summary { border-bottom: 1px solid #dae2fd; }
+  .clinic-page summary { list-style: none; cursor: pointer; user-select: none; }
+  .clinic-page summary::-webkit-details-marker { display: none; }
+  .clinic-page summary::before { content: "▸"; display: inline-block; width: 1rem; color: #737784; transition: transform 0.15s; }
+  .clinic-page details[open] > summary::before { transform: rotate(90deg); }
+  .clinic-page .pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 500; }
+  .kpi-card { background: #fff; border: 1px solid #E5E9F0; border-radius: 12px; padding: 18px 20px; }
+  .kpi-label { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #6F7E92; }
+  .kpi-value { font-size: 32px; font-weight: 600; color: #0B1C30; line-height: 1; margin-top: 6px; letter-spacing: -0.02em; }
+</style>
+
+<div class="clinic-page max-w-5xl mx-auto px-6 py-8">
+
+  <div class="flex flex-wrap items-start justify-between gap-3 mb-6">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight text-[#0B1C30] mb-1">{{ organization.name }}</h1>
+      <p class="text-gray-500 text-sm">Panel de la clínica</p>
+    </div>
+    <a href="{{ public_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 bg-white border border-gray-200 hover:border-gray-300 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium text-gray-700">
+      Ver landing pública ↗
+    </a>
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="mb-4 p-3 rounded-lg text-sm {% if message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% elif message.tags == 'warning' %}bg-amber-50 text-amber-700 border border-amber-200{% else %}bg-red-50 text-red-700 border border-red-200{% endif %}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  {# === KPIs === #}
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+    <div class="kpi-card">
+      <div class="kpi-label">Profesionales</div>
+      <div class="kpi-value">{{ kpi_members }}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Turnos este mes</div>
+      <div class="kpi-value">{{ kpi_appts_this_month }}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Próximos turnos</div>
+      <div class="kpi-value">{{ kpi_upcoming }}</div>
+    </div>
+  </div>
+
+  {# === PROFESIONALES === #}
+  <details open class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+    <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+      <span class="font-semibold">Profesionales ({{ members|length }})</span>
+      <span class="text-xs text-gray-400">El equipo activo de la clínica</span>
+    </summary>
+    <div class="px-6 py-5">
+      {% if members %}
+      <div class="divide-y divide-gray-100">
+        {% for m in members %}
+        <div class="py-3 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0">
+            {% if m.profile_image %}
+              <img src="{{ m.profile_image.url }}" alt="" class="w-10 h-10 rounded-full object-cover border border-gray-100 flex-shrink-0">
+            {% else %}
+              <div class="w-10 h-10 rounded-full bg-[#F2F5FC] text-[#0047AB] flex items-center justify-center text-sm font-semibold flex-shrink-0">{{ m.professional_name|first }}</div>
+            {% endif %}
+            <div class="min-w-0">
+              <div class="text-sm font-medium text-[#0B1C30] truncate">
+                {{ m.professional_name }}
+                {% if m.role == 'owner' %}<span class="pill bg-[#F2F5FC] text-[#0047AB] ml-1">Dueño/a</span>{% endif %}
+              </div>
+              <div class="text-xs text-gray-500 truncate">{{ m.specialty }} · {{ m.email }}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <a href="{% url 'public_landing' slug=m.slug %}" target="_blank" rel="noopener" class="text-xs text-gray-500 hover:text-[#0047AB]">Ver perfil ↗</a>
+            {% if m.role != 'owner' %}
+            <form method="post" action="{% url 'clinic_remove_member' professional_id=m.id %}" onsubmit="return confirm('¿Sacar a {{ m.professional_name|escapejs }} de la clínica? Su cuenta y datos no se borran, solo deja de ser parte de {{ organization.name|escapejs }}.');" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="text-xs text-red-600 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50">Quitar</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-sm text-gray-500">Todavía no hay profesionales además de vos. Invitá al primero abajo.</p>
+      {% endif %}
+    </div>
+  </details>
+
+  {# === INVITAR === #}
+  <details open class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+    <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+      <div class="flex items-center gap-3">
+        <span class="font-semibold">Invitar profesional</span>
+        {% if pending_invites %}<span class="pill bg-amber-50 text-amber-700">{{ pending_invites|length }} pendientes</span>{% endif %}
+      </div>
+      <span class="text-xs text-gray-400">Por email con link único</span>
+    </summary>
+    <form method="post" action="{% url 'clinic_invite' %}" class="px-6 py-5 space-y-4">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email del profesional</label>
+          <input type="email" name="email" required
+                 placeholder="dra.lopez@ejemplo.com"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nombre (opcional)</label>
+          <input type="text" name="invited_name" maxlength="255"
+                 placeholder="Para personalizar el saludo del email"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+      </div>
+      <p class="text-xs text-gray-400">Le va a llegar un email con un link único válido por 14 días. Cuando lo abra, completa su perfil y crea su contraseña.</p>
+      <button type="submit" class="bg-[#0047AB] hover:bg-[#00327D] text-white px-5 py-2 rounded-lg text-sm font-semibold">Enviar invitación</button>
+    </form>
+
+    {% if pending_invites %}
+    <div class="px-6 pb-5">
+      <p class="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2">Invitaciones pendientes</p>
+      <div class="divide-y divide-gray-100 border border-gray-100 rounded-lg">
+        {% for inv in pending_invites %}
+        <div class="px-4 py-3 flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <div class="text-sm text-[#0B1C30] truncate">{{ inv.email }}{% if inv.invited_name %} — <span class="text-gray-500">{{ inv.invited_name }}</span>{% endif %}</div>
+            <div class="text-xs text-gray-400">Enviada {{ inv.created_at|date:"d/m/Y H:i" }} · expira {{ inv.expires_at|date:"d/m/Y" }}</div>
+          </div>
+          <form method="post" action="{% url 'clinic_revoke_invitation' invitation_id=inv.id %}" onsubmit="return confirm('¿Cancelar invitación a {{ inv.email|escapejs }}?');">
+            {% csrf_token %}
+            <button type="submit" class="text-xs text-red-600 hover:text-red-700 px-2 py-1 rounded hover:bg-red-50">Cancelar</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </details>
+
+  {# === BRANDING === #}
+  <details class="bg-white rounded-xl border border-gray-100 shadow-sm mb-4 overflow-hidden">
+    <summary class="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
+      <div class="flex items-center gap-3">
+        <span class="font-semibold">Branding y contacto de la clínica</span>
+        <span class="pill" style="background:{{ organization.theme_primary }}20; color:{{ organization.theme_primary }};">{{ organization.theme_primary }}</span>
+      </div>
+      <span class="text-xs text-gray-400">Lo que ve quien visita /c/{{ organization.slug }}/</span>
+    </summary>
+    <form method="post" action="{% url 'clinic_branding' %}" enctype="multipart/form-data" class="px-6 py-5 space-y-4">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+          <input type="text" name="name" required maxlength="255" value="{{ organization.name }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Color principal</label>
+          <input type="color" name="theme_primary" value="{{ organization.theme_primary }}" class="h-10 w-16 border border-gray-300 rounded cursor-pointer">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Frase de valor</label>
+        <input type="text" name="tagline" maxlength="255" value="{{ organization.tagline }}"
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+        <textarea name="bio" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">{{ organization.bio }}</textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Misión</label>
+        <textarea name="mission" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">{{ organization.mission }}</textarea>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+          <input type="text" name="phone" maxlength="50" value="{{ organization.phone }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" name="email" value="{{ organization.email }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+          <input type="text" name="address" maxlength="255" value="{{ organization.address }}"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Logo (opcional)</label>
+        {% if organization.logo %}<img src="{{ organization.logo.url }}" alt="Logo actual" class="h-12 mb-2">{% endif %}
+        <input type="file" name="logo" accept="image/*" class="text-sm">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+          <input type="url" name="instagram_url" value="{{ organization.instagram_url }}" placeholder="https://instagram.com/..."
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
+          <input type="url" name="facebook_url" value="{{ organization.facebook_url }}" placeholder="https://facebook.com/..."
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">X (Twitter)</label>
+          <input type="url" name="x_url" value="{{ organization.x_url }}" placeholder="https://x.com/..."
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm outline-none focus:border-[#0047AB]">
+        </div>
+      </div>
+      <button type="submit" class="bg-[#0047AB] hover:bg-[#00327D] text-white px-5 py-2 rounded-lg text-sm font-semibold">Guardar branding</button>
+    </form>
+  </details>
+
+</div>
+{% endblock %}
